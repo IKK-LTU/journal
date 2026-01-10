@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 
-import { Field, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import Container from "@/components/layouts/Container";
+
+import TextInput from "@/components/atoms/TextInput";
+import Button from "@/components/atoms/buttons/Button";
+import Title from "@/components/atoms/text/Title";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -16,24 +17,19 @@ const Home = () => {
   return (
     <Container>
       <div>
-        <h1>Labas</h1>
+        <Title>Labas</Title>
 
         <p>Sveiki atvykę į mano programėlę!</p>
       </div>
 
-      <Field>
-        <FieldLabel htmlFor="login-form-email">Email</FieldLabel>
-        <Input
-          id="login-form-email"
-          type="email"
-          placeholder="Enter your email"
-          required
-        />
-      </Field>
+      <TextInput
+        id="login-form-email"
+        type="email"
+        placeholder="Enter your email"
+        required
+      />
 
-      <Button onClick={onClick} variant="outline" type="button">
-        Prisijungti
-      </Button>
+      <Button onClick={onClick}>Prisijungti</Button>
     </Container>
   );
 };

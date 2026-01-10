@@ -1,14 +1,30 @@
 import { Outlet } from "react-router-dom";
 
+import styled from "styled-components";
+
 import Navbar from "../navbar/Navbar";
 
 const Layout = () => {
   return (
-    <div className="px-3 py-4 w-7xl mx-auto gap-4 flex flex-col">
+    <StyledLayout>
       <Navbar />
       <Outlet />
-    </div>
+    </StyledLayout>
   );
 };
 
 export default Layout;
+
+const StyledLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  width: 100%;
+  height: 100vh;
+  max-width: 600px;
+
+  padding: 1rem;
+  margin: 0 auto;
+`;

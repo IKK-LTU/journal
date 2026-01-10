@@ -1,17 +1,32 @@
+import Button from "@/components/atoms/buttons/Button";
+import Title from "@/components/atoms/text/Title";
+import TextInput from "@/components/atoms/TextInput";
 import Container from "@/components/layouts/Container";
-import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
 
-const Home = () => {
+const LoginPage = () => {
+  const navigate = useNavigate();
+
+  const onClick = () => {
+    navigate("/");
+  };
   return (
     <Container>
-      <div className="card">
-        <h1>Prisijunkite</h1>
+      <div>
+        <Title>Prisijunkite</Title>
+        <p>Įveskite savo prisijungimo duomenis žemiau.</p>
       </div>
-      <Input placeholder="El. paštas" />
 
-      <button>Prisijungti</button>
+      <TextInput
+        id="login-form-email"
+        type="email"
+        placeholder="Enter your email"
+        required
+      />
+
+      <Button onClick={onClick}>Prisijungti</Button>
     </Container>
   );
 };
 
-export default Home;
+export default LoginPage;
