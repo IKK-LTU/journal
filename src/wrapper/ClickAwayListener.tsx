@@ -10,8 +10,10 @@ const ClickAwayListener = ({ children, onClickAway }: Props) => {
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
-        console.log("ClickAwayListener handleClick event.target", event.target);
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
         onClickAway();
       }
     };

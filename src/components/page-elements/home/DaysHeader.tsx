@@ -39,7 +39,6 @@ const DaysHeader = ({ onClick }: DaysHeaderProps) => {
     <ClickAwayListener onClickAway={() => handleDayClick()}>
       <StyledItemsContainer>
         {weekDays.map((day, index) => {
-          console.log("selectedDay", selectedDay);
           return (
             <StyledItem
               key={day.title}
