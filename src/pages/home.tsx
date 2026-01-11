@@ -1,33 +1,41 @@
 import { useNavigate } from "react-router-dom";
 
-import Container from "@/components/layouts/Container";
+import styled from "styled-components";
 
-import TextInput from "@/components/atoms/TextInput";
+import { Flame } from "lucide-react";
+
+import Container from "@/components/layouts/Container";
 import Button from "@/components/atoms/buttons/Button";
 import Title from "@/components/atoms/text/Title";
+import IconButton from "@/components/atoms/buttons/IconButton";
+import DaysHeader from "@/components/page-elements/home/DaysHeader";
 
 const Home = () => {
   const navigate = useNavigate();
 
   const onClick = () => {
-    console.log("Button clicked");
     navigate("/login");
+  };
+
+  const handleDayClick = (index?: number) => {
+    console.log("Clicked day index:", index);
   };
 
   return (
     <Container>
-      <div>
-        <Title>Labas</Title>
+      <StyledHeader>
+        <IconButton
+          icon={<Flame fill="#ffc917ff" color="rgba(249, 151, 13, 1)" />}
+        />
 
-        <p>Sveiki atvykę į mano programėlę!</p>
-      </div>
+        <StyledTitle>Home</StyledTitle>
 
-      <TextInput
-        id="login-form-email"
-        type="email"
-        placeholder="Enter your email"
-        required
-      />
+        <IconButton
+          icon={<Flame fill="#ffc917ff" color="rgba(249, 151, 13, 1)" />}
+        />
+      </StyledHeader>
+
+      <DaysHeader onClick={handleDayClick} />
 
       <Button onClick={onClick}>Prisijungti</Button>
     </Container>
@@ -35,3 +43,15 @@ const Home = () => {
 };
 
 export default Home;
+
+const StyledHeader = styled.header`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
+const StyledTitle = styled(Title)`
+  font-size: 1.25rem;
+  font-weight: 500;
+`;

@@ -36,6 +36,21 @@ const StyledComponent = styled(Title)<{ component?: React.ElementType }>`
           font-size: 1.75rem;
           font-weight: semi-bold;
         `;
+        case "h4":
+        return `
+          font-size: 1.5rem;
+          font-weight: semi-bold;
+        `;
+        case "h5":
+        return `
+          font-size: 1.25rem;
+          font-weight: semi-bold;
+        `;
+        case "h6":
+        return `
+          font-size: 1rem;
+          font-weight: semi-bold;
+        `;
       default:
         return ` `;
     }

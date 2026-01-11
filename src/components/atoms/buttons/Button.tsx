@@ -4,7 +4,7 @@ import styled from "styled-components";
 export type ButtonVariantTypes = "outlined" | "contained" | "text";
 export type ButtonColorTypes = "primary" | "secondary" | "neutral";
 
-interface ButtonProps {
+type ButtonProps = {
   children: React.ReactNode | string;
   props?: React.ButtonHTMLAttributes<HTMLButtonElement>;
   variant?: ButtonVariantTypes;

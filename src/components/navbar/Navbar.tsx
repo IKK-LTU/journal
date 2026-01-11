@@ -1,27 +1,36 @@
+import { Link, useLocation } from "react-router-dom";
+
 import styled from "styled-components";
+import { House } from "lucide-react";
 
 const navigationItems = [
   {
     name: "Home",
     src: "/",
+    icon: <House color="#181818ff" size={20} />,
   },
   {
     name: "Login",
     src: "/login",
+    icon: <House color="#181818ff" size={20} />,
   },
 ];
 
 const Navbar = () => {
+  const location = useLocation();
+
   return (
     <StyledNavbar>
       <StyledNavList>
         {navigationItems.map((item) => (
-          <li key={item.src}>
-            
-            <StyledListNavItemAnch href={item.src}>
-              {item.name}
-            </StyledListNavItemAnch>
-          </li>
+          <StyledListItem
+            key={item.src}
+            to={item.src}
+            $selected={location.pathname === item.src}
+          >
+            {item.icon}
+            <span>{item.name}</span>
+          </StyledListItem>
         ))}
       </StyledNavList>
     </StyledNavbar>
@@ -32,7 +41,7 @@ export default Navbar;
 
 const StyledNavbar = styled.nav`
   position: fixed;
-  bottom: 16px;
+  bottom: 12px;
 
   display: flex;
   align-items: center;
@@ -41,7 +50,7 @@ const StyledNavbar = styled.nav`
 
   height: 52px;
   width: 100%;
-  max-width: 450px;
+  max-width: 600px;
 
   padding: 1rem 1.5rem;
 
@@ -72,7 +81,22 @@ const StyledNavList = styled.ol`
   color: white;
 `;
 
-const StyledListNavItemAnch = styled.a`
-  color: black;
-  font-weight: bold;
+const StyledListItem = styled(Link)<{ $selected?: boolean }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  transition: background-color 0.3s, border-radius 0.3s;
+
+  color: #181818ff;
+  font-size: 0.75rem;
+
+  border-radius: 8px;
+  background-color: ${(props) =>
+    props.$selected ? "rgba(109, 109, 109, 0.1)" : "transparent"};
+  
+  &:hover {
+    background-color: rgba(109, 109, 109, 0.1);
+  }
+  }
 `;
