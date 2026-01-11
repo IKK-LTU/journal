@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 export type ButtonVariantTypes = "outlined" | "contained" | "text";
 export type ButtonColorTypes = "primary" | "secondary" | "neutral";
@@ -10,7 +10,7 @@ type ButtonProps = {
   variant?: ButtonVariantTypes;
   color?: ButtonColorTypes;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
-}
+};
 
 const Button = ({
   children,
@@ -34,7 +34,7 @@ const color = {
   textLight: "white",
 };
 
-const StyledButton = styled.button<{
+const StyledButton = styled("button")<{
   variant?: ButtonVariantTypes;
   color?: ButtonColorTypes;
 }>`

@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 type Props = {
   title: string;
@@ -16,7 +16,7 @@ const TaskCard = ({
   buttonText,
   onButtonClick,
   featureTypeDescription,
-  imageSrc
+  imageSrc,
 }: Props) => {
   return (
     <StyledContainer>
@@ -31,10 +31,7 @@ const TaskCard = ({
           )}
         </div>
 
-        <StyledImage
-          src={imageSrc}
-          alt={title}
-        />
+        <StyledImage src={imageSrc} alt={title} />
       </StyledInfoWrapper>
 
       {onButtonClick && buttonText && (
@@ -46,7 +43,7 @@ const TaskCard = ({
 
 export default TaskCard;
 
-const StyledContainer = styled.div`
+const StyledContainer = styled("div")`
   cursor: pointer;
 
   display: flex;
@@ -65,7 +62,7 @@ const StyledContainer = styled.div`
   }
 `;
 
-const StyledInfoWrapper = styled.div`
+const StyledInfoWrapper = styled("div")`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -75,18 +72,18 @@ const StyledInfoWrapper = styled.div`
   gap: 12px;
 `;
 
-const StyledTitle = styled.h2`
+const StyledTitle = styled("h2")`
   font-size: 20px;
   font-weight: bold;
 `;
 
-const StyledDescription = styled.p`
+const StyledDescription = styled("p")`
   font-size: 14px;
   font-weight: 400;
   color: #989898ff;
 `;
 
-const StyledImage = styled.img`
+const StyledImage = styled("img")`
   width: 120px;
   height: 80px;
 
@@ -97,7 +94,7 @@ const StyledImage = styled.img`
   border-radius: 8px;
 `;
 
-const StyledButton = styled.button`
+const StyledButton = styled("button")`
   margin-top: 16px;
   padding: 16px;
 
@@ -112,7 +109,7 @@ const StyledButton = styled.button`
   font-weight: 600;
 `;
 
-const StyledFeatureDescription = styled.div`
+const StyledFeatureDescription = styled("div")`
   margin-top: 8px;
   font-size: 14px;
   color: #1277e3ff;

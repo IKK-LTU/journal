@@ -10,6 +10,8 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "rootDirs": [".", "./.react-router/types"]
+    "rootDirs": [".", "./.react-router/types"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   }
 }

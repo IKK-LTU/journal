@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 const TextInput = ({
   id,
@@ -34,7 +34,7 @@ const TextInput = ({
 };
 export default TextInput;
 
-const StyledInput = styled.input`
+const StyledInput = styled("input")`
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;

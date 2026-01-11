@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import { styled, keyframes } from "styled-components";
 
 import { CirclePlus } from "lucide-react";
 
@@ -78,7 +78,7 @@ const DaysHeader = ({ onClick }: DaysHeaderProps) => {
 
 export default DaysHeader;
 
-const StyledItemsContainer = styled.div`
+const StyledItemsContainer = styled("div")`
   display: flex;
   justify-content: space-between;
   gap: 1rem;
@@ -93,7 +93,7 @@ const StyledWeekTitle = styled(Title)<{ $selected?: boolean }>`
   font-weight: 500;
 `;
 
-const StyledItem = styled.div<{ $selected: boolean }>`
+const StyledItem = styled("div")<{ $selected: boolean }>`
   position: relative;
 
   display: flex;
@@ -122,7 +122,7 @@ const StyledItem = styled.div<{ $selected: boolean }>`
   }
 `;
 
-const StyledMoodCircle = styled.div<{ $selected?: boolean }>`
+const StyledMoodCircle = styled("div")<{ $selected?: boolean }>`
   width: 100%;
   min-width: 100%;
   height: auto;
@@ -142,7 +142,7 @@ const zoomOut = keyframes`
     }
   `;
 
-const StyledSelectedItemPopup = styled.button<{
+const StyledSelectedItemPopup = styled("button")<{
   $itemIndex?: number;
   $isVisible?: boolean;
 }>`

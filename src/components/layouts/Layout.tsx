@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 import Navbar from "../navbar/Navbar";
 
@@ -15,7 +15,7 @@ const Layout = () => {
 
 export default Layout;
 
-const StyledLayout = styled.div`
+const StyledLayout = styled("div")`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,5 +26,4 @@ const StyledLayout = styled.div`
 
   padding: 1rem;
   margin: 0 auto;
-
 `;

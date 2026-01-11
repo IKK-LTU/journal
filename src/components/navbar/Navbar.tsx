@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 
-import styled from "styled-components";
+import { styled } from "styled-components";
 import { House } from "lucide-react";
 
 const navigationItems = [
@@ -39,7 +39,7 @@ const Navbar = () => {
 
 export default Navbar;
 
-const StyledNavbar = styled.nav`
+const StyledNavbar = styled("nav")`
   position: fixed;
   bottom: 12px;
 
@@ -66,7 +66,7 @@ const StyledNavbar = styled.nav`
   border: 1px solid rgba(255, 255, 255, 0.35);
 `;
 
-const StyledNavList = styled.ol`
+const StyledNavList = styled("ol")`
   list-style: none;
 
   display: flex;

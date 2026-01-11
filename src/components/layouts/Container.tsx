@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 const Container = ({ children }: { children: React.ReactNode }) => {
   return <StyledContainer>{children}</StyledContainer>;
@@ -6,11 +6,10 @@ const Container = ({ children }: { children: React.ReactNode }) => {
 
 export default Container;
 
-const StyledContainer = styled.div`
+const StyledContainer = styled("div")`
   display: flex;
   flex-direction: column;
   gap: 1rem;
 
   width: 100%;
-  
 `;

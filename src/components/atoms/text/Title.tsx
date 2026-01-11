@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 // Base props for the component
 type PolymorphicProps<C extends React.ElementType> = {

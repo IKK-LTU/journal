@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 import { Flame, GraduationCap, Notebook } from "lucide-react";
 
@@ -80,7 +80,7 @@ const Home = () => {
 
 export default Home;
 
-const StyledHeader = styled.header`
+const StyledHeader = styled("header")`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -92,7 +92,7 @@ const StyledTitle = styled(Title)`
   font-weight: 500;
 `;
 
-const StyledPlanContainer = styled.div`
+const StyledPlanContainer = styled("div")`
   display: flex;
   flex-direction: column;
   gap: 16px;

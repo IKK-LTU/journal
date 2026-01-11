@@ -31,7 +31,7 @@ const scaleUp = keyframes`
   }
 `;
 
-const StyledIconBtn = styled.button<{ $color?: Color }>`
+const StyledIconBtn = styled("button")<{ $color?: Color }>`
   border: none;
   cursor: pointer;
   padding: 0.5rem;
@@ -49,7 +49,6 @@ const StyledIconBtn = styled.button<{ $color?: Color }>`
         return "#121212c7";
     }
   }};
-
 
   &:hover {
     opacity: 0.8;

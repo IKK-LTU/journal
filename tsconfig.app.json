@@ -8,6 +8,7 @@
     "types": ["vite/client", "jest", "@testing-library/jest-dom"],
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -30,5 +31,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
   },
-  "include": ["src"]
+  "include": ["src", "routes.js", "request.js"]
 }
