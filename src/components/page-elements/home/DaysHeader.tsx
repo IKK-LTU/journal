@@ -100,6 +100,8 @@ const StyledItem = styled.div<{ $selected: boolean }>`
   flex-direction: column;
   align-items: center;
 
+  gap: 4px;
+
   max-width: calc(100% / 7 - 1rem);
   min-width: calc(100% / 7 - 1rem);
 
@@ -128,7 +130,7 @@ const StyledMoodCircle = styled.div<{ $selected?: boolean }>`
   aspect-ratio: 1 / 1;
 
   border-radius: 50%;
-  background-color: #afafaf;
+  background-color: #363636ff;
 `;
 
 const zoomOut = keyframes`
@@ -155,22 +157,20 @@ const StyledSelectedItemPopup = styled.button<{
     return "50%";
   }};
 
-  transform: translate(-50%, -40%);
+  transform: translate(-50%, -30%);
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
+  gap: 0.1rem;
 
-  width: 120px;
-  height: 0;
   height: 60px;
   width: 120px;
   background-color: #ffffff97;
-  border: 1px solid #ccc;
+  border: none;
 
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 4px 8px rgba(16, 11, 11, 0.1);
 
   ${(props) => props.$isVisible && `visibility: visible;`}
@@ -178,6 +178,8 @@ const StyledSelectedItemPopup = styled.button<{
     props.$isVisible && zoomOut} 0.3s forwards ease-in-out;
 
   transition: background-color 0.3s;
+
+  font-size: 0.75rem;
 
   &:hover {
     cursor: pointer;

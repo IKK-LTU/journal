@@ -12,4 +12,5 @@ const StyledContainer = styled.div`
   gap: 1rem;
 
   width: 100%;
+  
 `;

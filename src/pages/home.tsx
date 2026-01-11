@@ -1,22 +1,46 @@
-import { useNavigate } from "react-router-dom";
-
 import styled from "styled-components";
 
-import { Flame } from "lucide-react";
+import { Flame, GraduationCap, Notebook } from "lucide-react";
 
 import Container from "@/components/layouts/Container";
-import Button from "@/components/atoms/buttons/Button";
 import Title from "@/components/atoms/text/Title";
 import IconButton from "@/components/atoms/buttons/IconButton";
 import DaysHeader from "@/components/page-elements/home/DaysHeader";
+import TaskCard from "@/components/cards/TaskCard";
+
+const myTasks = [
+  {
+    id: 1,
+    imageSrc: "https://picsum.photos/seed/picsum/200/300",
+    title: "Good afternoon",
+    subtitle: "Capture your thoughts and tasks for the day.",
+    buttonText: "Check In",
+    onClick: () => console.log("Check In clicked"),
+  },
+  {
+    id: 2,
+    imageSrc: "https://picsum.photos/seed/picsum/200/300",
+    title: "Analyze Thoughts",
+    featureTypeDescription: (
+      <>
+        <Notebook /> Guided Journal
+      </>
+    ),
+    buttonText: "Reflect",
+  },
+  {
+    id: 3,
+    imageSrc: "https://picsum.photos/seed/picsum/200/300",
+    title: "Mind and Mood",
+    featureTypeDescription: (
+      <>
+        <GraduationCap /> Crash Course
+      </>
+    ),
+  },
+];
 
 const Home = () => {
-  const navigate = useNavigate();
-
-  const onClick = () => {
-    navigate("/login");
-  };
-
   const handleDayClick = (index?: number) => {
     console.log("Clicked day index:", index);
   };
@@ -37,7 +61,19 @@ const Home = () => {
 
       <DaysHeader onClick={handleDayClick} />
 
-      <Button onClick={onClick}>Prisijungti</Button>
+      <StyledPlanContainer>
+        {myTasks.map((task) => (
+          <TaskCard
+            key={task.id}
+            title={task.title}
+            subtitle={task.subtitle}
+            featureTypeDescription={task.featureTypeDescription}
+            buttonText={task.buttonText}
+            onButtonClick={task.onClick}
+            imageSrc={task.imageSrc}
+          />
+        ))}
+      </StyledPlanContainer>
     </Container>
   );
 };
@@ -54,4 +90,10 @@ const StyledHeader = styled.header`
 const StyledTitle = styled(Title)`
   font-size: 1.25rem;
   font-weight: 500;
+`;
+
+const StyledPlanContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `;

@@ -22,9 +22,9 @@ const StyledLayout = styled.div`
   gap: 1rem;
 
   width: 100%;
-  height: 100vh;
   max-width: 600px;
 
   padding: 1rem;
   margin: 0 auto;
+
 `;

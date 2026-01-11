@@ -7,12 +7,12 @@ const navigationItems = [
   {
     name: "Home",
     src: "/",
-    icon: <House color="#181818ff" size={20} />,
+    icon: <House color="rgb(255, 255, 255)" size={20} />,
   },
   {
     name: "Login",
     src: "/login",
-    icon: <House color="#181818ff" size={20} />,
+    icon: <House color="rgb(255, 255, 255)" size={20} />,
   },
 ];
 
@@ -88,7 +88,8 @@ const StyledListItem = styled(Link)<{ $selected?: boolean }>`
   padding: 0.25rem 0.5rem;
   transition: background-color 0.3s, border-radius 0.3s;
 
-  color: #181818ff;
+  color:rgb(255, 255, 255);
+
   font-size: 0.75rem;
 
   border-radius: 8px;

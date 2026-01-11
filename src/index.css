@@ -1,4 +1,6 @@
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   text-decoration: none;
   letter-spacing: normal;
@@ -9,19 +11,43 @@ a {
 }
 
 body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
+    margin: 0;
+  padding: 0;
+  line-height: 1.5;
   font-family: 'Geologica', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   letter-spacing: 1px;
+
+  background: #2a262c;
+  color:rgb(255, 255, 255);
+}
+
+img, video, canvas, svg {
+  display: block; /* removes inline baseline spacing */
+  max-width: 100%;
+  height: auto;
+}
+
+button {
+  cursor: pointer;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
 h1 {
   font-size: 2.2em;
+  margin:0;
 }
 
 h2 {
   font-size: 2em;
+  margin:0;
 }
 
 h3 {
@@ -38,4 +64,11 @@ h5 {
 
 p {
   font-size: 1em;
+}
+
+h1, h2, h3, h4, h5, h6,
+p, blockquote, figure,
+dl, dd, hr, ul, ol {
+  margin: 0;
+  padding: 0;
 }

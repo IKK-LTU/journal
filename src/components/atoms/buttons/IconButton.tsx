@@ -43,10 +43,10 @@ const StyledIconBtn = styled.button<{ $color?: Color }>`
   background: ${(props) => {
     switch (props.$color) {
       case Color.Primary:
-        return "#1212124c";
+        return "#121212d8";
 
       default:
-        return "#1212124c";
+        return "#121212c7";
     }
   }};
 
