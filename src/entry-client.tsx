@@ -1,14 +1,14 @@
 import "./index.css";
 import { StrictMode } from "react";
 import { hydrateRoot } from "react-dom/client";
-import Router from "./router";
 import { BrowserRouter } from "react-router-dom";
+import App from "./App";
 
 hydrateRoot(
   document.getElementById("root") as HTMLElement,
   <StrictMode>
     <BrowserRouter>
-      <Router />
+      <App />
     </BrowserRouter>
   </StrictMode>
 );

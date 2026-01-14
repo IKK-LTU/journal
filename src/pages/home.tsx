@@ -1,12 +1,15 @@
 import { styled } from "styled-components";
 
-import { Flame, GraduationCap, Notebook } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+import { Flame, GraduationCap, LogIn, Notebook, User } from "lucide-react";
 
 import Container from "@/components/layouts/Container";
 import Title from "@/components/atoms/text/Title";
 import IconButton from "@/components/atoms/buttons/IconButton";
 import DaysHeader from "@/components/page-elements/home/DaysHeader";
 import TaskCard from "@/components/cards/TaskCard";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 const myTasks = [
   {
@@ -41,6 +44,10 @@ const myTasks = [
 ];
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  const { currentUser } = useCurrentUser();
+
   const handleDayClick = (index?: number) => {
     console.log("Clicked day index:", index);
   };
@@ -54,9 +61,11 @@ const Home = () => {
 
         <StyledTitle>Home</StyledTitle>
 
-        <IconButton
-          icon={<Flame fill="#ffc917ff" color="rgba(249, 151, 13, 1)" />}
-        />
+        {currentUser ? (
+          <User onClick={() => navigate("/login")} />
+        ) : (
+          <LogIn onClick={() => navigate("/login")} />
+        )}
       </StyledHeader>
 
       <DaysHeader onClick={handleDayClick} />

@@ -10,6 +10,7 @@ type ButtonProps = {
   variant?: ButtonVariantTypes;
   color?: ButtonColorTypes;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  fullWidth?: boolean;
 };
 
 const Button = ({
@@ -17,9 +18,16 @@ const Button = ({
   variant = "contained",
   color = "primary",
   onClick,
+  fullWidth,
   ...props
 }: ButtonProps) => (
-  <StyledButton {...props} variant={variant} color={color} onClick={onClick}>
+  <StyledButton
+    {...props}
+    variant={variant}
+    color={color}
+    onClick={onClick}
+    fullWidth={fullWidth}
+  >
     {children}
   </StyledButton>
 );
@@ -37,9 +45,12 @@ const color = {
 const StyledButton = styled("button")<{
   variant?: ButtonVariantTypes;
   color?: ButtonColorTypes;
+  fullWidth?: boolean;
 }>`
   cursor: pointer;
   padding: 0.5rem;
+
+  width: ${(props) => (props.fullWidth ? "100%" : "auto")};
 
   border-radius: 6px;
 
