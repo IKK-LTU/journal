@@ -1,32 +1,27 @@
-import React from "react";
+import { ButtonHTMLAttributes } from "react";
 import { styled } from "styled-components";
 
 export type ButtonVariantTypes = "outlined" | "contained" | "text";
 export type ButtonColorTypes = "primary" | "secondary" | "neutral";
 
-type ButtonProps = {
-  children: React.ReactNode | string;
-  props?: React.ButtonHTMLAttributes<HTMLButtonElement>;
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariantTypes;
   color?: ButtonColorTypes;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   fullWidth?: boolean;
-};
+}
 
 const Button = ({
   children,
   variant = "contained",
   color = "primary",
-  onClick,
   fullWidth,
   ...props
 }: ButtonProps) => (
   <StyledButton
+    $variant={variant}
+    $color={color}
+    $fullWidth={fullWidth}
     {...props}
-    variant={variant}
-    color={color}
-    onClick={onClick}
-    fullWidth={fullWidth}
   >
     {children}
   </StyledButton>
@@ -43,14 +38,14 @@ const color = {
 };
 
 const StyledButton = styled("button")<{
-  variant?: ButtonVariantTypes;
-  color?: ButtonColorTypes;
-  fullWidth?: boolean;
+  $variant?: ButtonVariantTypes;
+  $color?: ButtonColorTypes;
+  $fullWidth?: boolean;
 }>`
   cursor: pointer;
   padding: 0.5rem;
 
-  width: ${(props) => (props.fullWidth ? "100%" : "auto")};
+  width: ${(props) => (props.$fullWidth ? "100%" : "auto")};
 
   border-radius: 6px;
 
@@ -59,7 +54,7 @@ const StyledButton = styled("button")<{
   transition: 0.2s all ease-in-out;
 
   ${(props) => {
-    switch (`${props.variant}-${props.color}`) {
+    switch (`${props.$variant}-${props.$color}`) {
       case "outlined-primary":
         return `
         background: transparent;

@@ -18,7 +18,7 @@ const myTasks = [
     title: "Good afternoon",
     subtitle: "Capture your thoughts and tasks for the day.",
     buttonText: "Check In",
-    onClick: () => console.log("Check In clicked"),
+    path: "/check-in",
   },
   {
     id: 2,
@@ -78,7 +78,7 @@ const Home = () => {
             subtitle={task.subtitle}
             featureTypeDescription={task.featureTypeDescription}
             buttonText={task.buttonText}
-            onButtonClick={task.onClick}
+            onButtonClick={task.path ? () => navigate(task.path) : undefined}
             imageSrc={task.imageSrc}
           />
         ))}

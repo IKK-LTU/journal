@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 
 import { styled } from "styled-components";
-import { House } from "lucide-react";
+import { House, LogIn } from "lucide-react";
 
 const navigationItems = [
   {
@@ -12,7 +12,7 @@ const navigationItems = [
   {
     name: "Login",
     src: "/login",
-    icon: <House color="rgb(255, 255, 255)" size={20} />,
+    icon: <LogIn color="rgb(255, 255, 255)" size={20} />,
   },
 ];
 
