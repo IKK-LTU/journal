@@ -40,6 +40,7 @@ const Navbar = () => {
 export default Navbar;
 
 const StyledNavbar = styled("nav")`
+  z-index: 2;
   position: fixed;
   bottom: 12px;
 
