@@ -5,12 +5,12 @@ import { House, LogIn } from "lucide-react";
 
 const navigationItems = [
   {
-    name: "Home",
+    name: "Pagrindinis",
     src: "/",
     icon: <House color="rgb(255, 255, 255)" size={20} />,
   },
   {
-    name: "Login",
+    name: "Prisijungti",
     src: "/login",
     icon: <LogIn color="rgb(255, 255, 255)" size={20} />,
   },

@@ -15,33 +15,34 @@ const myTasks = [
   {
     id: 1,
     imageSrc: "https://picsum.photos/seed/picsum/200/300",
-    title: "Good afternoon",
-    subtitle: "Capture your thoughts and tasks for the day.",
-    buttonText: "Check In",
+    title: "Laba diena",
+    subtitle: "Užfiksuokite savo mintis ir užduotis dienai.",
+    buttonText: "Registruoti mintis",
     path: "/check-in",
   },
   {
     id: 2,
     imageSrc: "https://picsum.photos/seed/picsum/200/300",
-    title: "Analyze Thoughts",
+    title: "Analizuoti mintis",
     featureTypeDescription: (
       <>
-        <Notebook /> Guided Journal
+        <Notebook /> Dienoraštis su gairėmis
       </>
     ),
-    buttonText: "Reflect",
+    buttonText: "Apmąstyti",
   },
   {
     id: 3,
     imageSrc: "https://picsum.photos/seed/picsum/200/300",
-    title: "Mind and Mood",
+    title: "Protui ir nuotaikai",
     featureTypeDescription: (
       <>
-        <GraduationCap /> Crash Course
+        <GraduationCap /> Trumpas kursas
       </>
     ),
   },
 ];
+
 
 const Home = () => {
   const navigate = useNavigate();
@@ -59,7 +60,7 @@ const Home = () => {
           icon={<Flame fill="#ffc917ff" color="rgba(249, 151, 13, 1)" />}
         />
 
-        <StyledTitle>Home</StyledTitle>
+        <StyledTitle>Namai</StyledTitle>
 
         {currentUser ? (
           <User onClick={() => navigate("/login")} />

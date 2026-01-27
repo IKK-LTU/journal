@@ -117,7 +117,7 @@ const CheckIn = () => {
           icon={<Flame fill="#ffc917ff" color="rgba(249, 151, 13, 1)" />}
         />
 
-        <StyledTitle>CheckIn</StyledTitle>
+        <StyledTitle>Registruoti mintis</StyledTitle>
 
         {currentUser ? (
           <User onClick={() => navigate("/login")} />
@@ -130,9 +130,9 @@ const CheckIn = () => {
 
       <StyledFormContainer onSubmit={handleSubmit(onSubmit)}>
         <TextWrapper>
-          <StyledFormTitle>Check in your thoughts</StyledFormTitle>
+          <StyledFormTitle>Registruoti savo mintis</StyledFormTitle>
           <StyledFormSubtitle component="p">
-            Check in your thoughts
+            Registruoti mintis
           </StyledFormSubtitle>
         </TextWrapper>
 
@@ -150,7 +150,7 @@ const CheckIn = () => {
 
           {/* errors will return when field validation fails  */}
           {errors?.situation && (
-            <StyledErrors>This field is required</StyledErrors>
+            <StyledErrors>Privaloma</StyledErrors>
           )}
         </StyledFieldWrapper>
 
@@ -269,7 +269,7 @@ const CheckIn = () => {
 
           {/* errors will return when field validation fails  */}
           {errors?.autoThoughts && (
-            <StyledErrors>This field is required</StyledErrors>
+            <StyledErrors>Privaloma</StyledErrors>
           )}
         </StyledFieldWrapper>
 

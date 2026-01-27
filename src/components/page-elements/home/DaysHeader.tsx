@@ -16,11 +16,7 @@ const DaysHeader = ({ onClick }: DaysHeaderProps) => {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
   const handleDayClick = (day?: number) => {
-    if (day === selectedDay) {
-      setSelectedDay(null);
-      return;
-    }
-    if (day) {
+    if (day && day !== selectedDay) {
       setSelectedDay(day);
       return;
     }
@@ -46,14 +42,14 @@ const DaysHeader = ({ onClick }: DaysHeaderProps) => {
                 $isVisible={selectedDay === dayNumber}
               >
                 <CirclePlus size={16} color="rgba(0,145,255)" />
-                <span>Check In</span>
+                <span>Registruoti mintis</span>
               </StyledSelectedItemPopup>
 
               <StyledWeekTitle
-                component="h6"
+                component="p"
                 $selected={selectedDay === dayNumber}
               >
-                {title.slice(0, 3)}
+                {title.slice(0, 4)}
               </StyledWeekTitle>
 
               {selectedDay !== dayNumber && (
@@ -80,6 +76,7 @@ const StyledItemsContainer = styled("div")`
 `;
 
 const StyledWeekTitle = styled(Title)<{ $selected?: boolean }>`
+  font-size: 1rem;
   margin: 0;
   font-weight: 500;
 `;
@@ -122,6 +119,9 @@ const StyledMoodCircle = styled("div")<{ $selected?: boolean }>`
 
   border-radius: 50%;
   background-color: #363636ff;
+  &:hover {
+    border: 1px solid rgb(79, 79, 79);
+  }
 `;
 
 const zoomOut = keyframes`
