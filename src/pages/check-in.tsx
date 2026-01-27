@@ -285,7 +285,7 @@ const StyledHeader = styled("header")`
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 0 45px;
+  padding: 8px 45px;
 `;
 
 const StyledIconButton = styled(IconButton)`
