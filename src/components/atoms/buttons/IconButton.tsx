@@ -6,15 +6,14 @@ enum Color {
   Secondary = "secondary",
 }
 
-type IconButtonProps = {
+type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   icon: React.ReactNode;
-  onClick?: () => void;
-  color?: Color;
+  color?: Color | "transparent";
 };
 
-const IconButton = ({ icon, onClick, color }: IconButtonProps) => {
+const IconButton = ({ icon, onClick, color, ...props }: IconButtonProps) => {
   return (
-    <StyledIconBtn onClick={onClick} $color={color}>
+    <StyledIconBtn onClick={onClick} $color={color} {...props}>
       {icon}
     </StyledIconBtn>
   );
@@ -31,7 +30,7 @@ const scaleUp = keyframes`
   }
 `;
 
-const StyledIconBtn = styled("button")<{ $color?: Color }>`
+const StyledIconBtn = styled("button")<{ $color?: Color | "transparent" }>`
   border: none;
   cursor: pointer;
   padding: 0.5rem;
@@ -44,7 +43,8 @@ const StyledIconBtn = styled("button")<{ $color?: Color }>`
     switch (props.$color) {
       case Color.Primary:
         return "#121212d8";
-
+      case "transparent":
+        return "none";
       default:
         return "#121212c7";
     }

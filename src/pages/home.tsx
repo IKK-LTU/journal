@@ -51,6 +51,7 @@ const Home = () => {
 
   const handleDayClick = (index?: number) => {
     console.log("Clicked day index:", index);
+    navigate(ROUTES.CHECKIN.path);
   };
 
   return (

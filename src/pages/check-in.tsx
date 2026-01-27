@@ -2,18 +2,16 @@ import { styled } from "styled-components";
 
 import { useNavigate } from "react-router-dom";
 
-import { Check, Flame, LogIn, Trash, User } from "lucide-react";
+import { Check, ChevronLeft, Trash } from "lucide-react";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 
 import Container from "@/components/layouts/Container";
 import Title from "@/components/atoms/text/Title";
 import IconButton from "@/components/atoms/buttons/IconButton";
-import DaysHeader from "@/components/page-elements/home/DaysHeader";
-import useCurrentUser from "@/hooks/useCurrentUser";
 import TextInput from "@/components/atoms/TextInput";
 import Button from "@/components/atoms/buttons/Button";
 import { useState } from "react";
-import { ROUTES } from "@/router/routes";
+import { StyledLayoutContainer } from "@/components/layouts/Layout";
 
 //TODO
 
@@ -56,8 +54,6 @@ type Inputs = {
 
 const CheckIn = () => {
   const navigate = useNavigate();
-
-  const { currentUser } = useCurrentUser();
 
   const [newIndex, setNewIndex] = useState(0);
   const [emotionValues, setEmotionValues] = useState<{
@@ -112,167 +108,164 @@ const CheckIn = () => {
   };
   console.log("fields", { fields, emotionValues });
   return (
-    <Container>
-      <StyledHeader>
-        <IconButton
-          icon={<Flame fill="#ffc917ff" color="rgba(249, 151, 13, 1)" />}
-        />
-
-        <StyledTitle>Registruoti mintis</StyledTitle>
-
-        {currentUser ? (
-          <User onClick={() => navigate(ROUTES.LOGIN.path)} />
-        ) : (
-          <LogIn onClick={() => navigate(ROUTES.LOGIN.path)} />
-        )}
-      </StyledHeader>
-
-      <DaysHeader onClick={handleDayClick} />
-
-      <StyledFormContainer onSubmit={handleSubmit(onSubmit)}>
-        <TextWrapper>
-          <StyledFormTitle>Registruoti savo mintis</StyledFormTitle>
-          <StyledFormSubtitle component="p">
-            Registruoti mintis
-          </StyledFormSubtitle>
-        </TextWrapper>
-
-        <StyledFieldWrapper>
-          <StyledLabel id="situation">Situacija</StyledLabel>
-          <StyledFormSubtitle component="p">
-            Su kuo buvai? Ka darei? Kada tai buvo? Kur buvai?
-          </StyledFormSubtitle>
-          <StyledTextArea
-            id="situation"
-            cols={33}
-            rows={5}
-            {...register("situation", { required: true })}
+    <StyledLayoutContainer>
+      <Container>
+        <StyledHeader>
+          <StyledIconButton
+            icon={<ChevronLeft color="#fff" />}
+            onClick={() => navigate(-1)}
           />
 
-          {/* errors will return when field validation fails  */}
-          {errors?.situation && <StyledErrors>Privaloma</StyledErrors>}
-        </StyledFieldWrapper>
+          <StyledTitle>Registruoti mintis</StyledTitle>
+        </StyledHeader>
 
-        <StyledFieldWrapper>
-          <StyledLabel id="emotion">Emocija/jausmas</StyledLabel>
+        <StyledFormSubtitle component="p">
+          Užrašykite savo mintis čia. Tai padeda jas racionalizuoti, suprasti,
+          kaip jos veikia jūsų nuotaiką, ir lengviau analizuoti vėliau. Net
+          paprastas užrašymas jau suteikia naudą – mintys tampa aiškesnės ir
+          lengviau valdomos. Jas galėsite peržiūrėti savo asmeniniame žurnale.
+        </StyledFormSubtitle>
 
-          <StyledRowWrapp>
-            <StyledFieldWrapper>
-              <StyledLabel id="emotion.name">Ka jauti?</StyledLabel>
+        <StyledDivider />
 
-              <StyledInput
-                id={`emotion.${newIndex}.name`}
-                // value={emotionValues.name}
-                placeholder="Nerimas"
-                {...register(`emotion.${newIndex}.name`, {
-                  required: "Name is required",
-                })}
-                onChange={(e) => {
-                  setEmotionValues((prev) => {
-                    return { ...prev, name: e.target.value };
-                  });
-                }}
-              />
-            </StyledFieldWrapper>
+        <StyledFormContainer onSubmit={handleSubmit(onSubmit)}>
+          <StyledFieldWrapper>
+            <StyledLabel id="situation">Situacija</StyledLabel>
+            <StyledFormSubtitle component="p">
+              Su kuo buvai? Ka darei? Kada tai buvo? Kur buvai?
+            </StyledFormSubtitle>
+            <StyledTextArea
+              id="situation"
+              cols={33}
+              rows={5}
+              {...register("situation", { required: true })}
+            />
 
-            <StyledFieldWrapper>
-              <StyledLabel id={`emotion.${newIndex}.intensity`}>
-                Kiek stipriai?
-              </StyledLabel>
-              <StyledSelect
-                id={`emotion.${newIndex}.intensity`}
-                // value={emotionValues.intensity}
+            {/* errors will return when field validation fails  */}
+            {errors?.situation && <StyledErrors>Privaloma</StyledErrors>}
+          </StyledFieldWrapper>
 
-                {...register(`emotion.${newIndex}.intensity`, {
-                  required: "Intensity is required",
-                  min: { value: 1, message: "Intensity must be at least 1" },
-                })}
-                onChange={(e) => {
-                  setEmotionValues((prev) => {
-                    return { ...prev, intensity: Number(e.target.value) };
-                  });
+          <StyledFieldWrapper>
+            <StyledLabel id="emotion">Emocija/jausmas</StyledLabel>
+
+            <StyledRowWrapp>
+              <StyledFieldWrapper>
+                <StyledLabel id="emotion.name">Ka jauti?</StyledLabel>
+
+                <StyledInput
+                  id={`emotion.${newIndex}.name`}
+                  // value={emotionValues.name}
+                  placeholder="Nerimas"
+                  {...register(`emotion.${newIndex}.name`, {
+                    required: "Name is required",
+                  })}
+                  onChange={(e) => {
+                    setEmotionValues((prev) => {
+                      return { ...prev, name: e.target.value };
+                    });
+                  }}
+                />
+              </StyledFieldWrapper>
+
+              <StyledFieldWrapper>
+                <StyledLabel id={`emotion.${newIndex}.intensity`}>
+                  Kiek stipriai?
+                </StyledLabel>
+                <StyledSelect
+                  id={`emotion.${newIndex}.intensity`}
+                  // value={emotionValues.intensity}
+
+                  {...register(`emotion.${newIndex}.intensity`, {
+                    required: "Intensity is required",
+                    min: { value: 1, message: "Intensity must be at least 1" },
+                  })}
+                  onChange={(e) => {
+                    setEmotionValues((prev) => {
+                      return { ...prev, intensity: Number(e.target.value) };
+                    });
+                  }}
+                >
+                  <option value="" disabled>
+                    1 - 10
+                  </option>
+                  {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((intensityNumber) => (
+                    <option value={intensityNumber}>{intensityNumber}</option>
+                  ))}
+                </StyledSelect>
+              </StyledFieldWrapper>
+
+              <Button
+                onClick={() => {
+                  if (emotionValues?.intensity && emotionValues?.name) {
+                    const alreadyExist = fields?.find(
+                      ({ name }) => name.toLowerCase() === emotionValues?.name,
+                    );
+
+                    if (alreadyExist)
+                      return alert("Tokia emocija jau esate prideja");
+
+                    onAdd();
+                  }
                 }}
               >
-                <option value="" disabled>
-                  1 - 10
-                </option>
-                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((intensityNumber) => (
-                  <option value={intensityNumber}>{intensityNumber}</option>
-                ))}
-              </StyledSelect>
-            </StyledFieldWrapper>
-
-            <Button
-              onClick={() => {
-                if (emotionValues?.intensity && emotionValues?.name) {
-                  const alreadyExist = fields?.find(
-                    ({ name }) => name.toLowerCase() === emotionValues?.name,
-                  );
-
-                  if (alreadyExist)
-                    return alert("Tokia emocija jau esate prideja");
-
-                  onAdd();
-                }
-              }}
-            >
-              <Check />
-            </Button>
-          </StyledRowWrapp>
-          {fields.map((fields, index) => (
-            <div key={fields.id}>
-              {`Emocija: ${fields.name} |  Intensyvumas: ${fields.intensity}`}{" "}
-              <Button variant="text" onClick={() => remove(index)}>
-                <Trash />
+                <Check />
               </Button>
-            </div>
-          ))}
-          {errors?.emotion && (
-            <StyledErrors>This field is required</StyledErrors>
-          )}
-        </StyledFieldWrapper>
+            </StyledRowWrapp>
+            {fields.map((fields, index) => (
+              <div key={fields.id}>
+                {`Emocija: ${fields.name} |  Intensyvumas: ${fields.intensity}`}{" "}
+                <Button variant="text" onClick={() => remove(index)}>
+                  <Trash />
+                </Button>
+              </div>
+            ))}
+            {errors?.emotion && (
+              <StyledErrors>This field is required</StyledErrors>
+            )}
+          </StyledFieldWrapper>
 
-        <StyledFieldWrapper>
-          <StyledLabel id="autoThoughts">
-            Automatines mintys (vaizdiniai)
-          </StyledLabel>
-          <StyledFormSubtitle component="p">
-            Apie ka galvojate pries uzplustant jausmams? Kokia is to galima
-            daryti isvada apie mane? pvz: "Man nieko nereikia", "Jis neturi taip
-            elgtis", "Man niekada nepavyks"
-          </StyledFormSubtitle>
-          <StyledTextArea
-            id="autoThoughts"
-            cols={33}
-            rows={5}
-            {...register("autoThoughts", { required: true })}
-          />
+          <StyledFieldWrapper>
+            <StyledLabel id="autoThoughts">
+              Automatines mintys (vaizdiniai)
+            </StyledLabel>
+            <StyledFormSubtitle component="p">
+              Apie ka galvojate pries uzplustant jausmams? Kokia is to galima
+              daryti isvada apie mane? pvz: "Man nieko nereikia", "Jis neturi
+              taip elgtis", "Man niekada nepavyks"
+            </StyledFormSubtitle>
+            <StyledTextArea
+              id="autoThoughts"
+              cols={33}
+              rows={5}
+              {...register("autoThoughts", { required: true })}
+            />
 
-          {/* errors will return when field validation fails  */}
-          {errors?.autoThoughts && (
-            <StyledErrors>This field is required</StyledErrors>
-          )}
-        </StyledFieldWrapper>
-        <StyledFieldWrapper>
-          <StyledLabel id="choiceAction">Elgesys/veiksmas.</StyledLabel>
-          <StyledFormSubtitle component="p">
-            Ka paskui darei, norejai padaryti/nedaryti?
-          </StyledFormSubtitle>
+            {/* errors will return when field validation fails  */}
+            {errors?.autoThoughts && (
+              <StyledErrors>This field is required</StyledErrors>
+            )}
+          </StyledFieldWrapper>
+          <StyledFieldWrapper>
+            <StyledLabel id="choiceAction">Elgesys/veiksmas.</StyledLabel>
+            <StyledFormSubtitle component="p">
+              Ka paskui darei, norejai padaryti/nedaryti?
+            </StyledFormSubtitle>
 
-          <StyledTextArea
-            id="choiceAction"
-            cols={33}
-            rows={5}
-            {...register("choiceAction", { required: true })}
-          />
+            <StyledTextArea
+              id="choiceAction"
+              cols={33}
+              rows={5}
+              {...register("choiceAction", { required: true })}
+            />
 
-          {/* errors will return when field validation fails  */}
-          {errors?.autoThoughts && <StyledErrors>Privaloma</StyledErrors>}
-        </StyledFieldWrapper>
+            {/* errors will return when field validation fails  */}
+            {errors?.autoThoughts && <StyledErrors>Privaloma</StyledErrors>}
+          </StyledFieldWrapper>
 
-        <StyledSubmitBtn type="submit">Išsaugoti</StyledSubmitBtn>
-      </StyledFormContainer>
-    </Container>
+          <StyledSubmitBtn type="submit">Išsaugoti</StyledSubmitBtn>
+        </StyledFormContainer>
+      </Container>
+    </StyledLayoutContainer>
   );
 };
 
@@ -282,22 +275,28 @@ const CheckIn = () => {
 export default CheckIn;
 
 const StyledHeader = styled("header")`
+  position: relative;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 100%;
+  padding: 0 45px;
+`;
+
+const StyledIconButton = styled(IconButton)`
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
 `;
 
 const StyledTitle = styled(Title)`
   font-size: 1.5rem;
   font-weight: 500;
 `;
-const StyledFormTitle = styled(Title)`
-  font-size: 1.5rem;
-  font-weight: 500;
-`;
+
 const StyledFormSubtitle = styled(Title)`
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   font-weight: 400;
   color: #818181;
 `;
@@ -308,6 +307,12 @@ const StyledFormContainer = styled("form")`
   gap: 16px;
   padding-bottom: 80px;
 `;
+
+const StyledDivider = styled("div")`
+  width: 100%;
+  height: 1px;
+  background: #c3c3c357;
+`;
 const StyledSubmitBtn = styled(Button)`
   margin-top: auto;
   width: 100%;
@@ -316,13 +321,6 @@ const StyledFieldWrapper = styled("div")`
   display: flex;
   flex-direction: column;
   gap: 4px;
-
-  // width: 100%;
-`;
-
-const TextWrapper = styled("div")`
-  display: flex;
-  flex-direction: column;
 `;
 
 const StyledLabel = styled("label")`

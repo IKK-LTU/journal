@@ -6,16 +6,16 @@ import Navbar from "../navbar/Navbar";
 
 const Layout = () => {
   return (
-    <StyledLayout>
+    <StyledLayoutContainer>
       <Navbar />
       <Outlet />
-    </StyledLayout>
+    </StyledLayoutContainer>
   );
 };
 
 export default Layout;
 
-const StyledLayout = styled("div")`
+export const StyledLayoutContainer = styled("div")`
   display: flex;
   flex-direction: column;
   align-items: center;
