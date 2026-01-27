@@ -13,6 +13,7 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import TextInput from "@/components/atoms/TextInput";
 import Button from "@/components/atoms/buttons/Button";
 import { useState } from "react";
+import { ROUTES } from "@/router/routes";
 
 //TODO
 
@@ -120,9 +121,9 @@ const CheckIn = () => {
         <StyledTitle>Registruoti mintis</StyledTitle>
 
         {currentUser ? (
-          <User onClick={() => navigate("/login")} />
+          <User onClick={() => navigate(ROUTES.LOGIN.path)} />
         ) : (
-          <LogIn onClick={() => navigate("/login")} />
+          <LogIn onClick={() => navigate(ROUTES.LOGIN.path)} />
         )}
       </StyledHeader>
 
@@ -149,9 +150,7 @@ const CheckIn = () => {
           />
 
           {/* errors will return when field validation fails  */}
-          {errors?.situation && (
-            <StyledErrors>Privaloma</StyledErrors>
-          )}
+          {errors?.situation && <StyledErrors>Privaloma</StyledErrors>}
         </StyledFieldWrapper>
 
         <StyledFieldWrapper>
@@ -207,7 +206,7 @@ const CheckIn = () => {
               onClick={() => {
                 if (emotionValues?.intensity && emotionValues?.name) {
                   const alreadyExist = fields?.find(
-                    ({ name }) => name.toLowerCase() === emotionValues?.name
+                    ({ name }) => name.toLowerCase() === emotionValues?.name,
                   );
 
                   if (alreadyExist)
@@ -268,9 +267,7 @@ const CheckIn = () => {
           />
 
           {/* errors will return when field validation fails  */}
-          {errors?.autoThoughts && (
-            <StyledErrors>Privaloma</StyledErrors>
-          )}
+          {errors?.autoThoughts && <StyledErrors>Privaloma</StyledErrors>}
         </StyledFieldWrapper>
 
         <StyledSubmitBtn type="submit">Išsaugoti</StyledSubmitBtn>

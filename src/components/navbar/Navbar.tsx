@@ -2,16 +2,17 @@ import { Link, useLocation } from "react-router-dom";
 
 import { styled } from "styled-components";
 import { House, LogIn } from "lucide-react";
+import { ROUTES } from "@/router/routes";
 
 const navigationItems = [
   {
-    name: "Pagrindinis",
-    src: "/",
+    name: ROUTES.HOME.label,
+    src: ROUTES.HOME.path,
     icon: <House color="rgb(255, 255, 255)" size={20} />,
   },
   {
-    name: "Prisijungti",
-    src: "/login",
+    name: ROUTES.LOGIN.label,
+    src: ROUTES.LOGIN.path,
     icon: <LogIn color="rgb(255, 255, 255)" size={20} />,
   },
 ];
@@ -61,7 +62,8 @@ const StyledNavbar = styled("nav")`
 
   border-radius: 20px;
 
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12),
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.4);
   color: red;
   border: 1px solid rgba(255, 255, 255, 0.35);

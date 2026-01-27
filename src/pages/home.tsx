@@ -10,6 +10,7 @@ import IconButton from "@/components/atoms/buttons/IconButton";
 import DaysHeader from "@/components/page-elements/home/DaysHeader";
 import TaskCard from "@/components/cards/TaskCard";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import { ROUTES } from "@/router/routes.ts";
 
 const myTasks = [
   {
@@ -18,7 +19,7 @@ const myTasks = [
     title: "Laba diena",
     subtitle: "Užfiksuokite savo mintis ir užduotis dienai.",
     buttonText: "Registruoti mintis",
-    path: "/check-in",
+    path: ROUTES.CHECKIN.path,
   },
   {
     id: 2,
@@ -43,7 +44,6 @@ const myTasks = [
   },
 ];
 
-
 const Home = () => {
   const navigate = useNavigate();
 
@@ -63,9 +63,9 @@ const Home = () => {
         <StyledTitle>Namai</StyledTitle>
 
         {currentUser ? (
-          <User onClick={() => navigate("/login")} />
+          <User onClick={() => navigate(ROUTES.LOGIN.path)} />
         ) : (
-          <LogIn onClick={() => navigate("/login")} />
+          <LogIn onClick={() => navigate(ROUTES.LOGIN.path)} />
         )}
       </StyledHeader>
 
