@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 
-import { styled } from "styled-components";
+import { styled } from "@mui/material/styles";
 import { House, LogIn } from "lucide-react";
 import { ROUTES } from "@/router/routes";
 

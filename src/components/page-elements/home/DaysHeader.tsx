@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { styled, keyframes } from "styled-components";
+import { styled, keyframes } from "@mui/material/styles";
 import { CirclePlus } from "lucide-react";
 
 import ClickAwayListener from "@/wrapper/ClickAwayListener";

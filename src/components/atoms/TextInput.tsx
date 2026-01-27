@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import { styled } from "@mui/material/styles";
 
 interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;

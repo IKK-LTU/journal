@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import { styled } from "@mui/material/styles";
 
 const Container = ({ children }: { children: React.ReactNode }) => {
   return <StyledContainer>{children}</StyledContainer>;

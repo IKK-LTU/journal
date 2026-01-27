@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-import { styled } from "styled-components";
+import { styled } from "@mui/material/styles";
 
 import Navbar from "../navbar/Navbar";
 

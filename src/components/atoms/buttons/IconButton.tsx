@@ -1,5 +1,5 @@
 import React from "react";
-import { styled, keyframes } from "styled-components";
+import { styled, keyframes } from "@mui/material/styles";
 
 enum Color {
   Primary = "primary",

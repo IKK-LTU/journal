@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import React from "react";
-import { styled } from "styled-components";
+import { styled } from "@mui/material/styles";
 
 interface ModalProps {
   onClose: () => void;

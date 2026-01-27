@@ -1,5 +1,5 @@
 import React from "react";
-import { styled } from "styled-components";
+import { styled } from "@mui/material/styles";
 
 // Base props for the component
 type PolymorphicProps<C extends React.ElementType> = {

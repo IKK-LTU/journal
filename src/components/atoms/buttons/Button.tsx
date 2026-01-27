@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes } from "react";
-import { styled } from "styled-components";
+import { styled } from "@mui/material/styles";
 
 export type ButtonVariantTypes = "outlined" | "contained" | "text";
 export type ButtonColorTypes = "primary" | "secondary" | "neutral";
