@@ -1,29 +1,21 @@
-import { styled, keyframes } from "styled-components";
+import { useState } from "react";
 
+import { styled, keyframes } from "styled-components";
 import { CirclePlus } from "lucide-react";
 
-import Title from "@/components/atoms/text/Title";
-import { useState } from "react";
 import ClickAwayListener from "@/wrapper/ClickAwayListener";
+import Title from "@/components/atoms/text/Title";
 
-const weekDays = [
-  { index: 0, title: "Monday" },
-  { index: 1, title: "Tuesday" },
-  { index: 2, title: "Wednesday" },
-  { index: 3, title: "Thursday" },
-  { index: 4, title: "Friday" },
-  { index: 5, title: "Saturday" },
-  { index: 6, title: "Sunday" },
-];
+import { WEEK_DAYS } from "@/constants/weekdays";
 
 type DaysHeaderProps = {
   onClick: (index: number) => void;
 };
 
 const DaysHeader = ({ onClick }: DaysHeaderProps) => {
-  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
-  const handleDayClick = (day?: string) => {
+  const handleDayClick = (day?: number) => {
     if (day === selectedDay) {
       setSelectedDay(null);
       return;
@@ -38,20 +30,20 @@ const DaysHeader = ({ onClick }: DaysHeaderProps) => {
   return (
     <ClickAwayListener onClickAway={() => handleDayClick()}>
       <StyledItemsContainer>
-        {weekDays.map((day, index) => {
+        {WEEK_DAYS.map(({ dayNumber, title }) => {
           return (
             <StyledItem
-              key={day.title}
+              key={title}
               onClick={(e) => {
                 e.stopPropagation();
-                handleDayClick(day.title);
+                handleDayClick(dayNumber);
               }}
-              $selected={selectedDay === day.title}
+              $selected={selectedDay === dayNumber}
             >
               <StyledSelectedItemPopup
-                $itemIndex={index}
-                onClick={() => onClick(index)}
-                $isVisible={selectedDay === day.title}
+                $itemIndex={dayNumber}
+                onClick={() => onClick(dayNumber)}
+                $isVisible={selectedDay === dayNumber}
               >
                 <CirclePlus size={16} color="rgba(0,145,255)" />
                 <span>Check In</span>
@@ -59,14 +51,13 @@ const DaysHeader = ({ onClick }: DaysHeaderProps) => {
 
               <StyledWeekTitle
                 component="h6"
-                $selected={selectedDay === day.title}
+                $selected={selectedDay === dayNumber}
               >
-                {day.title.slice(0, 3)}
+                {title.slice(0, 3)}
               </StyledWeekTitle>
-              {selectedDay !== day.title && (
-                <>
-                  <StyledMoodCircle $selected={selectedDay === day.title} />
-                </>
+
+              {selectedDay !== dayNumber && (
+                <StyledMoodCircle $selected={selectedDay === dayNumber} />
               )}
             </StyledItem>
           );
