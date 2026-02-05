@@ -1,6 +1,6 @@
 export const ROUTES = {
-  HOME: { path: "/", label: "Pagrindinis" },
+  WELCOME: { path: "/", label: "Pradinis" },
   LOGIN: { path: "/login", label: "Prisijungimas" },
   CHECKIN: { path: "/check-in", label: "Žymėjimas" },
-  WELCOME: { path: "/welcome", label: "Pradinis" },
+  HOME: { path: "/home", label: "Namai" },
 };

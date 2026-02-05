@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Stack, Typography } from "@mui/material";
 import { Bird } from "lucide-react";
 
-import { styled } from "@mui/material/styles";
-
+import Container from "@/components/layouts/Container";
 
 import { ROUTES } from "@/router/routes";
 
@@ -14,15 +13,18 @@ const Welcome = () => {
   const handleDayClick = () => navigate(ROUTES.LOGIN.path);
 
   return (
-    <StyledContainer>
-      <Stack>
+
+    <Container>
+      <Stack
+        sx={{ width: "100%" }}
+      >
         <Typography variant="h1">Labas</Typography>
-        <Typography variant="h5" color="neutral">Smagu, kad prisijungei</Typography>
+        <Typography variant="h5" color="neutral">Džiugu, kad prisijungei</Typography>
       </Stack>
 
       <Stack
         sx={{
-          my: 3,
+          my: 4,
           justifyContent: "center",
           alignItems: "center",
           flex: 1,
@@ -34,16 +36,9 @@ const Welcome = () => {
       <Button variant="contained" fullWidth onClick={handleDayClick}>
         Let's start
       </Button>
-    </StyledContainer>
+    </Container>
   );
 };
 
 export default Welcome;
 
-const StyledContainer = styled(Stack)`
-  display: flex; 
-  flex-direction: column;
-  padding: 32px 16px;
-  margin: auto;
-  gap: 32px;
-`

@@ -1,3 +1,4 @@
+import { Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 const Container = ({ children }: { children: React.ReactNode }) => {
@@ -6,10 +7,15 @@ const Container = ({ children }: { children: React.ReactNode }) => {
 
 export default Container;
 
-const StyledContainer = styled("div")`
+ const StyledContainer = styled(Stack)`
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1rem;
 
   width: 100%;
+  max-width: 600px;
+
+  padding: 1rem;
+  margin: 0 auto;
 `;

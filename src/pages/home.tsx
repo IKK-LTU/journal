@@ -4,13 +4,13 @@ import { useNavigate } from "react-router-dom";
 
 import { Flame, GraduationCap, LogIn, Notebook, User } from "lucide-react";
 
-import Container from "@/components/layouts/Container";
 import Title from "@/components/atoms/text/Title";
 import IconButton from "@/components/atoms/buttons/IconButton";
 import DaysHeader from "@/components/page-elements/home/DaysHeader";
 import TaskCard from "@/components/cards/TaskCard";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { ROUTES } from "@/router/routes";
+import { Box, Stack } from "@mui/material";
 
 const myTasks = [
   {
@@ -55,7 +55,8 @@ const Home = () => {
   };
 
   return (
-    <Container>
+    <StyledContainer
+    >
       <StyledHeader>
         <IconButton
           icon={<Flame fill="#ffc917ff" color="rgba(249, 151, 13, 1)" />}
@@ -85,11 +86,18 @@ const Home = () => {
           />
         ))}
       </StyledPlanContainer>
-    </Container>
+    </StyledContainer>
   );
 };
 
 export default Home;
+
+const StyledContainer = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+`
 
 const StyledHeader = styled("header")`
   display: flex;
@@ -103,7 +111,7 @@ const StyledTitle = styled(Title)`
   font-weight: 500;
 `;
 
-const StyledPlanContainer = styled("div")`
+const StyledPlanContainer = styled(Stack)`
   display: flex;
   flex-direction: column;
   gap: 16px;

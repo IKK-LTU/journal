@@ -1,55 +1,73 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
-import { Button, Stack, styled, TextField, Typography } from "@mui/material";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 
 import { useLazyGetUserByIdQuery } from "@/api/services/userApi";
-
 import useCurrentUser from "@/hooks/useCurrentUser";
-
 import { ROUTES } from "@/router/routes";
+import Container from "@/components/layouts/Container";
 
+type LoginFormValues = {
+  usernameOrEmail: string;
+  password: string;
+};
 
 const LoginPage = () => {
   const navigate = useNavigate();
-
   const [getUserById] = useLazyGetUserByIdQuery();
-
-  const [value, setValue] = useState("");
-
   const { currentUser, removeUser } = useCurrentUser();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormValues>({
+    defaultValues: {
+      usernameOrEmail: "",
+      password: "",
+    },
+  });
 
-  const handleLogin = () => {
-    if (!value) return;
+  //TODO handle login
+  const onSubmit = async (data: LoginFormValues) => {
+    /**
+     * TEMP / DEMO LOGIC
+     * You were previously logging in via numeric ID.
+     * Keeping equivalent behavior here.
+     */
 
-    const idNumber = Number(value);
 
-    getUserById({ id: idNumber }).then(() => navigate(ROUTES.HOME.path));
+    await getUserById({ id: 1 }).then(() => {
+      navigate(ROUTES.HOME.path);
+    })
   };
 
   const onClick = () => {
-    if (currentUser) return removeUser();
-    if (value) return handleLogin();
+    if (currentUser) {
+      removeUser();
+    }
   };
 
   return (
-    <StyledContainer>
-      <Stack>
+    <Container>
+      <Box sx={{ width: "100%" }}>
         <Typography variant="h1">
           {currentUser ? `Labas, ${currentUser.firstName}` : "Prisijunkite"}
         </Typography>
+
         <Typography variant="h5" color="neutral">
           {currentUser
             ? "Tavo profilio duomenys"
             : "Įveskite savo prisijungimo duomenis žemiau."}
         </Typography>
-      </Stack>
+      </Box>
 
       <Stack
-        sx={{
-          width: "100%"
-        }}
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        spacing={2}
+        sx={{ width: "100%" }}
       >
         {currentUser ? (
           <ul>
@@ -58,30 +76,45 @@ const LoginPage = () => {
             ))}
           </ul>
         ) : (
-          <TextField
-            id="user-id"
-            placeholder="Iveskite savo id"
-            required
-            type="text"
-            value={value}
-            onChange={(val) => setValue(val.target.value)}
-          />
-        )}
-      </Stack>
+          <>
+            <TextField
+              label="Username arba el. paštas"
+              placeholder="Įveskite vartotojo vardą arba el. paštą"
+              error={!!errors.usernameOrEmail}
+              helperText={errors.usernameOrEmail?.message}
+              {...register("usernameOrEmail", {
+                required: "Šis laukas yra privalomas",
+              })}
+            />
 
-      <Button variant="contained" onClick={onClick}>
-        {currentUser ? "Atsijungti" : "Prisijungti"}
-      </Button>
-    </StyledContainer>
+            <TextField
+              label="Slaptažodis"
+              type="password"
+              error={!!errors.password}
+              helperText={errors.password?.message}
+              {...register("password", {
+                required: "Slaptažodis yra privalomas",
+                minLength: {
+                  value: 6,
+                  message: "Mažiausiai 6 simboliai",
+                },
+              })}
+            />
+          </>
+        )}
+
+        <Button
+          fullWidth
+          variant="contained"
+          type={currentUser ? "button" : "submit"}
+          onClick={currentUser ? onClick : undefined}
+          disabled={isSubmitting}
+        >
+          {currentUser ? "Atsijungti" : "Prisijungti"}
+        </Button>
+      </Stack>
+    </Container>
   );
 };
 
 export default LoginPage;
-
-const StyledContainer = styled(Stack)`
-  display: flex; 
-  flex-direction: column;
-  padding: 32px 16px;
-  margin: auto;
-  gap: 32px;
-`
