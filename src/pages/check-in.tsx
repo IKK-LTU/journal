@@ -14,23 +14,27 @@ import Title from "@/components/atoms/text/Title";
 import IconButton from "@/components/atoms/buttons/IconButton";
 import TextInput from "@/components/atoms/TextInput";
 import Button from "@/components/atoms/buttons/Button";
+import { useDispatch } from "react-redux";
+import { addCheckinItem } from "@/store/features/checkins";
+import { ROUTES } from "@/router/routes";
 
 
 type Inputs = {
-  createdAt: null | string;
   situation: string;
   emotion: {
     name: string;
     intensity: number;
   }[];
   autoThoughts: Array<string>;
-  choiceAction: string;
+  behavior: string;
 };
 
 const CheckIn = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const [newIndex, setNewIndex] = useState(0);
+
   const [emotionValues, setEmotionValues] = useState<{
     name: string;
     intensity: number;
@@ -48,11 +52,10 @@ const CheckIn = () => {
     clearErrors,
   } = useForm<Inputs>({
     defaultValues: {
-      createdAt: null,
       situation: "",
       emotion: [],
       autoThoughts: [],
-      choiceAction: "",
+      behavior: "",
     },
   });
 
@@ -61,13 +64,14 @@ const CheckIn = () => {
     name: "emotion",
   });
 
+
   const handleAddEmotionToState = () => {
     const isAlreadyExist = fields?.find(
       ({ name }) => name.toLowerCase() === emotionValues?.name,
     );
     if (isAlreadyExist) return alert("Tokia emocija jau esate prideja");
 
-    if (!!emotionValues.intensity || !!emotionValues.name) {
+    if (!emotionValues?.intensity || !emotionValues?.name) {
       return setError("emotion", {
         type: "manual",
         message: "Privaloma užpildyti",
@@ -80,14 +84,17 @@ const CheckIn = () => {
   };
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log("!data?.emotion?.length", data);
 
     if (!fields?.length)
       return setError("emotion", {
         type: "manual",
         message: "Privaloma užpildyti",
       });
-    console.log(data);
+
+    const fakeId = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+    dispatch(addCheckinItem({ id: fakeId, ...data }))
+
+    navigate(ROUTES.HOME.path);
   };
 
   return (
@@ -220,17 +227,17 @@ const CheckIn = () => {
         </StyledFieldWrapper>
         <StyledFieldWrapper>
           <Stack>
-            <StyledLabel id="choiceAction">Elgesys/veiksmas.</StyledLabel>
+            <StyledLabel id="behavior">Elgesys/veiksmas.</StyledLabel>
             <Typography variant="body2" color="neutral">
               Ka paskui darei, norejai padaryti/nedaryti?
             </Typography>
           </Stack>
 
           <StyledTextArea
-            id="choiceAction"
+            id="behavior"
             cols={33}
             rows={5}
-            {...register("choiceAction", { required: true })}
+            {...register("behavior", { required: true })}
             placeholder="Fiksuok savo veiksmus ir pasirinkimus - ką padarei, ko vengiai, ką norėjai pakeisti ar sustabdyti."
           />
 
