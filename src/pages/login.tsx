@@ -1,24 +1,31 @@
-import { useLazyGetUserByIdQuery } from "@/api/services/userApi";
-import Button from "@/components/atoms/buttons/Button";
-import Title from "@/components/atoms/text/Title";
-import TextInput from "@/components/atoms/TextInput";
-import Container from "@/components/layouts/Container";
-import useCurrentUser from "@/hooks/useCurrentUser";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { Button, Stack, styled, TextField, Typography } from "@mui/material";
+
+import { useLazyGetUserByIdQuery } from "@/api/services/userApi";
+
+import useCurrentUser from "@/hooks/useCurrentUser";
+
+import { ROUTES } from "@/router/routes";
+
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
   const [getUserById] = useLazyGetUserByIdQuery();
 
   const [value, setValue] = useState("");
 
   const { currentUser, removeUser } = useCurrentUser();
 
+
   const handleLogin = () => {
     if (!value) return;
 
     const idNumber = Number(value);
 
-    getUserById({ id: idNumber }).then(() => {});
+    getUserById({ id: idNumber }).then(() => navigate(ROUTES.HOME.path));
   };
 
   const onClick = () => {
@@ -27,40 +34,54 @@ const LoginPage = () => {
   };
 
   return (
-    <Container>
-      <div>
-        <Title>
+    <StyledContainer>
+      <Stack>
+        <Typography variant="h1">
           {currentUser ? `Labas, ${currentUser.firstName}` : "Prisijunkite"}
-        </Title>
-        <p>
+        </Typography>
+        <Typography variant="h5" color="neutral">
           {currentUser
             ? "Tavo profilio duomenys"
             : "Įveskite savo prisijungimo duomenis žemiau."}
-        </p>
-      </div>
+        </Typography>
+      </Stack>
 
-      {currentUser ? (
-        <ul>
-          {Object.entries(currentUser).map(([key, val]) => (
-            <li key={key}>{`${key}: ${val}`}</li>
-          ))}
-        </ul>
-      ) : (
-        <TextInput
-          id="user-id"
-          placeholder="Iveskite savo id"
-          required
-          type="text"
-          value={value}
-          onChange={(val) => setValue(val.target.value)}
-        />
-      )}
+      <Stack
+        sx={{
+          width: "100%"
+        }}
+      >
+        {currentUser ? (
+          <ul>
+            {Object.entries(currentUser).map(([key, val]) => (
+              <li key={key}>{`${key}: ${val}`}</li>
+            ))}
+          </ul>
+        ) : (
+          <TextField
+            id="user-id"
+            placeholder="Iveskite savo id"
+            required
+            type="text"
+            value={value}
+            onChange={(val) => setValue(val.target.value)}
+          />
+        )}
+      </Stack>
 
-      <Button onClick={onClick}>
+      <Button variant="contained" onClick={onClick}>
         {currentUser ? "Atsijungti" : "Prisijungti"}
       </Button>
-    </Container>
+    </StyledContainer>
   );
 };
 
 export default LoginPage;
+
+const StyledContainer = styled(Stack)`
+  display: flex; 
+  flex-direction: column;
+  padding: 32px 16px;
+  margin: auto;
+  gap: 32px;
+`

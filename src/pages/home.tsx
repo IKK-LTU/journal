@@ -10,7 +10,7 @@ import IconButton from "@/components/atoms/buttons/IconButton";
 import DaysHeader from "@/components/page-elements/home/DaysHeader";
 import TaskCard from "@/components/cards/TaskCard";
 import useCurrentUser from "@/hooks/useCurrentUser";
-import { ROUTES } from "@/router/routes.ts";
+import { ROUTES } from "@/router/routes";
 
 const myTasks = [
   {

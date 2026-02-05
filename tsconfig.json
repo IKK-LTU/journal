@@ -12,6 +12,7 @@
     },
     "rootDirs": [".", "./.react-router/types"],
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react-jsx"
   }
 }

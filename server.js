@@ -2,7 +2,6 @@ import fs from 'node:fs/promises'
 import express from 'express'
 import {createStaticHandler} from 'react-router-dom'
 import createFetchRequest from './request.js';
-import routes from './routes.js';
 
 // Constants
 const isProduction = process.env.NODE_ENV === 'production'
@@ -17,7 +16,6 @@ const templateHtml = isProduction
 // Create http server
 const app = express()
 
-let handler = createStaticHandler(routes);
 
 // Add Vite or respective production middlewares
 /** @type {import('vite').ViteDevServer | undefined} */
@@ -43,7 +41,6 @@ app.use('*all', async (req, res) => {
     const url = req.originalUrl.replace(base, '')
 
     let fetchRequest = createFetchRequest(req, res);
-    let context = await handler.query(fetchRequest);
 
     /** @type {string} */
     let template

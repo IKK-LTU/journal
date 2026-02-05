@@ -40,6 +40,72 @@ export const theme = createTheme({
   },
   typography: {
     fontFamily: `'Geologica', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`,
+    h1: {
+      fontSize: "clamp(2.5rem, 5vw, 3.5rem)", // ~40px–56px
+      fontWeight: 700,
+      lineHeight: 1.2,
+    },
+    h2: {
+      fontSize: "clamp(2rem, 4.5vw, 3rem)", // ~32px–48px
+      fontWeight: 700,
+      lineHeight: 1.25,
+    },
+    h3: {
+      fontSize: "clamp(1.75rem, 4vw, 2.5rem)", // ~28px–40px
+      fontWeight: 700,
+      lineHeight: 1.3,
+    },
+    h4: {
+      fontSize: "clamp(1.5rem, 3.5vw, 2rem)", // ~24px–32px
+      fontWeight: 700,
+      lineHeight: 1.35,
+    },
+    h5: {
+      fontSize: "clamp(1.25rem, 3vw, 1.75rem)", // ~20px–28px
+      fontWeight: 600,
+      lineHeight: 1.4,
+    },
+    h6: {
+      fontSize: "clamp(1rem, 2.5vw, 1.5rem)", // ~16px–24px
+      fontWeight: 600,
+      lineHeight: 1.4,
+    },
+
+    subtitle1: {
+      fontSize: "1rem", // 16px
+      fontWeight: 500,
+      lineHeight: 1.5,
+    },
+    subtitle2: {
+      fontSize: "0.875rem", // 14px
+      fontWeight: 500,
+      lineHeight: 1.5,
+    },
+    body1: {
+      fontSize: "1rem", // 16px
+      fontWeight: 400,
+      lineHeight: 1.5,
+    },
+    body2: {
+      fontSize: "0.875rem", // 14px
+      fontWeight: 400,
+      lineHeight: 1.43,
+    },
+    button: {
+      fontSize: "1rem",
+      fontWeight: 500,
+    },
+    caption: {
+      fontSize: "0.75rem", // 12px
+      fontWeight: 400,
+      lineHeight: 1.35,
+    },
+    overline: {
+      fontSize: "0.625rem", // 10px
+      fontWeight: 500,
+      textTransform: "uppercase",
+      lineHeight: 1.5,
+    },
   },
   components: {
     // Name of the component
@@ -53,11 +119,13 @@ export const theme = createTheme({
       styleOverrides: {
         root: ({ ownerState }) => ({
           fontWeight: 600,
-          borderRadius: 6,
-          padding: "0.5rem",
+          borderRadius: 24,
+          padding: "0.75rem 1rem",
           cursor: "pointer",
           width: ownerState.fullWidth ? "100%" : "auto",
           textTransform: "none", // preserve case
+          boxShadow: "0px 2px 6px rgba(0,0,0,0.12)", // subtle, elegant shadow
+          transition: "all 0.3s ease", // smooth hover
         }),
         // Variants
         containedPrimary: {
@@ -71,14 +139,6 @@ export const theme = createTheme({
         containedSecondary: {
           backgroundColor: color.secondary,
           border: `2px solid ${color.secondary}`,
-          color: color.textLight,
-          "&:hover": {
-            opacity: 0.95,
-          },
-        },
-        containedNeutral: {
-          backgroundColor: color.neutral,
-          border: `2px solid ${color.neutral}`,
           color: color.textLight,
           "&:hover": {
             opacity: 0.95,
