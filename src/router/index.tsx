@@ -11,8 +11,11 @@ const Router = () => {
   return (
     <Routes>
       <Route index path={ROUTES.WELCOME.path} element={<Welcome />} />
+
       <Route path={ROUTES.LOGIN.path} element={<Login />} />
+
       <Route path={ROUTES.CHECKIN.path} element={<CheckIn />} />
+
       <Route element={<Layout />}>
         <Route path={ROUTES.HOME.path} element={<Home />} />
       </Route>

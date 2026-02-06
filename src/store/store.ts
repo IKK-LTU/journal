@@ -1,16 +1,20 @@
 import { usersApi } from "@/api/services/userApi";
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./features/user";
-import checkinsListSlice from "./features/checkins";
+import checkinsListReducer from "./features/checkins";
+
+const isBrowser = typeof window !== "undefined";
 
 const preloadedState = {
-  checkins: JSON.parse(localStorage.getItem("checkins") ?? "[]"),
+  checkins: isBrowser
+    ? JSON.parse(localStorage.getItem("checkins") ?? "[]")
+    : { checkinsList: [] }, // empty on server
 };
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
-    checkins: checkinsListSlice,
+    checkins: checkinsListReducer,
     [usersApi.reducerPath]: usersApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -20,8 +24,12 @@ export const store = configureStore({
 
 // persist on every change
 store.subscribe(() => {
-  const state = store.getState();
-  localStorage.setItem("checkins", JSON.stringify(state.checkins));
+  if (isBrowser) {
+    store.subscribe(() => {
+      const state = store.getState();
+      localStorage.setItem("checkins", JSON.stringify(state.checkins));
+    });
+  }
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

@@ -13,11 +13,7 @@ const initialState: CheckinsListState = {
   checkinsList: [],
 };
 
-//TODO mocked data
-const formatedDate = new Date().toLocaleDateString("en-CA");
-
 const backendDataMocked = {
-  date: formatedDate,
   createdAt: new Date().toISOString(),
 };
 
@@ -31,7 +27,7 @@ export const checkinsListSlice = createSlice({
       action: PayloadAction<
         Pick<
           CheckInDto,
-          "id" | "situation" | "emotion" | "autoThoughts" | "behavior"
+          "id" | "situation" | "emotion" | "autoThoughts" | "behavior" | "date"
         >
       >,
     ) {
@@ -50,6 +46,14 @@ export const { setCheckinsList, clearCheckinsList, addCheckinItem } =
   checkinsListSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
-export const selectCheckinsList = (state: RootState) => state.checkins;
+// export const selectCheckinsList = (state: RootState) => state.checkins;
+
+export const checkinsSelectors = {
+  selectCheckinsList: (state: RootState) => state.checkins.checkinsList,
+
+  // get items by date
+  getItemByDate: (state: RootState, date: string) =>
+    state.checkins.checkinsList.filter((item) => item.date === date),
+};
 
 export default checkinsListSlice.reducer;

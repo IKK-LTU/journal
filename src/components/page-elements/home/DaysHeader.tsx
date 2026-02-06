@@ -7,13 +7,26 @@ import ClickAwayListener from "@/wrapper/ClickAwayListener";
 import Title from "@/components/atoms/text/Title";
 
 import { WEEK_DAYS } from "@/constants/weekdays";
+import { checkinsSelectors } from "@/store/features/checkins";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/router/routes";
 
-type DaysHeaderProps = {
-  onClick: (index: number) => void;
-};
 
-const DaysHeader = ({ onClick }: DaysHeaderProps) => {
+
+const currentDate = new Date()
+const weekday = currentDate.getDay()
+
+const DaysHeader = () => {
+  const navigate = useNavigate();
+
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
+
+  const checkinsList = useSelector((state: RootState) =>
+    checkinsSelectors.selectCheckinsList(state)
+  ) || []
+
 
   const handleDayClick = (day?: number) => {
     if (day && day !== selectedDay) {
@@ -23,14 +36,38 @@ const DaysHeader = ({ onClick }: DaysHeaderProps) => {
     setSelectedDay(null);
   };
 
+  const formatWeekdaysList = WEEK_DAYS.map(day => {
+    const daysDifferenceFromToday = day.dayNumber - weekday
+
+    // create a new date based on currentDate
+    const itemDate = new Date(currentDate)
+    itemDate.setDate(itemDate.getDate() + daysDifferenceFromToday)
+
+    // format to YYYY-MM-DD
+    const formattedDate = itemDate.toISOString().slice(0, 10)
+
+    return {
+      ...day,
+      date: formattedDate
+    }
+  })
+
+
+  const handleCheckinClick = (date: string) => {
+    navigate(ROUTES.CHECKIN.path, { state: { date } });
+  };
+
   return (
     <ClickAwayListener onClickAway={() => handleDayClick()}>
       <StyledItemsContainer>
-        {WEEK_DAYS.map(({ dayNumber, title }) => {
+        {formatWeekdaysList.map(({ dayNumber, title, date }) => {
+          const isChecked = checkinsList?.find((checkin) => checkin.date === date)
+
           return (
             <StyledItem
               key={title}
               onClick={(e) => {
+                if (isChecked) return
                 e.stopPropagation();
                 handleDayClick(dayNumber);
               }}
@@ -38,7 +75,7 @@ const DaysHeader = ({ onClick }: DaysHeaderProps) => {
             >
               <StyledSelectedItemPopup
                 $itemIndex={dayNumber}
-                onClick={() => onClick(dayNumber)}
+                onClick={() => handleCheckinClick(date)}
                 $isVisible={selectedDay === dayNumber}
               >
                 <CirclePlus size={16} color="rgba(0,145,255)" />
@@ -53,7 +90,7 @@ const DaysHeader = ({ onClick }: DaysHeaderProps) => {
               </StyledWeekTitle>
 
               {selectedDay !== dayNumber && (
-                <StyledMoodCircle $selected={selectedDay === dayNumber} />
+                <StyledMoodCircle $selected={!!isChecked} />
               )}
             </StyledItem>
           );
@@ -75,13 +112,13 @@ const StyledItemsContainer = styled("div")`
     background: transparent;
 `;
 
-const StyledWeekTitle = styled(Title)<{ $selected?: boolean }>`
+const StyledWeekTitle = styled(Title) <{ $selected?: boolean }>`
   font-size: 1rem;
   margin: 0;
   font-weight: 500;
 `;
 
-const StyledItem = styled("div")<{ $selected: boolean }>`
+const StyledItem = styled("div") <{ $selected: boolean }>`
   position: relative;
 
   display: flex;
@@ -110,7 +147,7 @@ const StyledItem = styled("div")<{ $selected: boolean }>`
   }
 `;
 
-const StyledMoodCircle = styled("div")<{ $selected?: boolean }>`
+const StyledMoodCircle = styled("div") <{ $selected?: boolean }>`
   width: 100%;
   min-width: 100%;
   height: auto;
@@ -119,6 +156,7 @@ const StyledMoodCircle = styled("div")<{ $selected?: boolean }>`
 
   border-radius: 50%;
   background-color: #363636ff;
+  background: ${({ $selected }) => $selected ? "rgb(78, 236, 53)" : "#363636ff"};
   &:hover {
     border: 1px solid rgb(79, 79, 79);
   }
@@ -133,7 +171,7 @@ const zoomOut = keyframes`
     }
   `;
 
-const StyledSelectedItemPopup = styled("button")<{
+const StyledSelectedItemPopup = styled("button") <{
   $itemIndex?: number;
   $isVisible?: boolean;
 }>`

@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { styled } from "@mui/material/styles";
 
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { Check, ChevronLeft, Trash } from "lucide-react";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
@@ -31,9 +31,8 @@ type Inputs = {
 
 const CheckIn = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch()
-
-  const [newIndex, setNewIndex] = useState(0);
 
   const [emotionValues, setEmotionValues] = useState<{
     name: string;
@@ -92,7 +91,7 @@ const CheckIn = () => {
       });
 
     const fakeId = new Date().toISOString().slice(0, 10).replace(/-/g, '')
-    dispatch(addCheckinItem({ id: fakeId, ...data }))
+    dispatch(addCheckinItem({ id: fakeId, ...data, date: location.state.date }))
 
     navigate(ROUTES.HOME.path);
   };

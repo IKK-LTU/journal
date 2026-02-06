@@ -49,10 +49,9 @@ const Home = () => {
 
   const { currentUser } = useCurrentUser();
 
-  const handleDayClick = (index?: number) => {
-    console.log("Clicked day index:", index);
-    navigate(ROUTES.CHECKIN.path);
-  };
+  const handleNavigationBtnClick = (path: string) => {
+    navigate(path, { state: { date: new Date().toISOString().slice(0, 10) } })
+  }
 
   return (
     <StyledContainer
@@ -71,7 +70,7 @@ const Home = () => {
         )}
       </StyledHeader>
 
-      <DaysHeader onClick={handleDayClick} />
+      <DaysHeader />
 
       <StyledPlanContainer>
         {myTasks.map((task) => (
@@ -81,11 +80,12 @@ const Home = () => {
             subtitle={task.subtitle}
             featureTypeDescription={task.featureTypeDescription}
             buttonText={task.buttonText}
-            onButtonClick={task.path ? () => navigate(task.path) : undefined}
+            onButtonClick={task.path ? () => handleNavigationBtnClick(task?.path) : undefined}
             imageSrc={task.imageSrc}
           />
         ))}
       </StyledPlanContainer>
+
     </StyledContainer>
   );
 };
