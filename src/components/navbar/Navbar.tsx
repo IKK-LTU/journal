@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 
 import { styled } from "@mui/material/styles";
-import { House, LogIn } from "lucide-react";
+import { House, LogIn, List } from "lucide-react";
 import { ROUTES } from "@/router/routes";
 
 const navigationItems = [
@@ -14,6 +14,11 @@ const navigationItems = [
     name: ROUTES.LOGIN.label,
     src: ROUTES.LOGIN.path,
     icon: <LogIn color="rgb(255, 255, 255)" size={20} />,
+  },
+  {
+    name: ROUTES.CHECKIN_LIST.label,
+    src: ROUTES.CHECKIN_LIST.path,
+    icon: <List color="rgb(255, 255, 255)" size={20} />,
   },
 ];
 
@@ -84,7 +89,7 @@ const StyledNavList = styled("ol")`
   color: white;
 `;
 
-const StyledListItem = styled(Link)<{ $selected?: boolean }>`
+const StyledListItem = styled(Link) <{ $selected?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;

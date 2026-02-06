@@ -54,7 +54,7 @@ const DaysHeader = () => {
 
 
   const handleCheckinClick = (date: string) => {
-    navigate(ROUTES.CHECKIN.path, { state: { date } });
+    navigate(ROUTES.CHECKIN_FORM.path, { state: { date } });
   };
 
   return (

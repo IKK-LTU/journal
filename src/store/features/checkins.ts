@@ -18,7 +18,7 @@ const backendDataMocked = {
 };
 
 export const checkinsListSlice = createSlice({
-  name: "checkinsList",
+  name: "checkins",
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
@@ -31,6 +31,7 @@ export const checkinsListSlice = createSlice({
         >
       >,
     ) {
+      console.log("checkinsList siu", state);
       state.checkinsList.push({ ...action.payload, ...backendDataMocked });
     },
     setCheckinsList(state, action: PayloadAction<CheckInDto>) {

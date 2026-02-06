@@ -5,10 +5,21 @@ import checkinsListReducer from "./features/checkins";
 
 const isBrowser = typeof window !== "undefined";
 
+const getCheckinsFromStorage = () => {
+  if (!isBrowser) return { checkinsList: [] };
+
+  const raw = localStorage.getItem("checkins");
+  if (!raw || raw === "undefined") return { checkinsList: [] };
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return { checkinsList: [] };
+  }
+};
+
 const preloadedState = {
-  checkins: isBrowser
-    ? JSON.parse(localStorage.getItem("checkins") ?? "[]")
-    : { checkinsList: [] }, // empty on server
+  checkins: getCheckinsFromStorage(),
 };
 
 export const store = configureStore({
@@ -27,7 +38,10 @@ store.subscribe(() => {
   if (isBrowser) {
     store.subscribe(() => {
       const state = store.getState();
-      localStorage.setItem("checkins", JSON.stringify(state.checkins));
+      localStorage.setItem(
+        "checkins",
+        JSON.stringify(state.checkins),
+      );
     });
   }
 });

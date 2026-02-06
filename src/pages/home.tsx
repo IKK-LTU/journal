@@ -19,7 +19,7 @@ const myTasks = [
     title: "Laba diena",
     subtitle: "Užfiksuokite savo mintis ir užduotis dienai.",
     buttonText: "Registruoti mintis",
-    path: ROUTES.CHECKIN.path,
+    path: ROUTES.CHECKIN_FORM.path,
   },
   {
     id: 2,
