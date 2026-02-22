@@ -4,13 +4,14 @@ import { useSelector } from 'react-redux'
 import { checkinsSelectors } from '@/store/features/checkins'
 import { RootState } from "@/store/store";
 
-import { Button, Chip, Divider, IconButton, Stack, styled, Typography } from '@mui/material';
+import { Button, Divider, IconButton, Stack, styled, Typography } from '@mui/material';
 import { theme } from '../../theme'
 import { Plus } from 'lucide-react';
 
 import Container from '@/components/layouts/Container'
 
 import { ROUTES } from '@/router/routes';
+import CheckinCard from '@/components/cards/CheckinCard';
 
 const CheckinListPage = () => {
     const navigate = useNavigate();
@@ -39,23 +40,7 @@ const CheckinListPage = () => {
 
             <Stack width="100%" gap={2}>
                 {checkinsList?.length ? checkinsList?.map(({ id, situation, date, emotion }) => (
-                    <StyledCard key={id}>
-                        <Stack>
-                            <Typography variant="caption" color='neutral'>
-                                {date}
-                            </Typography>
-                            <Typography variant='h4'>
-                                {situation}
-                            </Typography>
-                        </Stack>
-
-                        <Stack
-                            flexDirection="row"
-                            gap={1}
-                        >
-                            {emotion.map(({ name }) => <Chip key={name} label={name} variant="outlined" sx={{ width: "fit-content" }} />)}
-                        </Stack>
-                    </StyledCard>
+                    <CheckinCard key={id} date={date} situation={situation} emotion={emotion} />
                 )) :
                     <Container>
                         <StyledImage src='/public/assets/images/empty-minds-list.png' alt="list is empty" />
