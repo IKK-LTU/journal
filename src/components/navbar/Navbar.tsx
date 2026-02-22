@@ -53,7 +53,8 @@ const StyledNavbar = styled("nav")`
   z-index: 2;
   position: fixed;
   bottom: 12px;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
 
   display: flex;
   align-items: center;
@@ -62,9 +63,9 @@ const StyledNavbar = styled("nav")`
 
   height: 52px;
   width: calc(100% - ${MARGIN_X * 2}px);
-
+  max-width: 600px;
   padding: 1rem 1.5rem;
-  margin: 0 ${MARGIN_X}px;
+  margin: 0 auto;
 
   background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(20px) saturate(180%);
