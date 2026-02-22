@@ -11,6 +11,7 @@ import Title from "@/components/atoms/text/Title";
 import TextInput from "@/components/atoms/TextInput";
 import { addCheckinItem } from "@/store/features/checkins";
 import { ROUTES } from "@/router/routes";
+import Header from "@/components/layouts/Header";
 
 type Inputs = {
   situation: string;
@@ -96,13 +97,10 @@ const CheckIn = () => {
 
   return (
     <Container>
-      <StyledHeader>
-        <StyledIconButton onClick={() => navigate(-1)}>
-          <ChevronLeft color="#fff" />
-        </StyledIconButton>
-        <StyledTitle>Registruoti mintis</StyledTitle>
-      </StyledHeader>
-
+      <Header
+        title="Registruoti mintis"
+      />
+  
       <Typography variant="body1"> {location.state.date}</Typography>
       <Typography variant="body2" color="neutral">
         Užrašykite savo mintis čia. Tai padeda jas racionalizuoti, suprasti, kaip jos veikia jūsų nuotaiką, ir lengviau analizuoti vėliau.

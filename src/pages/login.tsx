@@ -7,6 +7,7 @@ import { useLazyGetUserByIdQuery } from "@/api/services/userApi";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { ROUTES } from "@/router/routes";
 import Container from "@/components/layouts/Container";
+import Header from "@/components/layouts/Header";
 
 type LoginFormValues = {
   usernameOrEmail: string;
@@ -51,6 +52,7 @@ const LoginPage = () => {
 
   return (
     <Container>
+      <Header title={""} />
       <Box sx={{ width: "100%" }}>
         <Typography variant="h1">
           {currentUser ? `Labas, ${currentUser.firstName}` : "Prisijunkite"}

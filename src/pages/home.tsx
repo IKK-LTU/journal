@@ -4,13 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 import { Flame, GraduationCap, LogIn, Notebook, User } from "lucide-react";
 
-import Title from "@/components/atoms/text/Title";
-import IconButton from "@/components/atoms/buttons/IconButton";
 import DaysHeader from "@/components/page-elements/home/DaysHeader";
 import TaskCard from "@/components/cards/TaskCard";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { ROUTES } from "@/router/routes";
-import { Box, Stack } from "@mui/material";
+import { Box, IconButton, Stack } from "@mui/material";
+import Header from "@/components/layouts/Header";
 
 const myTasks = [
   {
@@ -56,20 +55,18 @@ const Home = () => {
   return (
     <StyledContainer
     >
-      <StyledHeader>
-        <IconButton
-          icon={<Flame fill="#ffc917ff" color="rgba(249, 151, 13, 1)" />}
-        />
-
-        <StyledTitle>Namai</StyledTitle>
-
-        {currentUser ? (
-          <User onClick={() => navigate(ROUTES.LOGIN.path)} />
-        ) : (
-          <LogIn onClick={() => navigate(ROUTES.LOGIN.path)} />
-        )}
-      </StyledHeader>
-
+      <Header title="Namai"
+        leftIcon={<IconButton>
+          <Flame fill="#ffc917ff" color="rgba(249, 151, 13, 1)" />
+        </IconButton>
+        }
+        rightIcon={<IconButton
+          onClick={() => navigate(ROUTES.LOGIN.path)}
+        >
+          {currentUser ? <User color="#fff" /> : <LogIn color="#fff" />}
+        </IconButton>
+        }
+      />
       <DaysHeader />
 
       <StyledPlanContainer>
@@ -86,7 +83,7 @@ const Home = () => {
         ))}
       </StyledPlanContainer>
 
-    </StyledContainer>
+    </StyledContainer >
   );
 };
 
@@ -98,18 +95,6 @@ const StyledContainer = styled(Box)`
   gap: 1rem;
   width: 100%;
 `
-
-const StyledHeader = styled("header")`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-`;
-
-const StyledTitle = styled(Title)`
-  font-size: 1.25rem;
-  font-weight: 500;
-`;
 
 const StyledPlanContainer = styled(Stack)`
   display: flex;

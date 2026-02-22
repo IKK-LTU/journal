@@ -12,6 +12,7 @@ import Container from '@/components/layouts/Container'
 
 import { ROUTES } from '@/router/routes';
 import CheckinCard from '@/components/cards/CheckinCard';
+import Header from '@/components/layouts/Header';
 
 const CheckinListPage = () => {
     const navigate = useNavigate();
@@ -26,16 +27,17 @@ const CheckinListPage = () => {
 
     return (
         <Container>
-            <Stack
-                sx={{ width: "100%" }}
-            >
-                <Typography variant="h1">Minčių sąrašas</Typography>
-            </Stack>
+            <Header title='Minčių sąrašas'
+                rightIcon={
+                    <IconButton aria-label="add new thougth" sx={{ ml: "auto" }} onClick={handleAddnewThought}>
+                        <Plus />
+                    </IconButton>
+                }
+            />
+
             <Divider sx={{ width: "100%" }} />
             <Stack width="100%">
-                <IconButton aria-label="add new thougth" sx={{ ml: "auto" }} onClick={handleAddnewThought}>
-                    <Plus />
-                </IconButton>
+
             </Stack>
 
             <Stack width="100%" gap={2}>
