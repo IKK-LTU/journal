@@ -45,10 +45,15 @@ const Navbar = () => {
 
 export default Navbar;
 
+const MARGIN_X = 16;
+
 const StyledNavbar = styled("nav")`
+  box-sizing: border-box;
+
   z-index: 2;
   position: fixed;
   bottom: 12px;
+  left: 0;
 
   display: flex;
   align-items: center;
@@ -56,10 +61,10 @@ const StyledNavbar = styled("nav")`
   border-radius: 0.5rem;
 
   height: 52px;
-  width: 100%;
-  max-width: 600px;
+  width: calc(100% - ${MARGIN_X * 2}px);
 
   padding: 1rem 1.5rem;
+  margin: 0 ${MARGIN_X}px;
 
   background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(20px) saturate(180%);

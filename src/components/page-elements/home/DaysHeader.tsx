@@ -86,7 +86,7 @@ const DaysHeader = () => {
                 component="p"
                 $selected={selectedDay === dayNumber}
               >
-                {title.slice(0, 4)}
+                {title.slice(0, 1)}
               </StyledWeekTitle>
 
               {selectedDay !== dayNumber && (
