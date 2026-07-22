@@ -242,6 +242,12 @@ export const EntryFooter = styled.p`
   margin: 0;
 `;
 
+// ─── Hero actions ─────────────────────────────────────────────────────────────
+
+export const HeroActions = styled.div`
+  margin-bottom: 48px;
+`;
+
 // ─── Insight ──────────────────────────────────────────────────────────────────
 
 export const Insight = styled.section`
@@ -295,6 +301,13 @@ export const DistortionsGrid = styled.div`
 export const DistortionBlock = styled.div`
   background: var(--c-card);
   padding: 20px 22px;
+
+  svg {
+    color: var(--c-quiet);
+    margin-bottom: 12px;
+    display: block;
+    opacity: 0.7;
+  }
 
   h3 {
     font-size: 14px;
@@ -385,18 +398,18 @@ export const CtaBtn = styled.button`
   display: inline-block;
   align-self: flex-start;
   font-family: ${fonts.body};
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
   letter-spacing: 0.01em;
-  color: #F0EDE8;
+  color: #F5F2ED;
   background: var(--c-accent);
   border: none;
   border-radius: 4px;
-  padding: 13px 28px;
+  padding: 16px 36px;
   cursor: pointer;
   transition: opacity 0.15s;
 
-  &:hover { opacity: 0.88; }
+  &:hover { opacity: 0.85; }
 
   &:focus-visible {
     outline: 2px solid var(--c-accent);
@@ -434,4 +447,249 @@ export const FooterBrand = styled.span`
 export const FooterQuiet = styled.span`
   font-size: 13px;
   color: var(--c-quiet);
+`;
+
+// ─── Theory cards ─────────────────────────────────────────────────────────────
+
+export const Theories = styled.section`
+  padding: 72px 0;
+  border-top: 1px solid var(--c-line);
+`;
+
+export const TheoriesGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+
+  ${bp.mobile} { grid-template-columns: 1fr; gap: 32px; }
+`;
+
+export const TheoryCard = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-start;
+`;
+
+export const TheoryIconWrap = styled.div`
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--c-accent-bg);
+  color: var(--c-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const TheoryContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const TheoryHeadline = styled.h3`
+  font-family: ${fonts.display};
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--c-ink);
+  margin: 0;
+`;
+
+export const TheoryBody = styled.p`
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--c-quiet);
+  margin: 0;
+`;
+
+// ─── How it works ─────────────────────────────────────────────────────────────
+
+export const HowItWorks = styled.section`
+  padding: 72px 0;
+  border-top: 1px solid var(--c-line);
+`;
+
+export const HowIntro = styled.p`
+  font-size: 16px;
+  color: var(--c-quiet);
+  max-width: 52ch;
+  line-height: 1.7;
+  margin: 0 0 40px;
+`;
+
+export const HowFlow = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--c-line);
+  border: 1px solid var(--c-line);
+  margin-bottom: 32px;
+
+  ${bp.small} { grid-template-columns: 1fr 1fr; }
+`;
+
+export const HowStep = styled.div`
+  background: var(--c-card);
+  padding: 22px 20px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+export const HowStepNum = styled.span`
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--c-accent);
+`;
+
+export const HowStepTitle = styled.h3`
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-ink);
+  margin: 0;
+  line-height: 1.3;
+`;
+
+export const HowStepBody = styled.p`
+  font-size: 13px;
+  color: var(--c-quiet);
+  line-height: 1.55;
+  margin: 0;
+`;
+
+export const HowBottom = styled.div`
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 48px;
+  align-items: start;
+  padding-top: 32px;
+  border-top: 1px solid var(--c-line);
+
+  ${bp.mobile} {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+`;
+
+export const HowRecord = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: var(--c-card);
+  border: 1px solid var(--c-line);
+  border-radius: 4px;
+  width: 300px;
+
+  ${bp.mobile} { width: auto; }
+`;
+
+export const HowRecordLabel = styled.span`
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-quiet);
+`;
+
+export const HowRecordSituation = styled.p`
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--c-ink);
+  margin: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--c-line);
+`;
+
+export const HowRecordReframe = styled.p`
+  font-family: ${fonts.display};
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--c-ink);
+  margin: 0;
+`;
+
+export const HowRecordScore = styled.span`
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-accent);
+`;
+
+export const HowNext = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 8px;
+`;
+
+export const HowNextLine = styled.p`
+  font-family: ${fonts.display};
+  font-size: clamp(20px, 2.8vw, 28px);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--c-ink);
+  max-width: 30ch;
+  margin: 0;
+`;
+
+export const HowNextBody = styled.p`
+  font-size: 15px;
+  color: var(--c-quiet);
+  line-height: 1.7;
+  margin: 0;
+  max-width: 42ch;
+`;
+
+// ─── Trust signals ────────────────────────────────────────────────────────────
+
+export const Trust = styled.section`
+  padding: 72px 0;
+  border-top: 1px solid var(--c-line);
+`;
+
+export const TrustGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
+
+  ${bp.mobile} {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+`;
+
+export const TrustItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+export const TrustIconWrap = styled.div`
+  color: var(--c-accent);
+  display: flex;
+  align-items: center;
+`;
+
+export const TrustTitle = styled.h3`
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--c-ink);
+  margin: 0;
+`;
+
+export const TrustBody = styled.p`
+  font-size: 14px;
+  color: var(--c-quiet);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 28ch;
+
+  ${bp.mobile} { max-width: none; }
 `;
