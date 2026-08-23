@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFE566"/>
+      <stop offset="100%" stop-color="#FF9500"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sun rays -->
+  <g stroke="#FFB700" stroke-width="5" stroke-linecap="round" opacity="0.85">
+    <line x1="50" y1="4"  x2="50" y2="14"/>
+    <line x1="50" y1="86" x2="50" y2="96"/>
+    <line x1="4"  y1="50" x2="14" y2="50"/>
+    <line x1="86" y1="50" x2="96" y2="50"/>
+    <line x1="17" y1="17" x2="24" y2="24"/>
+    <line x1="76" y1="76" x2="83" y2="83"/>
+    <line x1="83" y1="17" x2="76" y2="24"/>
+    <line x1="17" y1="83" x2="24" y2="76"/>
+  </g>
+
+  <!-- Sun face -->
+  <circle cx="50" cy="50" r="32" fill="url(#glow)"/>
+
+  <!-- Eyes -->
+  <circle cx="40" cy="45" r="4" fill="#7A3800"/>
+  <circle cx="60" cy="45" r="4" fill="#7A3800"/>
+
+  <!-- Eye shine -->
+  <circle cx="42" cy="43" r="1.5" fill="white" opacity="0.8"/>
+  <circle cx="62" cy="43" r="1.5" fill="white" opacity="0.8"/>
+
+  <!-- Smile -->
+  <path d="M 36 57 Q 50 70 64 57" stroke="#7A3800" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Rosy cheeks -->
+  <circle cx="34" cy="57" r="5" fill="#FF6B6B" opacity="0.35"/>
+  <circle cx="66" cy="57" r="5" fill="#FF6B6B" opacity="0.35"/>
+</svg>
