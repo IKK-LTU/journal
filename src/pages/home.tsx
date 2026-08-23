@@ -67,6 +67,7 @@ const Home = () => {
         </IconButton>
         }
       />
+      siuuuuu
       <DaysHeader />
 
       <StyledPlanContainer>
