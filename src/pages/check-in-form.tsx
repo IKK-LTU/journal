@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { styled } from "@mui/material/styles";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Check, ChevronLeft, Trash } from "lucide-react";
+import { Check, Trash } from "lucide-react";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { Button, Divider, IconButton, Stack, Typography, Slider, Box } from "@mui/material"; // Added Slider and Box
 import { useDispatch } from "react-redux";
 
 import Container from "@/components/layouts/Container";
-import Title from "@/components/atoms/text/Title";
 import TextInput from "@/components/atoms/TextInput";
 import { addCheckinItem } from "@/store/features/checkins";
 import { ROUTES } from "@/router/routes";
@@ -255,27 +254,6 @@ const StyledSlider = styled(Slider)({
 });
 
 
-
-const StyledHeader = styled("header")`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding: 8px 45px;
-`;
-
-const StyledIconButton = styled(IconButton)`
-  position: absolute;
-  left: 5px;
-  top: 50%;
-  transform: translateY(-50%);
-`;
-
-const StyledTitle = styled(Title)`
-  font-size: 1.5rem;
-  font-weight: 500;
-`;
 
 const StyledFormContainer = styled("form")`
   display: flex;

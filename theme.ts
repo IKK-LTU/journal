@@ -165,16 +165,6 @@ export const theme = createTheme({
             backgroundColor: "rgba(0,0,0,0.015)",
           },
         },
-        outlinedNeutral: {
-          backgroundColor: "transparent",
-          border: `2px solid ${color.neutral}`,
-          color: color.neutral,
-          "&:hover": {
-            backgroundColor: color.neutral,
-            color: color.textDark,
-            background: "rgba(0,0,0,0.015)",
-          },
-        },
         textPrimary: {
           backgroundColor: "transparent",
           border: "none",
@@ -193,16 +183,34 @@ export const theme = createTheme({
             background: "rgba(0,0,0,0.03)",
           },
         },
-        textNeutral: {
-          backgroundColor: "transparent",
-          border: "none",
-          color: color.neutral,
-          "&:hover": {
-            opacity: 0.9,
-            background: "rgba(0,0,0,0.03)",
+      },
+      variants: [
+        {
+          props: { variant: "outlined", color: "neutral" },
+          style: {
+            backgroundColor: "transparent",
+            border: `2px solid ${color.neutral}`,
+            color: color.neutral,
+            "&:hover": {
+              backgroundColor: color.neutral,
+              color: color.textDark,
+              background: "rgba(0,0,0,0.015)",
+            },
           },
         },
-      },
+        {
+          props: { variant: "text", color: "neutral" },
+          style: {
+            backgroundColor: "transparent",
+            border: "none",
+            color: color.neutral,
+            "&:hover": {
+              opacity: 0.9,
+              background: "rgba(0,0,0,0.03)",
+            },
+          },
+        },
+      ],
     },
   },
 });

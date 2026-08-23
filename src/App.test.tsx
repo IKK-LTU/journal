@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import App from './store';
+import App from './App';
 
 describe('App', () => {
   test('renders Vite + React text', () => {

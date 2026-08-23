@@ -5,7 +5,6 @@ import { checkinsSelectors } from '@/store/features/checkins'
 import { RootState } from "@/store/store";
 
 import { Button, Divider, IconButton, Stack, styled, Typography } from '@mui/material';
-import { theme } from '../../theme'
 import { Plus } from 'lucide-react';
 
 import Container from '@/components/layouts/Container'
@@ -63,24 +62,4 @@ export default CheckinListPage
 const StyledImage = styled("img")`
     height: 200px;
     width: 200px;
-`
-
-
-const StyledCard = styled(Stack)`    
-    cursor: pointer;    
-
-    gap: 12px;
-    width: 100%;
-    height: 150px;
-    padding: 16px;
-    margin: 12px auto;
-    border-radius: 8px;
-    border: 1px solid #3b3b3b91;
-    box-shadow: ${theme.shadows[1]};
-    background: #3b3b3b91;
-
-    &:hover {
-        border: 1px solid #a4a4a4;
-        box-shadow: ${theme.shadows[2]}
-    }
 `

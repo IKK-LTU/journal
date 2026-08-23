@@ -31,7 +31,7 @@ const LoginPage = () => {
   });
 
   //TODO handle login
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (_data: LoginFormValues) => {
     /**
      * TEMP / DEMO LOGIC
      * You were previously logging in via numeric ID.
