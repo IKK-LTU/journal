@@ -20,4 +20,5 @@ jobs:
             git pull
             pnpm install
             pnpm build
-            sudo systemctl restart nginx
+            cd ~/api
+            docker-compose restart nginx
