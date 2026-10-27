@@ -1,0 +1,70 @@
+# Production stack on the EC2 server. Started by .github/workflows/deploy-api.yml.
+# Values come from ~/journal-infra/.env on the server (created on the first deploy, never committed).
+#
+#   internet ──443──▶ caddy (HTTPS) ──▶ api:8080 ──▶ postgres:5432 (internal only)
+#                                                     ▲
+#                                        backup (daily pg_dump, keeps 14 days)
+
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80" # Let's Encrypt challenge + redirect to HTTPS
+      - "443:443"
+    environment:
+      API_DOMAIN: ${API_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data # TLS certificates — must survive restarts (Let's Encrypt rate limits)
+    depends_on:
+      - api
+
+  api:
+    image: ghcr.io/ikk-ltu/journal-api:${IMAGE_TAG}
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgres://journal:${POSTGRES_PASSWORD}@postgres:5432/journal?sslmode=disable
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: journal
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: journal
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U journal -d journal"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    # No "ports": the database is reachable only from containers on this network.
+
+  backup:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ${HOME}/backups/postgres:/backups
+    # Once a day: compressed dump, keep 14 days. Same disk as the DB for now — off-server copy (S3) is a follow-up.
+    entrypoint: >
+      sh -c 'set -o pipefail; while true; do
+        pg_dump -h postgres -U journal journal | gzip > /backups/journal-$$(date +%F).sql.gz
+        && echo "backup ok $$(date +%F)";
+        find /backups -name "journal-*.sql.gz" -mtime +14 -delete;
+        sleep 86400;
+      done'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  caddy_data:
+  postgres_data:
