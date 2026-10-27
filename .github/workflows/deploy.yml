@@ -7,6 +7,8 @@ on:
 
 jobs:
   deploy:
+    # Hard-disabled: even a manual run would build from the old repo root and restart nginx.
+    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to EC2
