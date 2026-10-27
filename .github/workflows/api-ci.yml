@@ -49,7 +49,20 @@ jobs:
           cache-dependency-path: api/go.sum
 
       - name: go.mod / go.sum are tidy
-        run: go mod tidy -diff
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum || { echo "::error::go.mod/go.sum not tidy — download the 'tidy-go-mod' artifact or run 'go mod tidy'"; exit 1; }
+          git ls-files --error-unmatch go.sum >/dev/null 2>&1 || { echo "::error::go.sum is not committed — download the 'tidy-go-mod' artifact"; exit 1; }
+
+      # When the check above fails, the corrected files are attached to the run.
+      - name: Upload tidy go.mod / go.sum
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tidy-go-mod
+          path: |
+            api/go.mod
+            api/go.sum
 
       - name: Lint
         uses: golangci/golangci-lint-action@v8
