@@ -1,104 +1,72 @@
-import { styled } from "@mui/material/styles";
+import { useEffect, useState } from "react";
+import { Fab, Typography } from "@mui/material";
+import { Plus } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import { useNavigate } from "react-router-dom";
-
-import { Flame, GraduationCap, LogIn, Notebook, User } from "lucide-react";
-
-import DaysHeader from "@/components/page-elements/home/DaysHeader";
-import TaskCard from "@/components/cards/TaskCard";
-import useCurrentUser from "@/hooks/useCurrentUser";
-import { ROUTES } from "@/router/routes";
-import { Box, IconButton, Stack } from "@mui/material";
-import Header from "@/components/layouts/Header";
-import { getTodayDateString } from "@/utils/date";
-
-const myTasks = [
-  {
-    id: 1,
-    imageSrc: "https://picsum.photos/seed/picsum/200/300",
-    title: "Laba diena",
-    subtitle: "Užfiksuokite savo mintis ir užduotis dienai.",
-    buttonText: "Registruoti mintis",
-    path: ROUTES.CHECKIN_FORM.path,
-  },
-  {
-    id: 2,
-    imageSrc: "https://picsum.photos/seed/picsum/200/300",
-    title: "Analizuoti mintis",
-    featureTypeDescription: (
-      <>
-        <Notebook /> Dienoraštis su gairėmis
-      </>
-    ),
-    buttonText: "Apmąstyti",
-  },
-  {
-    id: 3,
-    imageSrc: "https://picsum.photos/seed/picsum/200/300",
-    title: "Protui ir nuotaikai",
-    featureTypeDescription: (
-      <>
-        <GraduationCap /> Trumpas kursas
-      </>
-    ),
-  },
-];
+import DayGroup from "@/components/home/DayGroup";
+import HomeHeader from "@/components/home/HomeHeader";
+import WeekStrip from "@/components/home/WeekStrip";
+import PageShell from "@/components/ui/PageShell";
+import Toast from "@/components/ui/Toast";
+import { ROUTES, type HomeRouteState } from "@/router/routes";
+import { checkinsSelectors } from "@/store/features/checkins";
+import { useAppSelector } from "@/store/hooks";
 
 const Home = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const groups = useAppSelector(checkinsSelectors.selectEntriesGroupedByDay);
+  // Read the clock once per visit (lazy init), not on every render.
+  const [now] = useState(() => new Date());
 
-  const { currentUser } = useCurrentUser();
+  // A confirmation passed from the entry flow / delete ("Išsaugota…").
+  const incomingToast = (location.state as HomeRouteState | null)?.toast ?? null;
+  const [toast, setToast] = useState<string | null>(incomingToast);
 
-  const handleNavigationBtnClick = (path: string) => {
-    navigate(path, { state: { date: getTodayDateString() } })
-  }
+  useEffect(() => {
+    if (incomingToast) {
+      // Clear router state so a page refresh doesn't show the toast again.
+      navigate(location.pathname, { replace: true, state: null });
+    }
+  }, [incomingToast, location.pathname, navigate]);
 
   return (
-    <StyledContainer
-    >
-      <Header title="Namai"
-        leftIcon={<IconButton>
-          <Flame fill="#ffc917ff" color="rgba(249, 151, 13, 1)" />
-        </IconButton>
-        }
-        rightIcon={<IconButton
-          onClick={() => navigate(ROUTES.LOGIN.path)}
-        >
-          {currentUser ? <User color="#fff" /> : <LogIn color="#fff" />}
-        </IconButton>
-        }
-      />
-      <DaysHeader />
+    <PageShell bottomSpace={14}>
+      <HomeHeader now={now} />
+      <WeekStrip now={now} />
 
-      <StyledPlanContainer>
-        {myTasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            title={task.title}
-            subtitle={task.subtitle}
-            featureTypeDescription={task.featureTypeDescription}
-            buttonText={task.buttonText}
-            onButtonClick={task.path ? () => handleNavigationBtnClick(task?.path) : undefined}
-            imageSrc={task.imageSrc}
-          />
-        ))}
-      </StyledPlanContainer>
+      {groups.length === 0 ? (
+        <Typography sx={{ maxWidth: 300, fontSize: 17, color: "text.secondary" }}>
+          Dar nieko neparašei. Kai kas nors užeis, paspausk{" "}
+          <Typography component="span" sx={{ color: "text.primary", fontWeight: 500 }}>
+            +
+          </Typography>{" "}
+          apačioje.
+        </Typography>
+      ) : (
+        groups.map((group) => <DayGroup key={group.date} group={group} />)
+      )}
 
-    </StyledContainer >
+      <Fab
+        color="primary"
+        aria-label="Naujas įrašas"
+        onClick={() => navigate(ROUTES.NEW_ENTRY.path)}
+        sx={{
+          position: "fixed",
+          // Stick to the 600px column's right edge on wide screens, 16px from the edge on phones.
+          right: "max(16px, calc((100vw - 600px) / 2 + 16px))",
+          bottom: 24,
+          width: 60,
+          height: 60,
+          boxShadow: "none",
+        }}
+      >
+        <Plus size={28} strokeWidth={2} aria-hidden />
+      </Fab>
+
+      <Toast message={toast} onClose={() => setToast(null)} />
+    </PageShell>
   );
 };
 
 export default Home;
-
-const StyledContainer = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-`
-
-const StyledPlanContainer = styled(Stack)`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`;

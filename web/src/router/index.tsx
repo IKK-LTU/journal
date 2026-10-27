@@ -1,10 +1,10 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
-import Layout from "@/components/layouts/Layout";
 import Home from "@/pages/home";
 import Login from "@/pages/login";
-import CheckIn from "@/pages/check-in-form";
-import CheckInList from "@/pages/check-in-list";
+import NewEntry from "@/pages/new-entry";
+import EntryDetail from "@/pages/entry-detail";
+import Settings from "@/pages/settings";
 import Welcome from "@/pages/welcome";
 import { ROUTES } from "./routes";
 
@@ -12,15 +12,17 @@ const Router = () => {
   return (
     <Routes>
       <Route index path={ROUTES.WELCOME.path} element={<Welcome />} />
-
       <Route path={ROUTES.LOGIN.path} element={<Login />} />
+      <Route path={ROUTES.HOME.path} element={<Home />} />
+      <Route path={ROUTES.NEW_ENTRY.path} element={<NewEntry />} />
+      <Route path={ROUTES.ENTRY.path} element={<EntryDetail />} />
+      <Route path={ROUTES.SETTINGS.path} element={<Settings />} />
 
-      <Route path={ROUTES.CHECKIN_FORM.path} element={<CheckIn />} />
-      <Route path={ROUTES.CHECKIN_LIST.path} element={<CheckInList />} />
+      {/* Old URLs people may have bookmarked */}
+      <Route path="/check-in-form" element={<Navigate to={ROUTES.NEW_ENTRY.path} replace />} />
+      <Route path="/check-in-list" element={<Navigate to={ROUTES.HOME.path} replace />} />
 
-      <Route element={<Layout />}>
-        <Route path={ROUTES.HOME.path} element={<Home />} />
-      </Route>
+      <Route path="*" element={<Navigate to={ROUTES.HOME.path} replace />} />
     </Routes>
   );
 };
