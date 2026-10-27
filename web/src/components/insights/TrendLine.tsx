@@ -20,8 +20,9 @@ const TrendLine = ({ points }: Props) => {
     .map((point, index) => (point.average === null ? null : { x: index * step, y: HEIGHT - (point.average / MAX_INTENSITY) * HEIGHT }))
     .filter((coordinate): coordinate is { x: number; y: number } => coordinate !== null);
 
-  const lastValue = [...points].reverse().find((point) => point.average !== null)?.average;
-  const firstValue = points.find((point) => point.average !== null)?.average;
+  const values = points.map((point) => point.average).filter((average): average is number => average !== null);
+  const firstValue = values[0];
+  const lastValue = values[values.length - 1];
 
   return (
     <>
