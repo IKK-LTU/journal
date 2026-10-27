@@ -1,12 +1,14 @@
 name: Deploy
 
+# Disabled during the monorepo migration: this script builds from the repo root,
+# but the FE now lives in web/. Replaced by the image-based deploy in Phase 3.
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
 
 jobs:
   deploy:
+    # Hard-disabled: even a manual run would build from the old repo root and restart nginx.
+    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to EC2
