@@ -46,7 +46,8 @@ retire_old_stack() {
 
   mkdir -p "$HOME/backups"
   if docker ps --format '{{.Names}}' | grep -q '^api-mysql-1$'; then
-    local dump="$HOME/backups/mysql-before-journal-api-$(date +%F).sql"
+    local dump
+    dump="$HOME/backups/mysql-before-journal-api-$(date +%F).sql"
     echo "→ backing up old MySQL to $dump"
     docker exec api-mysql-1 sh -c '
       if [ -n "$MYSQL_ROOT_PASSWORD" ]; then
