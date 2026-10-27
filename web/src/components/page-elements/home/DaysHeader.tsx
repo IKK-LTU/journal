@@ -12,11 +12,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
+import { toLocalDateString } from "@/utils/date";
 
-
-
-const currentDate = new Date()
-const weekday = currentDate.getDay()
+// JS getDay(): Sunday = 0. WEEK_DAYS uses Monday = 1 … Sunday = 7.
+const toMondayFirstDayNumber = (date: Date) => date.getDay() === 0 ? 7 : date.getDay();
 
 const DaysHeader = () => {
   const navigate = useNavigate();
@@ -25,7 +24,7 @@ const DaysHeader = () => {
 
   const checkinsList = useSelector((state: RootState) =>
     checkinsSelectors.selectCheckinsList(state)
-  ) || []
+  )
 
 
   const handleDayClick = (day?: number) => {
@@ -36,6 +35,10 @@ const DaysHeader = () => {
     setSelectedDay(null);
   };
 
+  // Computed on render (not at module load) so the strip is correct after midnight.
+  const currentDate = new Date()
+  const weekday = toMondayFirstDayNumber(currentDate)
+
   const formatWeekdaysList = WEEK_DAYS.map(day => {
     const daysDifferenceFromToday = day.dayNumber - weekday
 
@@ -43,8 +46,7 @@ const DaysHeader = () => {
     const itemDate = new Date(currentDate)
     itemDate.setDate(itemDate.getDate() + daysDifferenceFromToday)
 
-    // format to YYYY-MM-DD
-    const formattedDate = itemDate.toISOString().slice(0, 10)
+    const formattedDate = toLocalDateString(itemDate)
 
     return {
       ...day,
@@ -61,7 +63,7 @@ const DaysHeader = () => {
     <ClickAwayListener onClickAway={() => handleDayClick()}>
       <StyledItemsContainer>
         {formatWeekdaysList.map(({ dayNumber, title, date }) => {
-          const isChecked = checkinsList?.find((checkin) => checkin.date === date)
+          const isChecked = checkinsList.some((checkin) => checkin.date === date)
 
           return (
             <StyledItem
@@ -90,7 +92,7 @@ const DaysHeader = () => {
               </StyledWeekTitle>
 
               {selectedDay !== dayNumber && (
-                <StyledMoodCircle $selected={!!isChecked} />
+                <StyledMoodCircle $selected={isChecked} />
               )}
             </StyledItem>
           );
@@ -107,7 +109,7 @@ const StyledItemsContainer = styled("div")`
   justify-content: space-between;
   gap: 1rem;
   @media (max-width: 600px) {
-    gap: 0.25rem;s
+    gap: 0.25rem;
   }
     background: transparent;
 `;

@@ -4,11 +4,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Check, Trash } from "lucide-react";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { Button, Divider, IconButton, Stack, Typography, Slider, Box } from "@mui/material"; // Added Slider and Box
-import { useDispatch } from "react-redux";
 
 import Container from "@/components/layouts/Container";
 import TextInput from "@/components/atoms/TextInput";
 import { addCheckinItem } from "@/store/features/checkins";
+import { useAppDispatch } from "@/store/hooks";
+import { getTodayDateString } from "@/utils/date";
 import { ROUTES } from "@/router/routes";
 import Header from "@/components/layouts/Header";
 
@@ -18,14 +19,17 @@ type Inputs = {
     name: string;
     intensity: number;
   }[];
-  autoThoughts: Array<string>;
+  autoThought: string;
   behavior: string;
 };
 
 const CheckIn = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+
+  // Date comes from the week strip / home buttons. Opening the URL directly has no state → today.
+  const date: string = location.state?.date ?? getTodayDateString();
 
   const [emotionValues, setEmotionValues] = useState<{
     name: string;
@@ -46,7 +50,7 @@ const CheckIn = () => {
     defaultValues: {
       situation: "",
       emotion: [],
-      autoThoughts: [],
+      autoThought: "",
       behavior: "",
     },
   });
@@ -64,10 +68,15 @@ const CheckIn = () => {
   };
 
   const handleAddEmotionToState = () => {
-    const isAlreadyExist = fields?.find(
-      ({ name }) => name.toLowerCase() === emotionValues?.name.toLowerCase()
+    const isAlreadyAdded = fields.some(
+      ({ name }) => name.toLowerCase() === emotionValues.name.toLowerCase()
     );
-    if (isAlreadyExist) return alert("Tokia emocija jau esate pridėję");
+    if (isAlreadyAdded) {
+      return setError("emotion", {
+        type: "manual",
+        message: "Tokia emocija jau pridėta",
+      });
+    }
 
     if (!emotionValues?.intensity || !emotionValues?.name) {
       return setError("emotion", {
@@ -82,14 +91,13 @@ const CheckIn = () => {
   };
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    if (!fields?.length)
+    if (!fields.length)
       return setError("emotion", {
         type: "manual",
-        message: "Privaloma užpildyti",
+        message: "Privaloma užpildyti bent vieną emociją",
       });
 
-    const fakeId = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    dispatch(addCheckinItem({ id: fakeId, ...data, date: location.state.date }));
+    dispatch(addCheckinItem({ ...data, date }));
 
     navigate(ROUTES.HOME.path);
   };
@@ -100,7 +108,7 @@ const CheckIn = () => {
         title="Registruoti mintis"
       />
   
-      <Typography variant="body1"> {location.state.date}</Typography>
+      <Typography variant="body1">{date}</Typography>
       <Typography variant="body2" color="neutral">
         Užrašykite savo mintis čia. Tai padeda jas racionalizuoti, suprasti, kaip jos veikia jūsų nuotaiką, ir lengviau analizuoti vėliau.
       </Typography>
@@ -110,7 +118,7 @@ const CheckIn = () => {
       <StyledFormContainer onSubmit={handleSubmit(onSubmit)}>
         <StyledFieldWrapper>
           <Stack>
-            <StyledLabel id="situation">Situacija</StyledLabel>
+            <StyledLabel htmlFor="situation">Situacija</StyledLabel>
             <Typography variant="body2" color="neutral">
               Su kuo buvai? Ką darei? Kada tai buvo? Kur buvai?
             </Typography>
@@ -127,7 +135,7 @@ const CheckIn = () => {
         <StyledFieldWrapper>
           <StyledRowWrapp>
             <Box sx={{ flex: 2 }}>
-              <StyledLabel id="emotion.name">Emocija/jausmas</StyledLabel>
+              <StyledLabel htmlFor="emotion.name">Emocija/jausmas</StyledLabel>
               <StyledInput
                 id={`emotion.name`}
                 value={emotionValues.name}
@@ -179,26 +187,26 @@ const CheckIn = () => {
             ))}
           </Stack>
 
-          {errors?.emotion && <StyledErrors>Privaloma užpildyti bent vieną emociją</StyledErrors>}
+          {errors.emotion?.message && <StyledErrors>{errors.emotion.message}</StyledErrors>}
         </StyledFieldWrapper>
 
         <StyledFieldWrapper>
           <Stack>
-            <StyledLabel id="autoThoughts">Automatinės mintys</StyledLabel>
+            <StyledLabel htmlFor="autoThought">Automatinės mintys</StyledLabel>
             <Typography variant="body2" color="neutral">Apie ką galvojate prieš užplūstant jausmams?</Typography>
           </Stack>
           <StyledTextArea
-            id="autoThoughts"
+            id="autoThought"
             rows={5}
-            {...register("autoThoughts", { required: true })}
+            {...register("autoThought", { required: true })}
             placeholder="'Man niekada nepavyks'..."
           />
-          {errors?.autoThoughts && <StyledErrors>Privaloma</StyledErrors>}
+          {errors.autoThought && <StyledErrors>Privaloma</StyledErrors>}
         </StyledFieldWrapper>
 
         <StyledFieldWrapper>
           <Stack>
-            <StyledLabel id="behavior">Elgesys/veiksmas</StyledLabel>
+            <StyledLabel htmlFor="behavior">Elgesys/veiksmas</StyledLabel>
             <Typography variant="body2" color="neutral">Ką paskui darei?</Typography>
           </Stack>
           <StyledTextArea
@@ -206,6 +214,7 @@ const CheckIn = () => {
             rows={5}
             {...register("behavior", { required: true })}
           />
+          {errors.behavior && <StyledErrors>Privaloma</StyledErrors>}
         </StyledFieldWrapper>
 
         <Button type="submit" variant="contained" fullWidth sx={{ py: 1.5, fontSize: '1.1rem' }}>

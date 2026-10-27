@@ -1,41 +1,36 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-// import type { PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { CheckInDto } from "@/api/services/types";
 
-// Define a type for the slice state
+export type NewCheckIn = Omit<CheckInDto, "id" | "createdAt">;
+
 interface CheckinsListState {
   checkinsList: Array<CheckInDto>;
 }
 
-// Define the initial state using that type
 const initialState: CheckinsListState = {
   checkinsList: [],
 };
 
-const backendDataMocked = {
-  createdAt: new Date().toISOString(),
-};
-
 export const checkinsListSlice = createSlice({
   name: "checkins",
-  // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    addCheckinItem(
-      state,
-      action: PayloadAction<
-        Pick<
-          CheckInDto,
-          "id" | "situation" | "emotion" | "autoThoughts" | "behavior" | "date"
-        >
-      >,
-    ) {
-      console.log("checkinsList siu", state);
-      state.checkinsList.push({ ...action.payload, ...backendDataMocked });
-    },
-    setCheckinsList(state, action: PayloadAction<CheckInDto>) {
-      state.checkinsList.push(action.payload);
+    addCheckinItem: {
+      reducer(state, action: PayloadAction<CheckInDto>) {
+        state.checkinsList.push(action.payload);
+      },
+      // `prepare` runs before the reducer, so the reducer stays pure.
+      // id and createdAt are generated here — per entry, not once per app load.
+      prepare(newCheckIn: NewCheckIn) {
+        return {
+          payload: {
+            ...newCheckIn,
+            id: crypto.randomUUID(),
+            createdAt: new Date().toISOString(),
+          },
+        };
+      },
     },
     clearCheckinsList(state) {
       state.checkinsList = [];
@@ -43,16 +38,11 @@ export const checkinsListSlice = createSlice({
   },
 });
 
-export const { setCheckinsList, clearCheckinsList, addCheckinItem } =
-  checkinsListSlice.actions;
-
-// Other code such as selectors can use the imported `RootState` type
-// export const selectCheckinsList = (state: RootState) => state.checkins;
+export const { clearCheckinsList, addCheckinItem } = checkinsListSlice.actions;
 
 export const checkinsSelectors = {
   selectCheckinsList: (state: RootState) => state.checkins.checkinsList,
 
-  // get items by date
   getItemByDate: (state: RootState, date: string) =>
     state.checkins.checkinsList.filter((item) => item.date === date),
 };

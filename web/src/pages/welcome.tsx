@@ -330,10 +330,10 @@ const Welcome = () => {
                 <TrustIconWrap>
                   <Lock size={18} strokeWidth={1.5} />
                 </TrustIconWrap>
-                <TrustTitle>Stays on your device</TrustTitle>
+                <TrustTitle>Private by default</TrustTitle>
                 <TrustBody>
-                  Your entries are stored only in your browser. Nothing is sent to
-                  any server, ever.
+                  Only you can read your entries. They're encrypted in transit and
+                  at rest, and you can export or delete everything at any time.
                 </TrustBody>
               </TrustItem>
 

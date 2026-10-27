@@ -15,6 +15,6 @@ export type CheckInDto = {
     name: string;
     intensity: number;
   }[];
-  autoThoughts: string[];
+  autoThought: string;
   behavior: string;
 };

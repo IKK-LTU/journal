@@ -11,6 +11,7 @@ import Container from '@/components/layouts/Container'
 
 import { ROUTES } from '@/router/routes';
 import CheckinCard from '@/components/cards/CheckinCard';
+import { getTodayDateString } from '@/utils/date';
 import Header from '@/components/layouts/Header';
 
 const CheckinListPage = () => {
@@ -18,38 +19,34 @@ const CheckinListPage = () => {
 
     const checkinsList = useSelector((state: RootState) =>
         checkinsSelectors.selectCheckinsList(state)
-    ) || []
+    )
 
-    const handleAddnewThought = () => {
-        navigate(ROUTES.CHECKIN_FORM.path, { state: { date: new Date().toISOString().slice(0, 10) } })
+    const handleAddNewThought = () => {
+        navigate(ROUTES.CHECKIN_FORM.path, { state: { date: getTodayDateString() } })
     }
 
     return (
         <Container>
             <Header title='Minčių sąrašas'
                 rightIcon={
-                    <IconButton aria-label="add new thougth" sx={{ ml: "auto" }} onClick={handleAddnewThought}>
+                    <IconButton aria-label="add new thought" sx={{ ml: "auto" }} onClick={handleAddNewThought}>
                         <Plus />
                     </IconButton>
                 }
             />
 
             <Divider sx={{ width: "100%" }} />
-            <Stack width="100%">
-
-            </Stack>
-
             <Stack width="100%" gap={2}>
-                {checkinsList?.length ? checkinsList?.map(({ id, situation, date, emotion }) => (
+                {checkinsList.length ? checkinsList.map(({ id, situation, date, emotion }) => (
                     <CheckinCard key={id} date={date} situation={situation} emotion={emotion} />
                 )) :
-                    <Container>
-                        <StyledImage src='/public/assets/images/empty-minds-list.png' alt="list is empty" />
+                    <Stack alignItems="center" gap={2} textAlign="center">
+                        <StyledImage src='/assets/images/empty-minds-list.png' alt="" />
                         <Typography variant="h5">Jūsų minčių žurnalas dar tuščias</Typography>
                         <Typography variant="body1">Net trumpas minčių užrašymas gali padėti sumažinti emocinę įtampą ir geriau suprasti, kas su jumis vyksta.
                             Rašykite tiek, kiek norisi.</Typography>
-                        <Button variant='outlined' color='primary'>Sukurti pirmą įrašą</Button>
-                    </Container>
+                        <Button variant='outlined' color='primary' onClick={handleAddNewThought}>Sukurti pirmą įrašą</Button>
+                    </Stack>
                 }
             </Stack>
         </Container>

@@ -10,6 +10,7 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import { ROUTES } from "@/router/routes";
 import { Box, IconButton, Stack } from "@mui/material";
 import Header from "@/components/layouts/Header";
+import { getTodayDateString } from "@/utils/date";
 
 const myTasks = [
   {
@@ -49,7 +50,7 @@ const Home = () => {
   const { currentUser } = useCurrentUser();
 
   const handleNavigationBtnClick = (path: string) => {
-    navigate(path, { state: { date: new Date().toISOString().slice(0, 10) } })
+    navigate(path, { state: { date: getTodayDateString() } })
   }
 
   return (

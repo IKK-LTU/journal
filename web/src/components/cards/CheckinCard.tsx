@@ -22,8 +22,8 @@ const CheckinCard = ({
         <StyledContainer>
             <Stack
                 component="img"
-                src="public/assets/svg/undraw_books.svg"
-                alt="nana"
+                src="/assets/svg/undraw_books.svg"
+                alt=""
                 sx={{ width: 124, height: 124 }}
             />
             <Stack
@@ -46,11 +46,6 @@ const CheckinCard = ({
                     flexDirection="row"
                     gap={1}
                 >
-                    {emotion.map(({ name }) => <Chip key={name} label={name} variant="outlined" sx={{ width: "fit-content" }} />)}
-                    {emotion.map(({ name }) => <Chip key={name} label={name} variant="outlined" sx={{ width: "fit-content" }} />)}
-                    {emotion.map(({ name }) => <Chip key={name} label={name} variant="outlined" sx={{ width: "fit-content" }} />)}
-                    {emotion.map(({ name }) => <Chip key={name} label={name} variant="outlined" sx={{ width: "fit-content" }} />)}
-                    {emotion.map(({ name }) => <Chip key={name} label={name} variant="outlined" sx={{ width: "fit-content" }} />)}
                     {emotion.map(({ name }) => <Chip key={name} label={name} variant="outlined" sx={{ width: "fit-content" }} />)}
                 </Stack>
             </Stack>

@@ -12,7 +12,9 @@ const getCheckinsFromStorage = () => {
   if (!raw || raw === "undefined") return { checkinsList: [] };
 
   try {
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    // Old or hand-edited data might not have the expected shape — fall back to empty.
+    return Array.isArray(parsed?.checkinsList) ? parsed : { checkinsList: [] };
   } catch {
     return { checkinsList: [] };
   }
@@ -33,18 +35,12 @@ export const store = configureStore({
   preloadedState,
 });
 
-// persist on every change
-store.subscribe(() => {
-  if (isBrowser) {
-    store.subscribe(() => {
-      const state = store.getState();
-      localStorage.setItem(
-        "checkins",
-        JSON.stringify(state.checkins),
-      );
-    });
-  }
-});
+// Persist check-ins on every change. Temporary: replaced by the API in Phase 5.
+if (isBrowser) {
+  store.subscribe(() => {
+    localStorage.setItem("checkins", JSON.stringify(store.getState().checkins));
+  });
+}
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
