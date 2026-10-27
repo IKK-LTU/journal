@@ -22,6 +22,9 @@ describe("App", () => {
       </MemoryRouter>,
     );
     expect(screen.getByRole("heading", { name: "Ką dabar jauti?" })).toBeInTheDocument();
-    expect(screen.getByText("Išsigandęs")).toBeInTheDocument();
+    // All groups are visible at once: a subtitle per core feeling, and the core word as an option.
+    expect(screen.getByRole("heading", { name: "Išsigandęs" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Išsigandęs" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Atsipalaidavęs" })).toBeInTheDocument();
   });
 });
