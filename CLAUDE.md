@@ -10,7 +10,7 @@ api/     Go backend: net/http, pgx, goose (see api/README.md)
 infra/   docker-compose, Caddy, backups, deploy scripts   — coming in Phase 2–3
 ```
 
-Implementation plan: phases 0–5 (repo → FE cleanup → API skeleton → prod deploy → auth → check-ins).
+Roadmap and the design of the coming phases (deploy, auth for web + mobile, sync-ready check-ins API, PWA, Expo app): `docs/roadmap.md`.
 
 ## Dev environment
 
