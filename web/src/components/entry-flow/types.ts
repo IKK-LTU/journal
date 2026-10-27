@@ -1,16 +1,16 @@
-import type { CheckInDto } from "@/api/services/types";
+import type { EmotionRating } from "@/api/services/types";
 
-export type EmotionRating = CheckInDto["emotion"][number];
+export type { EmotionRating };
 
 /** What the user has filled in so far. Saved to localStorage as they type. */
 export type EntryDraft = {
   date: string;
   emotions: EmotionRating[];
+  place: string;
+  people: string[];
   situation: string;
   autoThought: string;
+  reactions: string[];
   behavior: string;
+  emotionAfter: EmotionRating[];
 };
-
-export const FLOW_STEPS = [1, 2, 3, 4] as const;
-export type FlowStep = (typeof FLOW_STEPS)[number];
-export const LAST_STEP: FlowStep = 4;

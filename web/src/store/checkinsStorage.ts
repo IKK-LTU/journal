@@ -9,10 +9,14 @@ type StoredState = { checkinsList: CheckInDto[] };
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
+const toStringArray = (value: unknown): string[] =>
+  Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+
 /**
  * Entries saved by older versions have a different shape:
  * - `autoThoughts` (string or string[]) instead of `autoThought: string`
  * - `id` built from the date (YYYYMMDD), so same-day entries share an id
+ * - no place / people / reactions / emotionAfter (added later) → empty defaults
  * This converts them to the current shape and drops anything unreadable.
  */
 const normalizeCheckins = (rawList: unknown[]): CheckInDto[] => {
@@ -41,6 +45,10 @@ const normalizeCheckins = (rawList: unknown[]): CheckInDto[] => {
       emotion: Array.isArray(raw.emotion) ? raw.emotion : [],
       autoThought,
       behavior: typeof raw.behavior === "string" ? raw.behavior : "",
+      place: typeof raw.place === "string" ? raw.place : "",
+      people: toStringArray(raw.people),
+      reactions: toStringArray(raw.reactions),
+      emotionAfter: Array.isArray(raw.emotionAfter) ? raw.emotionAfter : [],
     });
   });
 

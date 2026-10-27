@@ -5,6 +5,7 @@ import Login from "@/pages/login";
 import NewEntry from "@/pages/new-entry";
 import EntryDetail from "@/pages/entry-detail";
 import Settings from "@/pages/settings";
+import Insights from "@/pages/insights";
 import Welcome from "@/pages/welcome";
 import { ROUTES } from "./routes";
 
@@ -17,6 +18,7 @@ const Router = () => {
       <Route path={ROUTES.NEW_ENTRY.path} element={<NewEntry />} />
       <Route path={ROUTES.ENTRY.path} element={<EntryDetail />} />
       <Route path={ROUTES.SETTINGS.path} element={<Settings />} />
+      <Route path={ROUTES.INSIGHTS.path} element={<Insights />} />
 
       {/* Old URLs people may have bookmarked */}
       <Route path="/check-in-form" element={<Navigate to={ROUTES.NEW_ENTRY.path} replace />} />

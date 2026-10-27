@@ -9,13 +9,20 @@ const SAVE_DELAY_MS = 500;
 const createEmptyDraft = (date: string): EntryDraft => ({
   date,
   emotions: [],
+  place: "",
+  people: [],
   situation: "",
   autoThought: "",
+  reactions: [],
   behavior: "",
+  emotionAfter: [],
 });
 
 const hasContent = (draft: EntryDraft): boolean =>
-  draft.emotions.length > 0 || [draft.situation, draft.autoThought, draft.behavior].some((text) => text.trim() !== "");
+  draft.emotions.length > 0 ||
+  draft.people.length > 0 ||
+  draft.reactions.length > 0 ||
+  [draft.place, draft.situation, draft.autoThought, draft.behavior].some((text) => text.trim() !== "");
 
 const isEntryDraft = (value: unknown): value is EntryDraft => {
   if (typeof value !== "object" || value === null) return false;
@@ -23,12 +30,17 @@ const isEntryDraft = (value: unknown): value is EntryDraft => {
   return (
     typeof draft.date === "string" &&
     Array.isArray(draft.emotions) &&
+    typeof draft.place === "string" &&
+    Array.isArray(draft.people) &&
     typeof draft.situation === "string" &&
     typeof draft.autoThought === "string" &&
-    typeof draft.behavior === "string"
+    Array.isArray(draft.reactions) &&
+    typeof draft.behavior === "string" &&
+    Array.isArray(draft.emotionAfter)
   );
 };
 
+// Drafts saved by the older 4-step flow lack the new fields and are simply dropped.
 // localStorage can throw (private mode, blocked storage). A lost draft is acceptable; a crash isn't.
 const loadDraft = (): EntryDraft | null => {
   try {

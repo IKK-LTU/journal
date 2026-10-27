@@ -4,7 +4,6 @@ import { Box, Button, ButtonBase, InputBase, Typography } from "@mui/material";
 import { DEFAULT_INTENSITY, isSameEmotion, MAX_EMOTIONS_PER_ENTRY } from "@/constants/emotions";
 import CategoryList from "./CategoryList";
 import IntensityPicker from "./IntensityPicker";
-import StepTitle from "./StepTitle";
 import type { EmotionRating } from "./types";
 
 type Props = {
@@ -71,8 +70,6 @@ const EmotionStep = ({ emotions, emotionUsage, onChange, onError }: Props) => {
 
   return (
     <>
-      <StepTitle title="Ką jauti?" />
-
       {emotions.map((emotion) => (
         <Box key={emotion.name} sx={{ mb: 1.5, pt: 1.5, pr: 1, pb: 0.5, pl: 2, borderRadius: "12px", bgcolor: "background.paper" }}>
           <Box sx={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
