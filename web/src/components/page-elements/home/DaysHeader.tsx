@@ -8,8 +8,7 @@ import Title from "@/components/atoms/text/Title";
 
 import { WEEK_DAYS } from "@/constants/weekdays";
 import { checkinsSelectors } from "@/store/features/checkins";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
+import { useAppSelector } from "@/store/hooks";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
 import { toLocalDateString } from "@/utils/date";
@@ -22,7 +21,7 @@ const DaysHeader = () => {
 
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
-  const checkinsList = useSelector((state: RootState) =>
+  const checkinsList = useAppSelector((state) =>
     checkinsSelectors.selectCheckinsList(state)
   )
 

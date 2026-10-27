@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/store/hooks'
 import { checkinsSelectors } from '@/store/features/checkins'
-import { RootState } from "@/store/store";
 
 import { Button, Divider, IconButton, Stack, styled, Typography } from '@mui/material';
 import { Plus } from 'lucide-react';
@@ -17,7 +16,7 @@ import Header from '@/components/layouts/Header';
 const CheckinListPage = () => {
     const navigate = useNavigate();
 
-    const checkinsList = useSelector((state: RootState) =>
+    const checkinsList = useAppSelector((state) =>
         checkinsSelectors.selectCheckinsList(state)
     )
 

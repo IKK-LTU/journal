@@ -38,14 +38,15 @@ const CheckIn = () => {
     name: "",
     intensity: 0,
   });
+  // Errors for the "add emotion" row live outside the form: they're about the input
+  // being typed, not about the submitted data, so they must never block submit.
+  const [emotionInputError, setEmotionInputError] = useState<string | null>(null);
 
   const {
     control,
     register,
     handleSubmit,
     formState: { errors },
-    setError,
-    clearErrors,
   } = useForm<Inputs>({
     defaultValues: {
       situation: "",
@@ -58,6 +59,8 @@ const CheckIn = () => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "emotion",
+    // Validated by handleSubmit; error shows at errors.emotion.root.
+    rules: { required: "Privaloma užpildyti bent vieną emociją" },
   });
 
   const handleSliderChange = (_: Event, newValue: number | number[]) => {
@@ -68,35 +71,25 @@ const CheckIn = () => {
   };
 
   const handleAddEmotionToState = () => {
+    const name = emotionValues.name.trim();
+
+    if (!name || !emotionValues.intensity) {
+      return setEmotionInputError("Privaloma užpildyti");
+    }
+
     const isAlreadyAdded = fields.some(
-      ({ name }) => name.toLowerCase() === emotionValues.name.toLowerCase()
+      (field) => field.name.toLowerCase() === name.toLowerCase()
     );
     if (isAlreadyAdded) {
-      return setError("emotion", {
-        type: "manual",
-        message: "Tokia emocija jau pridėta",
-      });
+      return setEmotionInputError("Tokia emocija jau pridėta");
     }
 
-    if (!emotionValues?.intensity || !emotionValues?.name) {
-      return setError("emotion", {
-        type: "manual",
-        message: "Privaloma užpildyti",
-      });
-    }
-
-    append(emotionValues);
-    clearErrors("emotion");
+    append({ name, intensity: emotionValues.intensity });
+    setEmotionInputError(null);
     setEmotionValues({ name: "", intensity: 0 });
   };
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    if (!fields.length)
-      return setError("emotion", {
-        type: "manual",
-        message: "Privaloma užpildyti bent vieną emociją",
-      });
-
     dispatch(addCheckinItem({ ...data, date }));
 
     navigate(ROUTES.HOME.path);
@@ -140,7 +133,10 @@ const CheckIn = () => {
                 id={`emotion.name`}
                 value={emotionValues.name}
                 placeholder="Nerimas"
-                onChange={(e) => setEmotionValues(prev => ({ ...prev, name: e.target.value }))}
+                onChange={(e) => {
+                  setEmotionValues(prev => ({ ...prev, name: e.target.value }));
+                  setEmotionInputError(null);
+                }}
               />
             </Box>
 
@@ -187,7 +183,8 @@ const CheckIn = () => {
             ))}
           </Stack>
 
-          {errors.emotion?.message && <StyledErrors>{errors.emotion.message}</StyledErrors>}
+          {emotionInputError && <StyledErrors>{emotionInputError}</StyledErrors>}
+          {errors.emotion?.root?.message && <StyledErrors>{errors.emotion.root.message}</StyledErrors>}
         </StyledFieldWrapper>
 
         <StyledFieldWrapper>

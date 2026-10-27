@@ -332,8 +332,8 @@ const Welcome = () => {
                 </TrustIconWrap>
                 <TrustTitle>Private by default</TrustTitle>
                 <TrustBody>
-                  Only you can read your entries. They're encrypted in transit and
-                  at rest, and you can export or delete everything at any time.
+                  Your entries are for you alone. No ads, and your journal is never
+                  sold or shared with anyone.
                 </TrustBody>
               </TrustItem>
 
