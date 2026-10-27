@@ -9,7 +9,7 @@ pnpm dev          # Vite dev server at http://localhost:5173 (/api proxied to :8
 pnpm build        # Type-check + build static SPA into dist/
 pnpm typecheck    # tsc -b only
 pnpm lint         # ESLint (flat config)
-pnpm test         # Jest
+pnpm test         # Jest (unit + smoke tests)
 ```
 
 Run a single test file:
@@ -29,11 +29,11 @@ Entry point: `src/main.tsx`.
 Always use `toLocalDateString` / `getTodayDateString` from `src/utils/date.ts` for `YYYY-MM-DD` dates. Never `toISOString().slice(0, 10)` — that's UTC and shifts late-night entries to the previous day.
 
 ### Path alias
-`@/` maps to `src/`. Use it for all internal imports.
+`@/` maps to `src/`. Use it for imports across folders; files in the same folder import each other relatively (`./EntryCard`).
 
 ### Routing
 React Router DOM. Routes are in `src/router/routes.ts` (`ROUTES`, `getEntryPath`, router-state types), wired in `src/router/index.tsx`.
-Screens: `/` welcome, `/login`, `/home` (feed), `/new-entry` (4-step flow), `/entry/:id`, `/settings`.
+Screens: `/` welcome, `/login`, `/home` (feed + week insight card), `/new-entry` (7-step flow, `components/entry-flow/steps.ts`), `/entry/:id`, `/insights`, `/settings`.
 
 ### State management
 Redux Toolkit:
@@ -42,9 +42,10 @@ Redux Toolkit:
 
 Use typed hooks from `src/store/hooks.ts` (`useAppDispatch`, `useAppSelector`).
 The new-entry flow keeps its own draft (`components/entry-flow/useEntryDraft.ts`, autosaved to localStorage) and validates per step with the pure `validateStep()`.
+Insights are pure functions in `utils/insights.ts`; feelings come from the Lithuanian Feelings Wheel in `constants/emotions.ts`.
 
 ### Data types
-`CheckInDto` (`src/api/services/types.ts`): `id`, `date` (local YYYY-MM-DD), `createdAt` (ISO), `situation`, `emotion[]` (name + intensity 1–10), `autoThought`, `behavior` (last two may be empty).
+`CheckInDto` (`src/api/services/types.ts`): `id`, `date` (local YYYY-MM-DD), `createdAt` (ISO), `emotion[]` (name + intensity 1–10), `place`, `people[]`, `situation`, `autoThought`, `reactions[]`, `behavior`, `emotionAfter[]`. Everything except `emotion` and `situation` may be empty. Old stored entries are normalized in `store/checkinsStorage.ts`.
 
 ### Design & theming
 - Minimal "paper journal", same palette as the landing page. Tokens live in `theme.ts` (MUI `colorSchemes`, CSS variables, class on `<html>`).
@@ -63,4 +64,4 @@ src/components/
 Pages in `src/pages/` compose these.
 
 ### Testing
-Jest + jsdom + Testing Library. CSS imports are proxied via `identity-obj-proxy`; other static assets via `__mocks__/fileMock.cjs`. Tests use `tsconfig.app.json` for TS compilation.
+Jest + jsdom + Testing Library. ts-jest only transpiles (CommonJS settings in `jest.config.cjs`); type checking is `pnpm typecheck`. `jest.setup.cjs` polyfills TextEncoder and matchMedia. Tests sit next to the code (`*.test.ts`).

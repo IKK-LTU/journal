@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Box, ButtonBase, Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -10,7 +10,7 @@ import FlowFooter from "@/components/entry-flow/FlowFooter";
 import FlowHeader from "@/components/entry-flow/FlowHeader";
 import ReRateStep from "@/components/entry-flow/ReRateStep";
 import StepTitle from "@/components/entry-flow/StepTitle";
-import { FLOW_STEPS, LAST_STEP_INDEX, STEP_COPY } from "@/components/entry-flow/steps";
+import { FLOW_STEPS, LAST_STEP_INDEX, STEP_COPY, type StepId } from "@/components/entry-flow/steps";
 import TextArea from "@/components/entry-flow/TextArea";
 import TextStep from "@/components/entry-flow/TextStep";
 import type { EmotionRating, EntryDraft } from "@/components/entry-flow/types";
@@ -25,6 +25,15 @@ import { DAY_FORMS, pluralizeLt } from "@/utils/plural";
 import { countStreakDays } from "@/utils/streak";
 
 const AUTO_ADVANCE_DELAY_MS = 300;
+
+/** "Praleisti" = no answer to this question, even if something was picked before going back. */
+const SKIPPED_ANSWER: Partial<Record<StepId, Partial<EntryDraft>>> = {
+  place: { place: "" },
+  people: { people: [] },
+  thought: { autoThought: "" },
+  reaction: { reactions: [], behavior: "" },
+  after: { emotionAfter: [] },
+};
 
 /** Toast after saving: celebrate a drop in intensity first, then a streak, then a first entry. */
 const getSavedMessage = (draft: EntryDraft, datesWithEntries: string[]): string => {
@@ -63,6 +72,10 @@ const NewEntry = () => {
 
   const [stepIndex, setStepIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  // Don't fire a pending auto-advance after leaving the page.
+  useEffect(() => () => clearTimeout(autoAdvanceTimer.current), []);
 
   const step = FLOW_STEPS[stepIndex];
   const copy = STEP_COPY[step];
@@ -92,6 +105,7 @@ const NewEntry = () => {
   };
 
   const showStep = (index: number) => {
+    clearTimeout(autoAdvanceTimer.current);
     setError(null);
     // Entering the re-rate step: start from the step-1 ratings.
     if (FLOW_STEPS[index] === "after") {
@@ -111,18 +125,27 @@ const NewEntry = () => {
   };
 
   const handleSkip = () => {
-    // Skipping the re-rate means "no after ratings", not "same as before".
-    if (isLastStep) save({ ...draft, emotionAfter: [] });
-    else showStep(stepIndex + 1);
+    const cleared = SKIPPED_ANSWER[step] ?? {};
+    if (isLastStep) {
+      save({ ...draft, ...cleared });
+      return;
+    }
+    updateDraft(cleared);
+    showStep(stepIndex + 1);
   };
 
   const pickPlace = (selected: string[]) => {
     const place = selected[0] ?? "";
     updateDraft({ place });
-    // Single answer → move on by itself. Functional update: only advance if still on this step.
+    // Single answer → move on by itself, after a short pause so the ✓ is seen.
+    // The next step is "people", so a plain index change is enough (no re-rate sync needed).
+    clearTimeout(autoAdvanceTimer.current);
     if (place) {
       const placeIndex = stepIndex;
-      setTimeout(() => setStepIndex((current) => (current === placeIndex ? current + 1 : current)), AUTO_ADVANCE_DELAY_MS);
+      autoAdvanceTimer.current = setTimeout(() => {
+        setError(null);
+        setStepIndex((current) => (current === placeIndex ? current + 1 : current));
+      }, AUTO_ADVANCE_DELAY_MS);
     }
   };
 

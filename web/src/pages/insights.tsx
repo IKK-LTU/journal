@@ -24,6 +24,16 @@ import {
 } from "@/utils/insights";
 import { ENTRY_FORMS, pluralizeLt } from "@/utils/plural";
 
+/** Changes smaller than this round to "0.0" and aren't worth calling a change. */
+const MEANINGFUL_CHANGE = 0.1;
+
+/** Honest wording for the average change after writing — it can also go up. */
+const describeDrop = (average: number): string => {
+  if (average >= MEANINGFUL_CHANGE) return `sumažėja ${average.toFixed(1)} balo`;
+  if (average <= -MEANINGFUL_CHANGE) return `sustiprėja ${Math.abs(average).toFixed(1)} balo`;
+  return "beveik nepasikeičia";
+};
+
 /** "Visi" still draws the trend over a readable window. */
 const ALL_TIME_TREND_DAYS = 30;
 
@@ -71,8 +81,8 @@ const Insights = () => {
           <Section title="Po įrašo">
             <Typography sx={{ fontSize: 17 }}>
               Užrašius jausmai vidutiniškai{" "}
-              <Box component="span" sx={{ color: "primary.main", fontWeight: 600 }}>
-                {drop.average > 0 ? `sumažėja ${drop.average.toFixed(1)} balo` : "nepasikeičia"}
+              <Box component="span" sx={{ fontWeight: 600, color: drop.average >= MEANINGFUL_CHANGE ? "primary.main" : "text.primary" }}>
+                {describeDrop(drop.average)}
               </Box>
               .
             </Typography>

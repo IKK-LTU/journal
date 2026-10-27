@@ -69,7 +69,9 @@ const dominantCoreByContext = (entries: CheckInDto[], getContexts: (entry: Check
     const strongest = strongestEmotion(entry.emotion);
     if (!strongest) continue;
     for (const context of getContexts(entry)) {
-      coresByContext.set(context, [...(coresByContext.get(context) ?? []), coreOf(strongest.name)]);
+      const cores = coresByContext.get(context) ?? [];
+      cores.push(coreOf(strongest.name));
+      coresByContext.set(context, cores);
     }
   }
 

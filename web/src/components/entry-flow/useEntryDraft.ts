@@ -24,29 +24,37 @@ const hasContent = (draft: EntryDraft): boolean =>
   draft.reactions.length > 0 ||
   [draft.place, draft.situation, draft.autoThought, draft.behavior].some((text) => text.trim() !== "");
 
-const isEntryDraft = (value: unknown): value is EntryDraft => {
-  if (typeof value !== "object" || value === null) return false;
-  const draft = value as Record<string, unknown>;
-  return (
-    typeof draft.date === "string" &&
-    Array.isArray(draft.emotions) &&
-    typeof draft.place === "string" &&
-    Array.isArray(draft.people) &&
-    typeof draft.situation === "string" &&
-    typeof draft.autoThought === "string" &&
-    Array.isArray(draft.reactions) &&
-    typeof draft.behavior === "string" &&
-    Array.isArray(draft.emotionAfter)
-  );
+const asString = (value: unknown): string => (typeof value === "string" ? value : "");
+const asArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : []);
+
+/**
+ * Turns whatever is in storage into a valid draft. Fields added later (place, people, …)
+ * get empty defaults, so a draft from an older app version keeps the text the user already wrote.
+ */
+const toEntryDraft = (value: unknown): EntryDraft | null => {
+  if (typeof value !== "object" || value === null) return null;
+  const raw = value as Record<string, unknown>;
+  if (typeof raw.date !== "string") return null;
+
+  return {
+    date: raw.date,
+    emotions: asArray(raw.emotions),
+    place: asString(raw.place),
+    people: asArray(raw.people),
+    situation: asString(raw.situation),
+    autoThought: asString(raw.autoThought),
+    reactions: asArray(raw.reactions),
+    behavior: asString(raw.behavior),
+    emotionAfter: asArray(raw.emotionAfter),
+  };
 };
 
-// Drafts saved by the older 4-step flow lack the new fields and are simply dropped.
 // localStorage can throw (private mode, blocked storage). A lost draft is acceptable; a crash isn't.
 const loadDraft = (): EntryDraft | null => {
   try {
     const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
-    const parsed: unknown = raw ? JSON.parse(raw) : null;
-    return isEntryDraft(parsed) && hasContent(parsed) ? parsed : null;
+    const draft = toEntryDraft(raw ? JSON.parse(raw) : null);
+    return draft && hasContent(draft) ? draft : null;
   } catch {
     return null;
   }

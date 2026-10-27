@@ -75,17 +75,6 @@ const selectDatesWithEntries = createSelector([selectCheckinsList], (list): stri
   ...new Set(list.map((entry) => entry.date)),
 ]);
 
-/** Emotion name → how many entries used it. Drives "most used first" in the picker. */
-const selectEmotionUsage = createSelector([selectCheckinsList], (list): Record<string, number> => {
-  const usage: Record<string, number> = {};
-  for (const entry of list) {
-    for (const emotion of entry.emotion) {
-      usage[emotion.name] = (usage[emotion.name] ?? 0) + 1;
-    }
-  }
-  return usage;
-});
-
 /** answer → how many entries used it, for one multi-value field. */
 const countAnswers = (list: CheckInDto[], getAnswers: (entry: CheckInDto) => string[]): Record<string, number> => {
   const usage: Record<string, number> = {};
@@ -97,6 +86,10 @@ const countAnswers = (list: CheckInDto[], getAnswers: (entry: CheckInDto) => str
   return usage;
 };
 
+/** Emotion name → how many times used. Drives "most used first" in the picker. */
+const selectEmotionUsage = createSelector([selectCheckinsList], (list) =>
+  countAnswers(list, (entry) => entry.emotion.map((emotion) => emotion.name)),
+);
 const selectPlaceUsage = createSelector([selectCheckinsList], (list) => countAnswers(list, (entry) => [entry.place]));
 const selectPeopleUsage = createSelector([selectCheckinsList], (list) => countAnswers(list, (entry) => entry.people));
 const selectReactionUsage = createSelector([selectCheckinsList], (list) => countAnswers(list, (entry) => entry.reactions));

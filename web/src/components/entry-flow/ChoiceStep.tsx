@@ -21,9 +21,10 @@ const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1
 const ChoiceStep = ({ options, selected, isMultiple, onChange, exclusiveOption, customLabel, children }: Props) => {
   const [isAddingCustom, setIsAddingCustom] = useState(false);
   const [customValue, setCustomValue] = useState("");
+  // Custom answers typed in this session stay visible even after deselecting them.
+  const [addedCustoms, setAddedCustoms] = useState<string[]>([]);
 
-  // A custom answer typed in this session isn't in `options` yet — show it too.
-  const allOptions = [...new Set([...options, ...selected])];
+  const allOptions = [...new Set([...options, ...addedCustoms, ...selected])];
 
   const toggle = (option: string) => {
     const isSelected = selected.includes(option);
@@ -47,6 +48,7 @@ const ChoiceStep = ({ options, selected, isMultiple, onChange, exclusiveOption, 
     event.preventDefault();
     const value = capitalize(customValue.trim());
     if (value.length < 2) return;
+    setAddedCustoms((previous) => [...previous, value]);
     if (!selected.includes(value)) toggle(value);
     setCustomValue("");
     setIsAddingCustom(false);
