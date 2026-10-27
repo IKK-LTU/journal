@@ -1,66 +1,77 @@
-import { BatteryLow, CircleDot, CloudRain, Flame, Frown, Sparkles, Sun, Zap, type LucideIcon } from "lucide-react";
+import { CircleDot, CloudRain, Flame, Leaf, Mountain, Sun, Zap, type LucideIcon } from "lucide-react";
 
 export const MAX_EMOTIONS_PER_ENTRY = 5;
 export const DEFAULT_INTENSITY = 5;
 
 export type EmotionCategory = {
-  /** Core feeling, also selectable on its own ("just fear"). */
+  /** Core feeling, also selectable on its own. */
   name: string;
   icon: LucideIcon;
-  /** More specific feelings in this family. */
+  /** Precise feelings: the wheel's inner ring first, then the outer ring. */
   feelings: string[];
+  /** Words used by earlier app versions, so old entries still get this category's icon. Not shown in the picker. */
+  legacyNames: string[];
 };
 
 /**
- * Based on the Feelings Wheel (Geoffrey Roberts): 7 core feelings, each with more precise ones.
- * Naming the precise feeling ("nesaugumas" instead of just "blogai") is the point of the exercise.
- * Order: difficult feelings first — that's what people usually come to write about.
+ * "Jausmų ratas" — the Lithuanian Feelings Wheel (based on Gloria Willcox): 6 core feelings, 2 rings around each.
+ * Words are kept exactly as on the wheel (masculine form) — a product decision.
+ * Order: difficult feelings first, since that's what people usually come to write about.
  */
 export const EMOTION_CATEGORIES: EmotionCategory[] = [
   {
-    name: "Baimė",
+    name: "Išsigandęs",
     icon: Zap,
-    feelings: ["Nerimas", "Išgąstis", "Nesaugumas", "Silpnumas", "Atstūmimas", "Grėsmė"],
+    feelings: [
+      "Neramus", "Nesaugus", "Paklusnus", "Bejėgis", "Atstumtas", "Sumišęs",
+      "Priblokštas", "Nuliūdęs", "Nepilnavertis", "Nereikšmingas", "Atgrasus", "Pasipiktinęs",
+    ],
+    legacyNames: ["Nerimas", "Baimė"],
   },
   {
-    name: "Liūdesys",
+    name: "Liūdnas",
     icon: CloudRain,
-    feelings: ["Vienišumas", "Pažeidžiamumas", "Neviltis", "Kaltė", "Gėda", "Prislėgtumas", "Nuoskauda"],
+    feelings: [
+      "Pavargęs", "Nuobodus", "Vienišas", "Prislėgtas", "Sugėdintas", "Kaltas",
+      "Mieguistas", "Apatiškas", "Izoliuotas", "Menkesnis", "Kvailas", "Atgailaujantis",
+    ],
+    legacyNames: ["Liūdesys", "Gėda", "Kaltė", "Nuovargis", "Vienišumas"],
   },
   {
-    name: "Pyktis",
+    name: "Piktas",
     icon: Flame,
-    feelings: ["Apvylimas", "Pažeminimas", "Kartėlis", "Įniršis", "Agresija", "Frustracija", "Atšalimas", "Kritiškumas"],
+    feelings: [
+      "Sužeistas", "Priešiškas", "Įniršęs", "Savanaudis", "Žiaurus", "Kritiškas",
+      "Atitolęs", "Sarkastiškas", "Nusivylęs", "Šėlęs", "Pavydus", "Sudirgęs", "Skeptiškas",
+    ],
+    legacyNames: ["Pyktis", "Nusivylimas"],
   },
   {
-    name: "Blogai",
-    icon: BatteryLow,
-    feelings: ["Nuobodulys", "Skubėjimas", "Stresas", "Nuovargis"],
-  },
-  {
-    name: "Pasibjaurėjimas",
-    icon: Frown,
-    feelings: ["Nepritarimas", "Nusivylimas", "Pasišlykštėjimas", "Atgrasumas"],
-  },
-  {
-    name: "Nustebimas",
-    icon: Sparkles,
-    feelings: ["Sukrėtimas", "Sumišimas", "Nuostaba", "Jaudulys"],
-  },
-  {
-    name: "Džiaugsmas",
+    name: "Laimingas",
     icon: Sun,
     feelings: [
-      "Ramybė",
-      "Dėkingumas",
-      "Pasitenkinimas",
-      "Smalsumas",
-      "Pasididžiavimas",
-      "Pasitikėjimas",
-      "Optimizmas",
-      "Žaismingumas",
-      "Stiprybė",
+      "Susijaudinęs", "Jausmingas", "Energingas", "Linksmas", "Kūrybingas", "Viltingas",
+      "Patrauklus", "Skatinantis", "Linksminantis", "Žaismingas", "Optimistiškas", "Stebinantis",
     ],
+    legacyNames: ["Džiaugsmas"],
+  },
+  {
+    name: "Drąsus",
+    icon: Mountain,
+    feelings: [
+      "Užtikrintas", "Išdidus", "Gerbiamas", "Vertinamas", "Svarbus", "Ištikimas",
+      "Įsitikinęs", "Vertingas", "Nusipelnęs", "Sėkmingas",
+    ],
+    legacyNames: [],
+  },
+  {
+    name: "Ramus",
+    icon: Leaf,
+    feelings: [
+      "Puoselėjantis", "Pasitikintis", "Mylintis", "Artimas", "Sąmoningas", "Pasitikintis savimi",
+      "Dėkingas", "Saugus", "Reaguojantis", "Mąstantis", "Atsipalaidavęs",
+    ],
+    legacyNames: ["Ramybė", "Dėkingumas"],
   },
 ];
 
@@ -68,9 +79,8 @@ export const isSameEmotion = (a: string, b: string): boolean => a.trim().toLower
 
 /** Which core feeling an emotion belongs to. Custom emotions the user typed → undefined. */
 export const findEmotionCategory = (emotionName: string): EmotionCategory | undefined =>
-  EMOTION_CATEGORIES.find(
-    (category) =>
-      isSameEmotion(category.name, emotionName) || category.feelings.some((feeling) => isSameEmotion(feeling, emotionName)),
+  EMOTION_CATEGORIES.find((category) =>
+    [category.name, ...category.feelings, ...category.legacyNames].some((name) => isSameEmotion(name, emotionName)),
   );
 
 /** Icon of the emotion's core feeling; custom emotions get a neutral dot. */
