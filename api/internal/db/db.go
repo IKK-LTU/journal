@@ -45,8 +45,9 @@ func Migrate(ctx context.Context, pool *pgxpool.Pool, logger *slog.Logger) error
 	}
 
 	// goose works with database/sql; this wraps our pgx pool without opening new connections.
+	// Closing it does NOT close the pool (pgx docs), and nothing useful can be done if it fails.
 	sqlDB := stdlib.OpenDBFromPool(pool)
-	defer sqlDB.Close()
+	defer func() { _ = sqlDB.Close() }()
 
 	provider, err := goose.NewProvider(goose.DialectPostgres, sqlDB, migrations)
 	if err != nil {

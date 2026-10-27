@@ -20,7 +20,7 @@ var quietLogger = slog.New(slog.NewTextHandler(io.Discard, nil))
 func serve(t *testing.T, handler http.Handler, method, path string) *httptest.ResponseRecorder {
 	t.Helper()
 	recorder := httptest.NewRecorder()
-	handler.ServeHTTP(recorder, httptest.NewRequest(method, path, nil))
+	handler.ServeHTTP(recorder, httptest.NewRequestWithContext(t.Context(), method, path, nil))
 	return recorder
 }
 
