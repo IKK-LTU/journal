@@ -6,7 +6,7 @@ import { clearUser, setUser } from "@/store/features/user";
 // Define a service using a base URL and expected endpoints
 export const usersApi = createApi({
   reducerPath: "usersApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8080" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
   endpoints: (builder) => ({
     getUserById: builder.query<UserDto, { id: number }>({
       query: ({ id }) => `/users/${id}`,

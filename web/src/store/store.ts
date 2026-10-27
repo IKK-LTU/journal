@@ -2,24 +2,10 @@ import { usersApi } from "@/api/services/userApi";
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./features/user";
 import checkinsListReducer from "./features/checkins";
-
-const isBrowser = typeof window !== "undefined";
-
-const getCheckinsFromStorage = () => {
-  if (!isBrowser) return { checkinsList: [] };
-
-  const raw = localStorage.getItem("checkins");
-  if (!raw || raw === "undefined") return { checkinsList: [] };
-
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return { checkinsList: [] };
-  }
-};
+import { loadCheckins, saveCheckins } from "./checkinsStorage";
 
 const preloadedState = {
-  checkins: getCheckinsFromStorage(),
+  checkins: loadCheckins(),
 };
 
 export const store = configureStore({
@@ -33,18 +19,10 @@ export const store = configureStore({
   preloadedState,
 });
 
-// persist on every change
-store.subscribe(() => {
-  if (isBrowser) {
-    store.subscribe(() => {
-      const state = store.getState();
-      localStorage.setItem(
-        "checkins",
-        JSON.stringify(state.checkins),
-      );
-    });
-  }
-});
+// Persist check-ins on every change. Temporary: replaced by the API in Phase 5.
+if (typeof window !== "undefined") {
+  store.subscribe(() => saveCheckins(store.getState().checkins));
+}
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;

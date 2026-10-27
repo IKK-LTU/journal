@@ -1,41 +1,44 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-// import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { CheckInDto } from "@/api/services/types";
 
-// Define a type for the slice state
+export type NewCheckIn = Omit<CheckInDto, "id" | "createdAt">;
+
+export type DayGroup = {
+  date: string;
+  entries: CheckInDto[];
+};
+
 interface CheckinsListState {
   checkinsList: Array<CheckInDto>;
 }
 
-// Define the initial state using that type
 const initialState: CheckinsListState = {
   checkinsList: [],
 };
 
-const backendDataMocked = {
-  createdAt: new Date().toISOString(),
-};
-
 export const checkinsListSlice = createSlice({
   name: "checkins",
-  // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    addCheckinItem(
-      state,
-      action: PayloadAction<
-        Pick<
-          CheckInDto,
-          "id" | "situation" | "emotion" | "autoThoughts" | "behavior" | "date"
-        >
-      >,
-    ) {
-      console.log("checkinsList siu", state);
-      state.checkinsList.push({ ...action.payload, ...backendDataMocked });
+    addCheckinItem: {
+      reducer(state, action: PayloadAction<CheckInDto>) {
+        state.checkinsList.push(action.payload);
+      },
+      // `prepare` runs before the reducer, so the reducer stays pure.
+      // id and createdAt are generated here — per entry, not once per app load.
+      prepare(newCheckIn: NewCheckIn) {
+        return {
+          payload: {
+            ...newCheckIn,
+            id: crypto.randomUUID(),
+            createdAt: new Date().toISOString(),
+          },
+        };
+      },
     },
-    setCheckinsList(state, action: PayloadAction<CheckInDto>) {
-      state.checkinsList.push(action.payload);
+    removeCheckinItem(state, action: PayloadAction<string>) {
+      state.checkinsList = state.checkinsList.filter((item) => item.id !== action.payload);
     },
     clearCheckinsList(state) {
       state.checkinsList = [];
@@ -43,18 +46,52 @@ export const checkinsListSlice = createSlice({
   },
 });
 
-export const { setCheckinsList, clearCheckinsList, addCheckinItem } =
-  checkinsListSlice.actions;
+export const { clearCheckinsList, addCheckinItem, removeCheckinItem } = checkinsListSlice.actions;
 
-// Other code such as selectors can use the imported `RootState` type
-// export const selectCheckinsList = (state: RootState) => state.checkins;
+const selectCheckinsList = (state: RootState) => state.checkins.checkinsList;
+
+// createSelector memoizes: these only recompute when the list itself changes,
+// so components don't re-render on unrelated store updates.
+
+/** Newest day first; inside a day, newest entry first. */
+const selectEntriesGroupedByDay = createSelector([selectCheckinsList], (list): DayGroup[] => {
+  const sorted = [...list].sort((a, b) =>
+    a.date === b.date ? b.createdAt.localeCompare(a.createdAt) : b.date.localeCompare(a.date),
+  );
+
+  const groups: DayGroup[] = [];
+  for (const entry of sorted) {
+    const lastGroup = groups[groups.length - 1];
+    if (lastGroup && lastGroup.date === entry.date) {
+      lastGroup.entries.push(entry);
+    } else {
+      groups.push({ date: entry.date, entries: [entry] });
+    }
+  }
+  return groups;
+});
+
+const selectDatesWithEntries = createSelector([selectCheckinsList], (list): string[] => [
+  ...new Set(list.map((entry) => entry.date)),
+]);
+
+/** Emotion name → how many entries used it. Drives "most used first" in the picker. */
+const selectEmotionUsage = createSelector([selectCheckinsList], (list): Record<string, number> => {
+  const usage: Record<string, number> = {};
+  for (const entry of list) {
+    for (const emotion of entry.emotion) {
+      usage[emotion.name] = (usage[emotion.name] ?? 0) + 1;
+    }
+  }
+  return usage;
+});
 
 export const checkinsSelectors = {
-  selectCheckinsList: (state: RootState) => state.checkins.checkinsList,
-
-  // get items by date
-  getItemByDate: (state: RootState, date: string) =>
-    state.checkins.checkinsList.filter((item) => item.date === date),
+  selectCheckinsList,
+  selectEntriesGroupedByDay,
+  selectDatesWithEntries,
+  selectEmotionUsage,
+  selectEntryById: (state: RootState, id: string) => state.checkins.checkinsList.find((item) => item.id === id),
 };
 
 export default checkinsListSlice.reducer;

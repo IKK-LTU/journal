@@ -48,10 +48,10 @@ const Welcome = () => {
         />
       </BgSvg>
 
-      <Nav aria-label="Site navigation">
+      <Nav aria-label="Svetainės navigacija">
         <NavInner>
           <NavBrand>Joyful Thoughts</NavBrand>
-          <NavLink onClick={goToLogin}>Start journaling</NavLink>
+          <NavLink onClick={goToLogin}>Pradėti rašyti</NavLink>
         </NavInner>
       </Nav>
 
@@ -61,41 +61,38 @@ const Welcome = () => {
         <Hero>
           <Wrap>
             <HeroHeadline>
-              The thought that's been on your mind — it's worth a second look.
+              Mintis, kuri neduoda ramybės, verta antro žvilgsnio.
             </HeroHeadline>
             <HeroSub>
-              A journal for two kinds of moments: when something's weighing on you,
-              and when something's worth remembering.
+              Dienoraštis dviem akimirkoms: kai kažkas slegia ir kai kažką verta prisiminti.
             </HeroSub>
 
             <HeroActions>
-              <CtaBtn onClick={goToLogin}>Start journaling</CtaBtn>
+              <CtaBtn onClick={goToLogin}>Pradėti rašyti</CtaBtn>
             </HeroActions>
 
             <CardsPreview>
               <EntryCard>
-                <EntryTag variant="difficult">Difficult moment</EntryTag>
+                <EntryTag variant="difficult">Sunki akimirka</EntryTag>
                 <EntrySituation>
-                  "I presented my work and no one reacted. The whole meeting felt
-                  off — I must have said something wrong."
+                  „Pristačiau savo darbą ir niekas nesureagavo. Visas susitikimas buvo keistas – turbūt pasakiau kažką ne taip.“
                 </EntrySituation>
                 <EntryChips>
-                  <Chip variant="emotion">Anxiety · 78</Chip>
-                  <Chip variant="distortion">Mind reading</Chip>
+                  <Chip variant="emotion">Nerimas · 7</Chip>
+                  <Chip variant="distortion">Minčių skaitymas</Chip>
                 </EntryChips>
-                <EntryFooter>Step 4 of 7 — What pattern is at play?</EntryFooter>
+                <EntryFooter>Žingsnis 4 iš 7 – kokie mąstymo spąstai čia veikia?</EntryFooter>
               </EntryCard>
 
               <EntryCard>
-                <EntryTag variant="good">Good moment</EntryTag>
+                <EntryTag variant="good">Gera akimirka</EntryTag>
                 <EntrySituation>
-                  "My sister called just to check in. We talked for an hour
-                  without realising it."
+                  „Sesuo paskambino tiesiog pasiteirauti, kaip laikausi. Net nepastebėjome, kaip prakalbėjome valandą.“
                 </EntrySituation>
                 <EntryChips>
-                  <Chip variant="emotion">Warmth · 84</Chip>
+                  <Chip variant="emotion">Šiluma · 8</Chip>
                 </EntryChips>
-                <EntryFooter>It reminded me I'm not navigating this alone.</EntryFooter>
+                <EntryFooter>Priminė, kad turiu į ką atsiremti.</EntryFooter>
               </EntryCard>
             </CardsPreview>
           </Wrap>
@@ -104,58 +101,52 @@ const Welcome = () => {
         {/* ── How it works ─────────────────────────────────────────────────── */}
         <HowItWorks>
           <Wrap>
-            <SectionHead>How it works</SectionHead>
+            <SectionHead>Kaip tai veikia</SectionHead>
             <HowIntro>
-              Without a journal, the same thought loops for days — same trigger,
-              same spiral, nothing new learned. With one entry, the work is done once.
-              The next time that moment comes up, the reframe is already there.
+              Be dienoraščio ta pati mintis sukasi dienų dienas – tas pats dirgiklis, ta pati spiralė, nieko naujo. Vienas įrašas – ir darbas padarytas. Kai ta akimirka pasikartos, naujas požiūris jau bus po ranka.
             </HowIntro>
             <HowFlow>
               <HowStep>
                 <HowStepNum>01</HowStepNum>
-                <HowStepTitle>Something weighs on you</HowStepTitle>
-                <HowStepBody>A comment lands wrong. A worry starts looping. A moment that didn't go the way you hoped.</HowStepBody>
+                <HowStepTitle>Kažkas slegia</HowStepTitle>
+                <HowStepBody>Kažkieno žodžiai užkliuvo. Nerimas ima suktis ratu. Akimirka nepavyko taip, kaip tikėjaisi.</HowStepBody>
               </HowStep>
               <HowStep>
                 <HowStepNum>02</HowStepNum>
-                <HowStepTitle>You write it down</HowStepTitle>
-                <HowStepBody>Describe the situation. Name the emotion and rate it. Three sentences is enough to start.</HowStepBody>
+                <HowStepTitle>Užrašai</HowStepTitle>
+                <HowStepBody>Aprašai situaciją. Įvardiji emociją ir jos stiprumą. Pradžiai užtenka trijų sakinių.</HowStepBody>
               </HowStep>
               <HowStep>
                 <HowStepNum>03</HowStepNum>
-                <HowStepTitle>Name the pattern</HowStepTitle>
-                <HowStepBody>The journal surfaces the distortion at play — mind reading, catastrophizing, all-or-nothing thinking.</HowStepBody>
+                <HowStepTitle>Atpažįsti spąstus</HowStepTitle>
+                <HowStepBody>Dienoraštis padeda pastebėti, koks iškraipymas veikia – minčių skaitymas, katastrofizavimas, „viskas arba nieko“ mąstymas.</HowStepBody>
               </HowStep>
               <HowStep>
                 <HowStepNum>04</HowStepNum>
-                <HowStepTitle>Write the balanced thought</HowStepTitle>
-                <HowStepBody>Not forced positivity. Just what's more accurate than what the spiral told you.</HowStepBody>
+                <HowStepTitle>Užrašai subalansuotą mintį</HowStepTitle>
+                <HowStepBody>Ne priverstinis pozityvumas. Tiesiog tai, kas tiksliau nei tai, ką kuždėjo spiralė.</HowStepBody>
               </HowStep>
             </HowFlow>
 
             <HowBottom>
               <HowRecord>
-                <HowRecordLabel>Thought record · Jul 14</HowRecordLabel>
+                <HowRecordLabel>Minčių įrašas · liepos 14 d.</HowRecordLabel>
                 <HowRecordSituation>
-                  "I presented my work and no one reacted. The whole meeting felt
-                  off — I must have said something wrong."
+                  „Pristačiau savo darbą ir niekas nesureagavo. Visas susitikimas buvo keistas – turbūt pasakiau kažką ne taip.“
                 </HowRecordSituation>
                 <HowRecordReframe>
-                  The quiet in that room is just how that team listens.
-                  I covered the material. Silence isn't the same as disapproval.
+                  Tyla tame kambaryje – tiesiog taip ta komanda klauso. Viską pristačiau. Tyla nėra nepritarimas.
                 </HowRecordReframe>
                 <EntryChips>
-                  <Chip variant="distortion">Mind reading</Chip>
-                  <HowRecordScore>Anxiety 78 → 41</HowRecordScore>
+                  <Chip variant="distortion">Minčių skaitymas</Chip>
+                  <HowRecordScore>Nerimas 8 → 4</HowRecordScore>
                 </EntryChips>
               </HowRecord>
 
               <HowNext>
-                <HowNextLine>Same trigger, three weeks later.</HowNextLine>
+                <HowNextLine>Tas pats dirgiklis po trijų savaičių.</HowNextLine>
                 <HowNextBody>
-                  You open the card. The reframe is right there — you did the hard
-                  work once, when you were calm enough to think clearly. This time
-                  you just read it. The spiral doesn't get started.
+                  Atsidarai kortelę. Naujas požiūris jau čia – sunkų darbą atlikai vieną kartą, kai galėjai ramiai ir aiškiai mąstyti. Šįkart tik perskaitai. Spiralė net neprasideda.
                 </HowNextBody>
               </HowNext>
             </HowBottom>
@@ -165,7 +156,7 @@ const Welcome = () => {
         {/* ── Why it works — 4 archetype theory cards ──────────────────────── */}
         <Theories>
           <Wrap>
-            <SectionHead>Why it works for different kinds of minds</SectionHead>
+            <SectionHead>Kodėl tai veikia skirtingiems žmonėms</SectionHead>
             <TheoriesGrid>
 
               <TheoryCard>
@@ -173,12 +164,9 @@ const Welcome = () => {
                   <RotateCcw size={22} strokeWidth={1.5} />
                 </TheoryIconWrap>
                 <TheoryContent>
-                  <TheoryHeadline>Your thoughts aren't facts. They're habits.</TheoryHeadline>
+                  <TheoryHeadline>Tavo mintys – ne faktai. Tai įpročiai.</TheoryHeadline>
                   <TheoryBody>
-                    That conversation from Tuesday keeps coming back. You've run through
-                    what you said, what they said, what you should have said. The loop
-                    isn't giving you new information — it's just running. Writing it down
-                    once, naming the thought precisely, is often enough to interrupt it.
+                    Antradienio pokalbis vis grįžta. Vėl ir vėl perkratai, ką pasakei tu, ką jie, ką reikėjo pasakyti. Šis ratas neduoda nieko naujo – jis tiesiog sukasi. Dažnai užtenka vieną kartą užrašyti ir tiksliai įvardyti mintį, kad jį nutrauktum.
                   </TheoryBody>
                 </TheoryContent>
               </TheoryCard>
@@ -188,12 +176,9 @@ const Welcome = () => {
                   <Flame size={22} strokeWidth={1.5} />
                 </TheoryIconWrap>
                 <TheoryContent>
-                  <TheoryHeadline>You don't feel better by trying harder to feel better.</TheoryHeadline>
+                  <TheoryHeadline>Geriau nepasijunti vien todėl, kad labai stengiesi.</TheoryHeadline>
                   <TheoryBody>
-                    You've told yourself to stop worrying, calm down, move on. It hasn't
-                    worked — and the fact that it hasn't worked makes it worse. Emotions
-                    follow thoughts, not willpower. Catch the thought underneath, name the
-                    pattern, and the feeling often softens on its own.
+                    Sakei sau nebesijaudinti, nusiraminti, eiti toliau. Nepavyko – ir tai, kad nepavyko, tik pablogino. Emocijos seka paskui mintis, o ne valią. Pagauk po jomis slypinčią mintį, įvardyk spąstus – ir jausmas dažnai atlėgsta pats.
                   </TheoryBody>
                 </TheoryContent>
               </TheoryCard>
@@ -203,12 +188,9 @@ const Welcome = () => {
                   <Sparkles size={22} strokeWidth={1.5} />
                 </TheoryIconWrap>
                 <TheoryContent>
-                  <TheoryHeadline>Good things happen every day. Most don't stick.</TheoryHeadline>
+                  <TheoryHeadline>Gerų dalykų nutinka kasdien. Dauguma neišlieka.</TheoryHeadline>
                   <TheoryBody>
-                    Ask yourself what went well last Tuesday. You'll struggle — not because
-                    nothing happened, but because your brain didn't keep it. Pain archives
-                    itself automatically. Joy evaporates. Capturing a good moment in words
-                    before it fades is an act against a system wired to notice what went wrong.
+                    Paklausk savęs, kas gero nutiko praėjusį antradienį. Bus sunku prisiminti – ne todėl, kad nieko nebuvo, o todėl, kad smegenys to neišsaugojo. Skausmas įsirašo pats. Džiaugsmas išgaruoja. Užrašyti gerą akimirką, kol ji neišblėso, reiškia eiti prieš sistemą, sukurtą pastebėti, kas nepavyko.
                   </TheoryBody>
                 </TheoryContent>
               </TheoryCard>
@@ -218,12 +200,9 @@ const Welcome = () => {
                   <GitBranch size={22} strokeWidth={1.5} />
                 </TheoryIconWrap>
                 <TheoryContent>
-                  <TheoryHeadline>The thoughts you practise become the thoughts you have.</TheoryHeadline>
+                  <TheoryHeadline>Mintys, kurias treniruoji, tampa tavo mintimis.</TheoryHeadline>
                   <TheoryBody>
-                    You've understood what needs to change. You can articulate it. The gap
-                    isn't insight — it's repetition. The same thought pathway used repeatedly
-                    becomes easier to activate. Writing a reframe, even once, makes the
-                    alternative incrementally more available the next time your mind goes looking.
+                    Supranti, ką reikia keisti. Gali tai įvardyti. Trūksta ne įžvalgos, o kartojimo. Dažnai naudojamas minties takas įsijungia vis lengviau. Net vieną kartą užrašytas naujas požiūris kitą kartą ateis į galvą šiek tiek lengviau.
                   </TheoryBody>
                 </TheoryContent>
               </TheoryCard>
@@ -236,16 +215,10 @@ const Welcome = () => {
         <Insight>
           <Wrap>
             <p>
-              Most people only open a mental health app when something is already
-              wrong. Over time, the app becomes associated with difficulty — and you
-              stop returning. The tool that was supposed to help quietly disappears
-              from the routine it was meant to build.
+              Dauguma žmonių psichikos sveikatos programėlę atsidaro tik tada, kai kažkas jau negerai. Ilgainiui ji ima asocijuotis su sunkumais – ir nustoji į ją grįžti. Įrankis, turėjęs padėti, tyliai dingsta iš rutinos, kurią turėjo sukurti.
             </p>
             <p>
-              When you also capture the good moments, a different picture starts to
-              form. Not just the hard days, but the full shape of your weeks. That
-              perspective — seeing the pattern clearly — is itself a significant part
-              of what CBT is trying to do.
+              Kai užrašai ir geras akimirkas, ima ryškėti kitas vaizdas. Ne tik sunkios dienos, bet ir visa tavo savaičių visuma. Ši perspektyva – aiškiai matyti dėsningumus – pati savaime yra svarbi dalis to, ko siekia kognityvinė elgesio terapija (KET).
             </p>
           </Wrap>
         </Insight>
@@ -253,33 +226,31 @@ const Welcome = () => {
         {/* ── Cognitive distortions ─────────────────────────────────────────── */}
         <Distortions>
           <Wrap>
-            <SectionHead>Patterns your brain runs on autopilot</SectionHead>
+            <SectionHead>Spąstai, į kuriuos protas pakliūva automatiškai</SectionHead>
             <DistortionsGrid>
               <DistortionBlock>
                 <Divide size={16} strokeWidth={1.5} />
-                <h3>All-or-nothing thinking</h3>
-                <p>If it wasn't perfect, it was a failure.</p>
+                <h3>„Viskas arba nieko“</h3>
+                <p>Jei ne tobulai – vadinasi, nesėkmė.</p>
               </DistortionBlock>
               <DistortionBlock>
                 <TrendingDown size={16} strokeWidth={1.5} />
-                <h3>Catastrophizing</h3>
-                <p>The worst possible outcome feels like the most likely one right now.</p>
+                <h3>Katastrofizavimas</h3>
+                <p>Blogiausia baigtis dabar atrodo labiausiai tikėtina.</p>
               </DistortionBlock>
               <DistortionBlock>
                 <MessageCircle size={16} strokeWidth={1.5} />
-                <h3>Mind reading</h3>
-                <p>You're already certain you know what they were thinking.</p>
+                <h3>Minčių skaitymas</h3>
+                <p>Atrodo, kad tiksliai žinai, ką jie galvojo.</p>
               </DistortionBlock>
               <DistortionBlock>
                 <Scale size={16} strokeWidth={1.5} />
-                <h3>Should statements</h3>
-                <p>There's a rigid rule for how things must go — and you rarely meet it.</p>
+                <h3>„Turiu“ ir „privalau“</h3>
+                <p>Turi griežtą taisyklę, kaip viskas turi būti – ir retai ją atitinki.</p>
               </DistortionBlock>
             </DistortionsGrid>
             <DistortionsNote>
-              These are four of the ten cognitive distortions that CBT identifies —
-              shortcuts the mind takes that feel like facts. Naming the pattern is most
-              of the work. Once you can see it, it loosens.
+              Tai keturi iš dešimties kognityvinių iškraipymų, kuriuos išskiria KET, – proto trumpiniai, kurie atrodo kaip faktai. Įvardyti spąstus – didžioji darbo dalis. Kai juos pamatai, jie atsileidžia.
             </DistortionsNote>
           </Wrap>
         </Distortions>
@@ -287,24 +258,21 @@ const Welcome = () => {
         {/* ── Two modes ────────────────────────────────────────────────────── */}
         <Modes>
           <Wrap>
-            <SectionHead>Two ways to use it</SectionHead>
+            <SectionHead>Du būdai naudotis</SectionHead>
             <ModesGrid>
               <div>
-                <ModeLabel>When something's weighing on you</ModeLabel>
+                <ModeLabel>Kai kažkas slegia</ModeLabel>
                 <ModeBody>
-                  Seven guided steps — name the situation, rate the emotion, spot
-                  the distortion, challenge it, reframe it. See the intensity change
-                  when you reach the end.
+                  Septyni žingsniai su gairėmis – įvardyk situaciją, įvertink emociją, pastebėk iškraipymą, suabejok juo ir pažvelk kitaip. Pabaigoje pamatysi, kaip pasikeitė stiprumas.
                 </ModeBody>
-                <ModeTime>~5 minutes</ModeTime>
+                <ModeTime>~5 minutės</ModeTime>
               </div>
               <div>
-                <ModeLabel>When something went right</ModeLabel>
+                <ModeLabel>Kai kažkas pavyko</ModeLabel>
                 <ModeBody>
-                  Three fields: what happened, what you felt, why it mattered. Enough
-                  structure to make it real — small enough to actually do it in the moment.
+                  Trys laukeliai: kas nutiko, ką jautei, kodėl tai svarbu. Pakankamai struktūros, kad būtų tikra, ir pakankamai mažai, kad spėtum tą pačią akimirką.
                 </ModeBody>
-                <ModeTime>~60 seconds</ModeTime>
+                <ModeTime>~60 sekundžių</ModeTime>
               </div>
             </ModesGrid>
           </Wrap>
@@ -313,16 +281,15 @@ const Welcome = () => {
         {/* ── Trust signals ─────────────────────────────────────────────────── */}
         <Trust>
           <Wrap>
-            <SectionHead>Grounded in practice</SectionHead>
+            <SectionHead>Paremta praktika</SectionHead>
             <TrustGrid>
               <TrustItem>
                 <TrustIconWrap>
                   <BookOpen size={18} strokeWidth={1.5} />
                 </TrustIconWrap>
-                <TrustTitle>Built on CBT</TrustTitle>
+                <TrustTitle>Paremta KET</TrustTitle>
                 <TrustBody>
-                  Cognitive Behavioural Therapy has 50+ years of clinical research.
-                  This app applies its core techniques — no new theory, no shortcuts.
+                  Kognityvinė elgesio terapija remiasi daugiau nei 50 metų klinikiniais tyrimais. Ši programėlė taiko pagrindinius jos metodus – jokių naujų teorijų, jokių trumpinių.
                 </TrustBody>
               </TrustItem>
 
@@ -330,10 +297,9 @@ const Welcome = () => {
                 <TrustIconWrap>
                   <Lock size={18} strokeWidth={1.5} />
                 </TrustIconWrap>
-                <TrustTitle>Stays on your device</TrustTitle>
+                <TrustTitle>Privatu</TrustTitle>
                 <TrustBody>
-                  Your entries are stored only in your browser. Nothing is sent to
-                  any server, ever.
+                  Tavo įrašai – tik tau. Jokių reklamų, o dienoraštis niekada neparduodamas ir niekam neperduodamas.
                 </TrustBody>
               </TrustItem>
 
@@ -341,10 +307,9 @@ const Welcome = () => {
                 <TrustIconWrap>
                   <Sprout size={18} strokeWidth={1.5} />
                 </TrustIconWrap>
-                <TrustTitle>No pressure, no schedule</TrustTitle>
+                <TrustTitle>Jokio spaudimo</TrustTitle>
                 <TrustBody>
-                  Use it when something comes up — a hard moment or a good one.
-                  No streaks, no daily commitment required.
+                  Rašyk, kai kas nors nutinka – sunki ar gera akimirka. Rašyti kasdien nebūtina.
                 </TrustBody>
               </TrustItem>
             </TrustGrid>
@@ -354,8 +319,8 @@ const Welcome = () => {
         {/* ── CTA ──────────────────────────────────────────────────────────── */}
         <CtaBlock>
           <Wrap>
-            <CtaLine>Thought records. Good moments. One place.</CtaLine>
-            <CtaBtn onClick={goToLogin}>Start journaling</CtaBtn>
+            <CtaLine>Minčių įrašai. Geros akimirkos. Vienoje vietoje.</CtaLine>
+            <CtaBtn onClick={goToLogin}>Pradėti rašyti</CtaBtn>
           </Wrap>
         </CtaBlock>
 
@@ -364,7 +329,7 @@ const Welcome = () => {
       <Footer>
         <FooterInner>
           <FooterBrand>Joyful Thoughts</FooterBrand>
-          <FooterQuiet>A CBT thought journal</FooterQuiet>
+          <FooterQuiet>KET minčių dienoraštis</FooterQuiet>
         </FooterInner>
       </Footer>
 

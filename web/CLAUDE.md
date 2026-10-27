@@ -5,8 +5,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm dev          # Start SSR dev server at http://localhost:5173
-pnpm build        # Type-check + build client & server bundles
+pnpm dev          # Vite dev server at http://localhost:5173 (/api proxied to :8080)
+pnpm build        # Type-check + build static SPA into dist/
+pnpm typecheck    # tsc -b only
 pnpm lint         # ESLint (flat config)
 pnpm test         # Jest
 ```
@@ -20,45 +21,46 @@ pnpm test src/App.test.tsx
 
 ## Architecture
 
-This is a **React 18 + TypeScript + Vite SSR** app — a CBT-style mind journal ("check-in" logging). The dev server is a custom Express instance (`server.js`) that wires Vite's middleware in development and serves pre-built bundles in production. There is no standalone `vite dev` command; always use `pnpm dev`.
+This is a **React 18 + TypeScript + Vite single-page app** — a CBT-style mind journal ("check-in" logging). No SSR: the app is behind a login, so there's nothing for search engines. In prod, Caddy serves `dist/` and forwards `/api/*` to the Go API (same origin).
 
-### SSR entry points
-- `src/entry-client.tsx` — hydrates the server-rendered HTML in the browser
-- `src/entry-server.tsx` — renders to HTML string on the server
+Entry point: `src/main.tsx`.
+
+### Dates
+Always use `toLocalDateString` / `getTodayDateString` from `src/utils/date.ts` for `YYYY-MM-DD` dates. Never `toISOString().slice(0, 10)` — that's UTC and shifts late-night entries to the previous day.
 
 ### Path alias
 `@/` maps to `src/`. Use it for all internal imports.
 
 ### Routing
-React Router DOM. All routes defined in `src/router/routes.ts` as a `ROUTES` constant (labels are in Lithuanian). The router is configured in `src/router/index.tsx`.
+React Router DOM. Routes are in `src/router/routes.ts` (`ROUTES`, `getEntryPath`, router-state types), wired in `src/router/index.tsx`.
+Screens: `/` welcome, `/login`, `/home` (feed), `/new-entry` (4-step flow), `/entry/:id`, `/settings`.
 
 ### State management
-Redux Toolkit with two slices:
-- `store/features/checkins.ts` — check-in entries; **persisted to `localStorage`** and rehydrated at store init
-- `store/features/user.ts` — current user
+Redux Toolkit:
+- `store/features/checkins.ts` — entries + memoized selectors (`selectEntriesGroupedByDay`, `selectDatesWithEntries`, `selectEmotionUsage`). Persisted to `localStorage` via `store/checkinsStorage.ts` until the API lands.
+- `store/features/user.ts` — current user (demo login).
 
-RTK Query (`usersApi`) fetches user data from `http://localhost:8080`.
-
-Use typed hooks from `src/store/hooks.ts` (`useAppDispatch`, `useAppSelector`) instead of raw `useDispatch`/`useSelector`.
+Use typed hooks from `src/store/hooks.ts` (`useAppDispatch`, `useAppSelector`).
+The new-entry flow keeps its own draft (`components/entry-flow/useEntryDraft.ts`, autosaved to localStorage) and validates per step with the pure `validateStep()`.
 
 ### Data types
-All shared DTOs live in `src/api/services/types.ts`. `CheckInDto` is the core domain object — it has `id`, `date`, `situation`, `emotion[]` (name + intensity), `autoThoughts[]`, and `behavior`.
+`CheckInDto` (`src/api/services/types.ts`): `id`, `date` (local YYYY-MM-DD), `createdAt` (ISO), `situation`, `emotion[]` (name + intensity 1–10), `autoThought`, `behavior` (last two may be empty).
 
-### Styling & theming
-MUI v7 (dark mode) with a custom theme in `theme.ts`. The theme extends MUI's palette with a `neutral` color and customises `Button` variants. Font is `Geologica`. Use MUI components and the theme's design tokens rather than ad-hoc inline styles. CSS modules are used sparingly for layout overrides.
+### Design & theming
+- Minimal "paper journal", same palette as the landing page. Tokens live in `theme.ts` (MUI `colorSchemes`, CSS variables, class on `<html>`).
+- Light / dark / system: `useColorScheme()` in Settings; `index.html` applies the saved mode before first paint.
+- Color only on the primary action (sage). Sections are separated by a slightly different background — no borders, no shadows.
+- 16px gutters, 16px card padding, 12px radius. Serif `variant="display"` for page titles, Geologica for everything else.
+- All UI copy is Lithuanian (`<html lang="lt">`). Plurals via `utils/plural.ts`.
 
 ### Component organisation
 ```
 src/components/
-  atoms/        # Smallest reusable UI pieces
-  cards/        # Card-style containers
-  layouts/      # Page layout wrappers
-  modal/        # Modal/dialog components
-  navbar/       # Navigation bar
-  page-elements/# Larger page-scoped sections
+  ui/          # PageShell, BackButton, EmotionIcon, Toast
+  home/        # HomeHeader, WeekStrip, DayGroup, EntryCard
+  entry-flow/  # steps, header/footer, draft hook, validation
 ```
-
-Pages live in `src/pages/` and are thin compositions of the above components.
+Pages in `src/pages/` compose these.
 
 ### Testing
 Jest + jsdom + Testing Library. CSS imports are proxied via `identity-obj-proxy`; other static assets via `__mocks__/fileMock.cjs`. Tests use `tsconfig.app.json` for TS compilation.

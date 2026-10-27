@@ -1,0 +1,12 @@
+// Cloudflare Workers static-assets deploy for the SPA.
+// Cloudflare dashboard → Workers → journal → Settings → Build → Root directory must be "web".
+{
+  "name": "journal",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    // Unknown paths (e.g. /home, /check-in-list on refresh) serve index.html,
+    // so React Router can handle them instead of Cloudflare returning 404.
+    "not_found_handling": "single-page-application"
+  }
+}
