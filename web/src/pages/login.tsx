@@ -31,7 +31,8 @@ const LoginPage = () => {
   });
 
   //TODO handle login
-  const onSubmit = async (_data: LoginFormValues) => {
+  // Form values are ignored until real auth lands in Phase 4.
+  const onSubmit = async () => {
     /**
      * TEMP / DEMO LOGIC
      * You were previously logging in via numeric ID.

@@ -76,7 +76,6 @@ const StyledNavbar = styled("nav")`
   box-shadow:
     0 8px 30px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  color: red;
   border: 1px solid rgba(255, 255, 255, 0.35);
 `;
 
@@ -112,6 +111,5 @@ const StyledListItem = styled(Link) <{ $selected?: boolean }>`
   
   &:hover {
     background-color: rgba(109, 109, 109, 0.1);
-  }
   }
 `;

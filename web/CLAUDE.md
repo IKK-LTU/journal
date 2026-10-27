@@ -5,8 +5,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm dev          # Start SSR dev server at http://localhost:5173
-pnpm build        # Type-check + build client & server bundles
+pnpm dev          # Vite dev server at http://localhost:5173 (/api proxied to :8080)
+pnpm build        # Type-check + build static SPA into dist/
+pnpm typecheck    # tsc -b only
 pnpm lint         # ESLint (flat config)
 pnpm test         # Jest
 ```
@@ -20,11 +21,12 @@ pnpm test src/App.test.tsx
 
 ## Architecture
 
-This is a **React 18 + TypeScript + Vite SSR** app — a CBT-style mind journal ("check-in" logging). The dev server is a custom Express instance (`server.js`) that wires Vite's middleware in development and serves pre-built bundles in production. There is no standalone `vite dev` command; always use `pnpm dev`.
+This is a **React 18 + TypeScript + Vite single-page app** — a CBT-style mind journal ("check-in" logging). No SSR: the app is behind a login, so there's nothing for search engines. In prod, Caddy serves `dist/` and forwards `/api/*` to the Go API (same origin).
 
-### SSR entry points
-- `src/entry-client.tsx` — hydrates the server-rendered HTML in the browser
-- `src/entry-server.tsx` — renders to HTML string on the server
+Entry point: `src/main.tsx`.
+
+### Dates
+Always use `toLocalDateString` / `getTodayDateString` from `src/utils/date.ts` for `YYYY-MM-DD` dates. Never `toISOString().slice(0, 10)` — that's UTC and shifts late-night entries to the previous day.
 
 ### Path alias
 `@/` maps to `src/`. Use it for all internal imports.
@@ -42,7 +44,7 @@ RTK Query (`usersApi`) fetches user data from `http://localhost:8080`.
 Use typed hooks from `src/store/hooks.ts` (`useAppDispatch`, `useAppSelector`) instead of raw `useDispatch`/`useSelector`.
 
 ### Data types
-All shared DTOs live in `src/api/services/types.ts`. `CheckInDto` is the core domain object — it has `id`, `date`, `situation`, `emotion[]` (name + intensity), `autoThoughts[]`, and `behavior`.
+All shared DTOs live in `src/api/services/types.ts`. `CheckInDto` is the core domain object — it has `id`, `date`, `situation`, `emotion[]` (name + intensity), `autoThought`, and `behavior`.
 
 ### Styling & theming
 MUI v7 (dark mode) with a custom theme in `theme.ts`. The theme extends MUI's palette with a `neutral` color and customises `Button` variants. Font is `Geologica`. Use MUI components and the theme's design tokens rather than ad-hoc inline styles. CSS modules are used sparingly for layout overrides.

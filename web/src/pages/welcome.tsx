@@ -330,10 +330,10 @@ const Welcome = () => {
                 <TrustIconWrap>
                   <Lock size={18} strokeWidth={1.5} />
                 </TrustIconWrap>
-                <TrustTitle>Stays on your device</TrustTitle>
+                <TrustTitle>Private by default</TrustTitle>
                 <TrustBody>
-                  Your entries are stored only in your browser. Nothing is sent to
-                  any server, ever.
+                  Your entries are for you alone. No ads, and your journal is never
+                  sold or shared with anyone.
                 </TrustBody>
               </TrustItem>
 
