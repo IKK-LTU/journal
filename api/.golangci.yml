@@ -1,0 +1,10 @@
+version: "2"
+
+linters:
+  default: standard # errcheck, govet, ineffassign, staticcheck, unused
+  enable:
+    - bodyclose # forgot to close an HTTP response body
+    - errorlint # error comparisons that break with wrapped errors
+    - gosec # common security mistakes
+    - misspell
+    - noctx # HTTP/DB calls without a context (can't be cancelled)
