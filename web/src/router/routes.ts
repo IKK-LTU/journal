@@ -5,6 +5,7 @@ export const ROUTES = {
   NEW_ENTRY: { path: "/new-entry", label: "Naujas įrašas" },
   ENTRY: { path: "/entry/:id", label: "Įrašas" },
   SETTINGS: { path: "/settings", label: "Nustatymai" },
+  INSIGHTS: { path: "/insights", label: "Įžvalgos" },
 };
 
 export const getEntryPath = (id: string) => `/entry/${encodeURIComponent(id)}`;

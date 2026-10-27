@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import DayGroup from "@/components/home/DayGroup";
 import HomeHeader from "@/components/home/HomeHeader";
+import WeekInsightCard from "@/components/home/WeekInsightCard";
 import WeekStrip from "@/components/home/WeekStrip";
 import PageShell from "@/components/ui/PageShell";
 import Toast from "@/components/ui/Toast";
@@ -34,6 +35,7 @@ const Home = () => {
     <PageShell bottomSpace={14}>
       <HomeHeader now={now} />
       <WeekStrip now={now} />
+      <WeekInsightCard />
 
       {groups.length === 0 ? (
         <Typography sx={{ maxWidth: 300, fontSize: 17, color: "text.secondary" }}>

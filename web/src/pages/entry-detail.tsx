@@ -57,8 +57,9 @@ const EntryDetail = () => {
 
       <Box component="article" sx={{ mt: 1.5, display: "flex", flexDirection: "column", gap: 1 }}>
         <Typography sx={{ mb: 0.5, fontSize: 15, color: "text.secondary" }}>
-          {formatDayHeading(entry.date)}
-          {time && `, ${time}`}
+          {[formatDayHeading(entry.date) + (time ? `, ${time}` : ""), entry.place, entry.people.length > 0 && `Šalia: ${entry.people.join(", ")}`]
+            .filter(Boolean)
+            .join(" · ")}
         </Typography>
 
         <Box sx={{ p: 2, borderRadius: "12px", bgcolor: "background.paper", display: "flex", flexDirection: "column", gap: 2 }}>
@@ -85,9 +86,29 @@ const EntryDetail = () => {
           </Section>
         )}
 
-        {entry.behavior && (
-          <Section label="Ką padarei">
-            <Typography sx={{ fontSize: 18, whiteSpace: "pre-wrap" }}>{entry.behavior}</Typography>
+        {(entry.reactions.length > 0 || entry.behavior) && (
+          <Section label="Kaip sureagavai">
+            {entry.reactions.length > 0 && <Typography sx={{ fontSize: 18, fontWeight: 500 }}>{entry.reactions.join(", ")}</Typography>}
+            {entry.behavior && <Typography sx={{ mt: entry.reactions.length > 0 ? 0.75 : 0, fontSize: 18, whiteSpace: "pre-wrap" }}>{entry.behavior}</Typography>}
+          </Section>
+        )}
+
+        {entry.emotionAfter.length > 0 && (
+          <Section label="Po įrašo">
+            {entry.emotionAfter.map((after) => {
+              const before = entry.emotion.find((emotion) => emotion.name === after.name)?.intensity;
+              const dropped = before !== undefined && after.intensity < before;
+              return (
+                <Typography key={after.name} sx={{ fontSize: 18 }}>
+                  <Box component="span" sx={{ fontWeight: 500 }}>
+                    {after.name}
+                  </Box>{" "}
+                  <Box component="span" sx={{ color: dropped ? "primary.main" : "text.secondary", fontWeight: dropped ? 600 : 400 }}>
+                    {before !== undefined ? `${before} → ${after.intensity}` : after.intensity}
+                  </Box>
+                </Typography>
+              );
+            })}
           </Section>
         )}
 

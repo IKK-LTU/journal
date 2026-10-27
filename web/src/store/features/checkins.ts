@@ -75,15 +75,30 @@ const selectDatesWithEntries = createSelector([selectCheckinsList], (list): stri
   ...new Set(list.map((entry) => entry.date)),
 ]);
 
-/** Emotion name → how many entries used it. Drives "most used first" in the picker. */
-const selectEmotionUsage = createSelector([selectCheckinsList], (list): Record<string, number> => {
+/** answer → how many entries used it, for one multi-value field. */
+const countAnswers = (list: CheckInDto[], getAnswers: (entry: CheckInDto) => string[]): Record<string, number> => {
   const usage: Record<string, number> = {};
   for (const entry of list) {
-    for (const emotion of entry.emotion) {
-      usage[emotion.name] = (usage[emotion.name] ?? 0) + 1;
+    for (const answer of getAnswers(entry)) {
+      if (answer) usage[answer] = (usage[answer] ?? 0) + 1;
     }
   }
   return usage;
+};
+
+/** Emotion name → how many times used. Drives "most used first" in the picker. */
+const selectEmotionUsage = createSelector([selectCheckinsList], (list) =>
+  countAnswers(list, (entry) => entry.emotion.map((emotion) => emotion.name)),
+);
+const selectPlaceUsage = createSelector([selectCheckinsList], (list) => countAnswers(list, (entry) => [entry.place]));
+const selectPeopleUsage = createSelector([selectCheckinsList], (list) => countAnswers(list, (entry) => entry.people));
+const selectReactionUsage = createSelector([selectCheckinsList], (list) => countAnswers(list, (entry) => entry.reactions));
+
+/** The user's last few distinct thoughts — often the same thought comes back, one tap to reuse it. */
+const selectRecentThoughts = createSelector([selectCheckinsList], (list): string[] => {
+  const newestFirst = [...list].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const thoughts = newestFirst.map((entry) => entry.autoThought.trim()).filter((thought) => thought !== "");
+  return [...new Set(thoughts)].slice(0, 4);
 });
 
 export const checkinsSelectors = {
@@ -91,6 +106,10 @@ export const checkinsSelectors = {
   selectEntriesGroupedByDay,
   selectDatesWithEntries,
   selectEmotionUsage,
+  selectPlaceUsage,
+  selectPeopleUsage,
+  selectReactionUsage,
+  selectRecentThoughts,
   selectEntryById: (state: RootState, id: string) => state.checkins.checkinsList.find((item) => item.id === id),
 };
 
