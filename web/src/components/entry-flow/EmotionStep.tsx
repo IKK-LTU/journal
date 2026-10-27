@@ -53,7 +53,13 @@ const EmotionStep = ({ emotions, emotionUsage, onChange, onError }: Props) => {
 
   const removeEmotion = (name: string) => {
     onError(null);
-    onChange(emotions.filter((emotion) => emotion.name !== name));
+    onChange(emotions.filter((emotion) => !isSameEmotion(emotion.name, name)));
+  };
+
+  // In the full list, tapping a picked word again un-picks it.
+  const toggleEmotion = (name: string) => {
+    if (isPicked(name)) removeEmotion(name);
+    else addEmotion(name);
   };
 
   const setIntensity = (name: string, intensity: number) => {
@@ -100,7 +106,7 @@ const EmotionStep = ({ emotions, emotionUsage, onChange, onError }: Props) => {
       <Typography component="h2" sx={{ ...sectionLabelSx, mt: recentEmotions.length === 0 && emotions.length > 0 ? 2.5 : 0 }}>
         Visi jausmai
       </Typography>
-      <CategoryList isPicked={isPicked} onPick={addEmotion} />
+      <CategoryList isPicked={isPicked} onToggle={toggleEmotion} />
 
       {!isAddingCustom && (
         <ButtonBase onClick={() => setIsAddingCustom(true)} sx={{ ...wordButtonSx, mt: 1, fontStyle: "italic" }}>
