@@ -76,5 +76,22 @@ jobs:
           TEST_DATABASE_URL: postgres://journal:journal@localhost:5432/journal_test?sslmode=disable
         run: go test -race ./...
 
+      - name: Integration test (verbose, so a skip would be visible)
+        env:
+          TEST_DATABASE_URL: postgres://journal:journal@localhost:5432/journal_test?sslmode=disable
+        run: go test -count=1 -v -run TestConnectAndMigrate ./internal/db
+
       - name: Docker build
         run: docker build -t journal-api:ci .
+
+      # Start the real image against Postgres: config → connect → migrations → server → /api/healthz.
+      - name: Smoke test the image
+        run: |
+          docker run -d --name api --network host \
+            -e DATABASE_URL="postgres://journal:journal@localhost:5432/journal_test?sslmode=disable" \
+            journal-api:ci
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://localhost:8080/api/healthz; then echo; docker logs api; exit 0; fi
+            sleep 1
+          done
+          echo "::error::API did not become healthy"; docker logs api; exit 1
