@@ -22,7 +22,7 @@ const ClickAwayListener = ({ children, onClickAway }: Props) => {
     return () => {
       document.removeEventListener("click", handleClick);
     };
-  }, []);
+  }, [onClickAway]);
 
   return <div ref={wrapperRef}>{children}</div>;
 };
