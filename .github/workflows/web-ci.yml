@@ -46,8 +46,9 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Test
-        run: pnpm test
-
+      # Build before tests: a broken build is the bigger problem, and this way we see both results.
       - name: Build
         run: pnpm build
+
+      - name: Test
+        run: pnpm test
