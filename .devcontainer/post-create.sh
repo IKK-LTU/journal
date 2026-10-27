@@ -5,8 +5,9 @@ set -euo pipefail
 echo "→ Installing Go tools"
 go install github.com/sqlc-dev/sqlc/cmd/sqlc@v1.29.0
 go install github.com/pressly/goose/v3/cmd/goose@v3.24.3
-curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/v2.1.6/install.sh \
-  | sh -s -- -b "$(go env GOPATH)/bin" v2.1.6
+# Latest: golangci-lint must be built with a Go at least as new as go.mod's (see api-ci.yml).
+curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh \
+  | sh -s -- -b "$(go env GOPATH)/bin"
 
 echo "→ Installing web dependencies"
 pnpm --dir web install --frozen-lockfile

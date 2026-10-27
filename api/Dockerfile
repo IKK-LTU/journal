@@ -1,5 +1,5 @@
 # Stage 1: compile. The Go toolchain lives only here and is thrown away.
-FROM golang:1.25-bookworm AS build
+FROM golang:1.26-bookworm AS build
 WORKDIR /src
 
 # Dependencies first: this layer is cached until go.mod/go.sum change.
