@@ -1,0 +1,97 @@
+name: api-ci
+
+on:
+  pull_request:
+    paths:
+      - "api/**"
+      - ".github/workflows/api-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "api/**"
+      - ".github/workflows/api-ci.yml"
+
+concurrency:
+  group: api-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: api
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # A real, throwaway Postgres for the integration tests.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: journal
+          POSTGRES_PASSWORD: journal
+          POSTGRES_DB: journal_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U journal"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: api/go.mod
+          cache-dependency-path: api/go.sum
+
+      - name: go.mod / go.sum are tidy
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum || { echo "::error::go.mod/go.sum not tidy — download the 'tidy-go-mod' artifact or run 'go mod tidy'"; exit 1; }
+          git ls-files --error-unmatch go.sum >/dev/null 2>&1 || { echo "::error::go.sum is not committed — download the 'tidy-go-mod' artifact"; exit 1; }
+
+      # When the check above fails, the corrected files are attached to the run.
+      - name: Upload tidy go.mod / go.sum
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tidy-go-mod
+          path: |
+            api/go.mod
+            api/go.sum
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          # Must be built with a Go at least as new as go.mod's (1.26); older pins refuse to run.
+          version: latest
+          working-directory: api
+
+      - name: Test
+        env:
+          TEST_DATABASE_URL: postgres://journal:journal@localhost:5432/journal_test?sslmode=disable
+        run: go test -race ./...
+
+      - name: Integration test (verbose, so a skip would be visible)
+        env:
+          TEST_DATABASE_URL: postgres://journal:journal@localhost:5432/journal_test?sslmode=disable
+        run: go test -count=1 -v -run TestConnectAndMigrate ./internal/db
+
+      - name: Docker build
+        run: docker build -t journal-api:ci .
+
+      # Start the real image against Postgres: config → connect → migrations → server → /api/healthz.
+      - name: Smoke test the image
+        run: |
+          docker run -d --name api --network host \
+            -e DATABASE_URL="postgres://journal:journal@localhost:5432/journal_test?sslmode=disable" \
+            journal-api:ci
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://localhost:8080/api/healthz; then echo; docker logs api; exit 0; fi
+            sleep 1
+          done
+          echo "::error::API did not become healthy"; docker logs api; exit 1

@@ -1,7 +1,7 @@
 # Dev-only services for the Codespace. Production uses infra/docker-compose.prod.yml.
 services:
   app:
-    image: mcr.microsoft.com/devcontainers/go:1-1.25-bookworm
+    image: mcr.microsoft.com/devcontainers/go:1-1.26-bookworm
     volumes:
       - ../..:/workspaces:cached
     # Keep the container alive; you run the api/web yourself from the terminal.

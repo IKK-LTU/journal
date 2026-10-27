@@ -6,7 +6,7 @@ Monorepo for Journal — a CBT-style mind journal.
 
 ```
 web/     React + TypeScript + Vite frontend (see web/CLAUDE.md)
-api/     Go backend (net/http, pgx, sqlc, goose)          — coming in Phase 2
+api/     Go backend: net/http, pgx, goose (see api/README.md)
 infra/   docker-compose, Caddy, backups, deploy scripts   — coming in Phase 2–3
 ```
 
