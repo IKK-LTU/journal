@@ -5,6 +5,7 @@ import type { CheckInDto } from "@/api/services/types";
 import EmotionIcon from "@/components/ui/EmotionIcon";
 import { getEntryPath } from "@/router/routes";
 import { formatTime } from "@/utils/date";
+import { descendingBy } from "@/utils/sort";
 
 type Props = {
   entry: CheckInDto;
@@ -19,7 +20,7 @@ const EntryCard = ({ entry, width }: Props) => {
   const navigate = useNavigate();
 
   // The strongest emotion leads the card; the rest go on a quieter line.
-  const [mainEmotion, ...otherEmotions] = [...entry.emotion].sort((a, b) => b.intensity - a.intensity);
+  const [mainEmotion, ...otherEmotions] = [...entry.emotion].sort(descendingBy((emotion) => emotion.intensity));
   const otherEmotionsText = otherEmotions.map((emotion) => `${emotion.name} ${emotion.intensity}`).join(" · ");
 
   return (

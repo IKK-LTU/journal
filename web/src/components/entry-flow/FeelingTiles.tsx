@@ -1,7 +1,7 @@
-import { createElement } from "react";
 import { Box, ButtonBase, Typography } from "@mui/material";
 import { Check } from "lucide-react";
 
+import IconBadge from "@/components/ui/IconBadge";
 import { EMOTION_CATEGORIES } from "@/constants/emotions";
 
 type Props = {
@@ -32,22 +32,7 @@ const FeelingTiles = ({ pickedCores, onTap }: Props) => {
               transition: "background-color .15s ease-out",
             }}
           >
-            <Box
-              aria-hidden
-              sx={{
-                flex: "none",
-                width: 36,
-                height: 36,
-                borderRadius: "50%",
-                bgcolor: isPicked ? "primary.main" : "accentSoft",
-                color: isPicked ? "primary.contrastText" : "primary.main",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {isPicked ? <Check size={18} strokeWidth={2.6} /> : createElement(category.icon, { size: 18, strokeWidth: 1.8 })}
-            </Box>
+            <IconBadge icon={isPicked ? Check : category.icon} size={36} isFilled={isPicked} />
             <Typography sx={{ fontSize: 17, fontWeight: isPicked ? 600 : 500, textAlign: "left" }}>{category.name}</Typography>
           </ButtonBase>
         );

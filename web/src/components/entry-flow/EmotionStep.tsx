@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Box, Button, ButtonBase, InputBase, Typography } from "@mui/material";
 
 import { DEFAULT_INTENSITY, EMOTION_CATEGORIES, findEmotionCategory, isSameEmotion, MAX_EMOTIONS_PER_ENTRY } from "@/constants/emotions";
+import { descendingBy } from "@/utils/sort";
 import FeelingTiles from "./FeelingTiles";
 import IntensityPicker from "./IntensityPicker";
 import RefineWords from "./RefineWords";
@@ -36,7 +37,7 @@ const EmotionStep = ({ emotions, emotionUsage, onChange, onError }: Props) => {
 
   // Fast path: the user's own most used feelings, one tap away.
   const recentEmotions = Object.keys(emotionUsage)
-    .sort((a, b) => emotionUsage[b] - emotionUsage[a])
+    .sort(descendingBy((name) => emotionUsage[name]))
     .filter((name) => !isPicked(name))
     .slice(0, 3); // one line on a phone
 

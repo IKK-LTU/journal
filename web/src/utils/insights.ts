@@ -5,6 +5,7 @@ import { findEmotionCategory } from "@/constants/emotions";
 import { NOBODY } from "@/constants/entry-options";
 import { findTrap } from "@/constants/thinking-traps";
 import { daysBetween, getTodayDateString, parseLocalDate, toLocalDateString } from "./date";
+import { descendingBy } from "./sort";
 
 /** Core feelings that are hard to sit with. The other three wheel cores are the pleasant ones. */
 const DIFFICULT_CORES = ["Išsigandęs", "Liūdnas", "Piktas"];
@@ -37,7 +38,7 @@ const toShares = (counts: Map<string, number>): Share[] => {
   const total = [...counts.values()].reduce((sum, count) => sum + count, 0);
   return [...counts.entries()]
     .map(([name, count]) => ({ name, count, percent: total ? Math.round((count / total) * 100) : 0 }))
-    .sort((a, b) => b.count - a.count);
+    .sort(descendingBy((share) => share.count));
 };
 
 /** Entries from the last `days` days including today. `null` = all time. */
@@ -85,10 +86,10 @@ const dominantCoreByContext = (entries: CheckInDto[], getContexts: (entry: Check
   return [...coresByContext.entries()]
     .filter(([, cores]) => cores.length >= MIN_ENTRIES_FOR_PATTERN)
     .map(([context, cores]) => {
-      const [top] = toShares(countBy(cores));
-      return { context, core: top.name, count: top.count };
+      const [mostCommon] = toShares(countBy(cores));
+      return { context, core: mostCommon.name, count: mostCommon.count };
     })
-    .sort((a, b) => b.count - a.count);
+    .sort(descendingBy((pattern) => pattern.count));
 };
 
 export const placePatterns = (entries: CheckInDto[]): Pattern[] =>
