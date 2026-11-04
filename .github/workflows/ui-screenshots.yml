@@ -39,13 +39,20 @@ jobs:
         run: |
           npm init -y >/dev/null
           npm install --no-save --no-audit --no-fund playwright@1.49.1
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps chromium webkit
 
+      # Chromium (Android / desktop Chrome) and WebKit as an iPhone (Safari) — they break in different ways.
       - name: Take screenshots
         run: |
           pnpm preview --port 4173 --strictPort &
           npx --yes wait-on@8.0.1 http://localhost:4173 --timeout 60000
-          cd e2e && BASE_URL=http://localhost:4173 OUT_DIR=../screenshots node screenshots.mjs
+          cd e2e
+          status=0
+          for engine in chromium webkit; do
+            echo "== $engine"
+            ENGINE=$engine BASE_URL=http://localhost:4173 OUT_DIR=../screenshots node screenshots.mjs || status=1
+          done
+          exit $status
 
       - uses: actions/upload-artifact@v4
         if: always()

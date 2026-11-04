@@ -1,6 +1,6 @@
 // Clicks through the main flows on a phone-sized screen and saves screenshots for design review.
 // Run by .github/workflows/ui-screenshots.yml against `vite preview`. Not part of the app bundle.
-import { chromium } from "playwright";
+import { chromium, devices, webkit } from "playwright";
 import { mkdirSync } from "node:fs";
 
 const BASE = process.env.BASE_URL ?? "http://localhost:4173";
@@ -47,7 +47,10 @@ const SEED = {
   ],
 };
 
-const browser = await chromium.launch();
+// ENGINE=webkit runs the same flows as Safari on an iPhone.
+const ENGINE = process.env.ENGINE ?? "chromium";
+const browser = ENGINE === "webkit" ? await webkit.launch() : await chromium.launch();
+const deviceOptions = ENGINE === "webkit" ? devices["iPhone 13"] : { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 };
 
 // Any uncaught error or console.error on any page fails the run — a broken screen must not pass silently.
 const pageErrors = [];
@@ -59,7 +62,7 @@ const watchErrors = (page, label) => {
 };
 
 async function newPage({ seed = true, dark = false, extraStorage = {} } = {}) {
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, locale: "lt-LT" });
+  const context = await browser.newContext({ ...deviceOptions, locale: "lt-LT" });
   await context.addInitScript(
     ({ seed, dark, data, extraStorage }) => {
       if (window.sessionStorage.getItem("seeded")) return;
@@ -78,7 +81,7 @@ async function newPage({ seed = true, dark = false, extraStorage = {} } = {}) {
 
 const shot = async (page, name, fullPage = true) => {
   await page.waitForTimeout(700); // let fonts and small animations settle
-  await page.screenshot({ path: `${OUT}/${name}.png`, fullPage });
+  await page.screenshot({ path: `${OUT}/${ENGINE}-${name}.png`, fullPage });
   console.log("saved", name);
 };
 
