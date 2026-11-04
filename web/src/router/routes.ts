@@ -4,13 +4,16 @@ export const ROUTES = {
   HOME: { path: "/home", label: "Namai" },
   NEW_ENTRY: { path: "/new-entry", label: "Naujas įrašas" },
   ENTRY: { path: "/entry/:id", label: "Įrašas" },
-  ENTRY_REFRAME: { path: "/entry/:id/reframe", label: "Pažvelk kitaip" },
+  ENTRY_DEEPER: { path: "/entry/:id/deeper", label: "Pažvelk giliau" },
   SETTINGS: { path: "/settings", label: "Nustatymai" },
   INSIGHTS: { path: "/insights", label: "Įžvalgos" },
 };
 
 export const getEntryPath = (id: string) => `/entry/${encodeURIComponent(id)}`;
-export const getEntryReframePath = (id: string) => `${getEntryPath(id)}/reframe`;
+export const getEntryDeeperPath = (id: string) => `${getEntryPath(id)}/deeper`;
+
+/** Opening the deeper flow from the entry page: closing it then simply goes back. */
+export type DeeperRouteState = { fromEntry?: boolean };
 
 /** Passed via router state when opening the new-entry flow. */
 export type NewEntryRouteState = { date?: string };

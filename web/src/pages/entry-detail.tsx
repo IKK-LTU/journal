@@ -6,7 +6,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import BackButton from "@/components/ui/BackButton";
 import PageShell from "@/components/ui/PageShell";
 import { findTrap } from "@/constants/thinking-traps";
-import { getEntryReframePath, ROUTES, type HomeRouteState } from "@/router/routes";
+import { getEntryDeeperPath, ROUTES, type DeeperRouteState, type HomeRouteState } from "@/router/routes";
+import { isDifficultEmotion } from "@/utils/insights";
 import { checkinsSelectors, removeCheckinItem } from "@/store/features/checkins";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { formatDayHeading, formatTime } from "@/utils/date";
@@ -52,6 +53,10 @@ const EntryDetail = () => {
   }
 
   const time = formatTime(entry.createdAt);
+  const deeperState: DeeperRouteState = { fromEntry: true };
+  const openDeeper = () => navigate(getEntryDeeperPath(entry.id), { state: deeperState });
+  // Offer the deeper part for hard moments, or to finish a thought that has no friend's view yet.
+  const canGoDeeper = !entry.balancedThought && (entry.autoThought !== "" || entry.emotion.some((emotion) => isDifficultEmotion(emotion.name)));
 
   return (
     <PageShell>
@@ -103,7 +108,7 @@ const EntryDetail = () => {
                 Pažvelk kitaip
               </Typography>
               {entry.balancedThought && (
-                <Button variant="text" onClick={() => navigate(getEntryReframePath(entry.id))} sx={{ minHeight: 36, px: 1, mr: -1, fontSize: 14, color: "primary.main" }}>
+                <Button variant="text" onClick={() => openDeeper()} sx={{ minHeight: 36, px: 1, mr: -1, fontSize: 14, color: "primary.main" }}>
                   Keisti
                 </Button>
               )}
@@ -121,19 +126,18 @@ const EntryDetail = () => {
           </Box>
         )}
 
-        {entry.autoThought && !entry.balancedThought && (
-          // Reframing often only becomes possible later, once the moment has passed.
-          // Also shown after a partial reframe (traps picked, balanced thought skipped) so it can be finished.
+        {canGoDeeper && (
+          // The deeper part is optional and often only possible later, once the moment has passed.
           <ButtonBase
-            onClick={() => navigate(getEntryReframePath(entry.id))}
+            onClick={() => openDeeper()}
             sx={{ p: 2, borderRadius: "12px", bgcolor: "background.paper", justifyContent: "space-between", textAlign: "left", fontFamily: "inherit" }}
           >
             <Box>
-              <Typography sx={{ fontSize: 17, fontWeight: 600 }}>
-                {entry.thinkingTraps.length > 0 ? "Užrašyk tikslesnę mintį" : "Pažvelk į šią mintį kitaip"}
-              </Typography>
+              <Typography sx={{ fontSize: 17, fontWeight: 600 }}>{entry.autoThought ? "Užbaik: pažvelk kitaip" : "Pažvelk giliau"}</Typography>
               <Typography sx={{ fontSize: 14, color: "text.secondary" }}>
-                {entry.thinkingTraps.length > 0 ? "Kaip į tai pažiūrėtų draugas?" : "Apie minutę: atpažink spąstus ir užrašyk tikslesnę mintį."}
+                {entry.autoThought
+                  ? "Kaip į šią mintį pažiūrėtų draugas?"
+                  : "~2 min. Užrašyk mintį, atpažink spąstus ir pažiūrėk į ją draugo akimis."}
               </Typography>
             </Box>
             <Box sx={{ display: "flex", color: "text.secondary" }}>

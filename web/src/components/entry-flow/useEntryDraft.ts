@@ -12,27 +12,17 @@ const createEmptyDraft = (date: string): EntryDraft => ({
   place: "",
   people: [],
   situation: "",
-  autoThought: "",
-  reactions: [],
-  behavior: "",
-  thinkingTraps: [],
-  balancedThought: "",
-  emotionAfter: [],
 });
 
 const hasContent = (draft: EntryDraft): boolean =>
-  draft.emotions.length > 0 ||
-  draft.people.length > 0 ||
-  draft.reactions.length > 0 ||
-  draft.thinkingTraps.length > 0 ||
-  [draft.place, draft.situation, draft.autoThought, draft.behavior, draft.balancedThought].some((text) => text.trim() !== "");
+  draft.emotions.length > 0 || draft.people.length > 0 || draft.place.trim() !== "" || draft.situation.trim() !== "";
 
 const asString = (value: unknown): string => (typeof value === "string" ? value : "");
 const asArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : []);
 
 /**
- * Turns whatever is in storage into a valid draft. Fields added later (place, people, …)
- * get empty defaults, so a draft from an older app version keeps the text the user already wrote.
+ * Turns whatever is in storage into a valid draft. Missing fields get empty defaults and fields
+ * from older flow versions are ignored, so a draft from an older app version keeps what fits.
  */
 const toEntryDraft = (value: unknown): EntryDraft | null => {
   if (typeof value !== "object" || value === null) return null;
@@ -45,12 +35,6 @@ const toEntryDraft = (value: unknown): EntryDraft | null => {
     place: asString(raw.place),
     people: asArray(raw.people),
     situation: asString(raw.situation),
-    autoThought: asString(raw.autoThought),
-    reactions: asArray(raw.reactions),
-    behavior: asString(raw.behavior),
-    thinkingTraps: asArray(raw.thinkingTraps),
-    balancedThought: asString(raw.balancedThought),
-    emotionAfter: asArray(raw.emotionAfter),
   };
 };
 

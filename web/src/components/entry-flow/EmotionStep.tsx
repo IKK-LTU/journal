@@ -89,7 +89,7 @@ const EmotionStep = ({ emotions, emotionUsage, onChange, onError }: Props) => {
       ))}
 
       {recentEmotions.length > 0 && (
-        <Box sx={{ mt: emotions.length > 0 ? 2.5 : 0, mb: 2 }}>
+        <Box sx={{ mt: emotions.length > 0 ? 2.5 : 0, mb: 2, px: 2, pt: 1.5, pb: 1, borderRadius: "12px", bgcolor: "background.paper" }}>
           <Typography component="h2" sx={sectionLabelSx}>
             Neseniai jausta
           </Typography>

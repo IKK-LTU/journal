@@ -94,7 +94,7 @@ const ChoiceStep = ({ options, selected, isMultiple, onChange, exclusiveOption, 
             onChange={(event) => setCustomValue(event.target.value)}
             placeholder="Įrašyk savo"
             inputProps={{ "aria-label": customLabel, maxLength: 40 }}
-            sx={{ flex: 1, minHeight: 48, px: 2, borderRadius: "12px", bgcolor: "background.paper", fontSize: 18 }}
+            sx={{ flex: 1, minHeight: 48, px: 2, borderRadius: "12px", bgcolor: "background.default", fontSize: 18 }}
           />
           <Button type="submit" variant="text" sx={{ minHeight: 48, color: "text.primary" }}>
             Pridėti
