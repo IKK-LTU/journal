@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
 import App from "./App";
@@ -26,10 +26,17 @@ describe("App", () => {
     );
     expect(screen.getByRole("heading", { name: "Ką dabar jauti?" })).toBeInTheDocument();
     expect(screen.getByText("1 iš 2")).toBeInTheDocument();
-    // All groups are visible at once: a subtitle per core feeling, and the core word as an option.
-    expect(screen.getByRole("heading", { name: "Išsigandęs" })).toBeInTheDocument();
+    // Level 1: six core feelings as tiles. Precise words only appear after tapping one.
     expect(screen.getByRole("button", { name: "Išsigandęs" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Atsipalaidavęs" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Bejėgis" })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Išsigandęs" }));
+
+    // Level 2 (optional): precise words; picking one replaces the core word.
+    expect(screen.getByRole("heading", { name: /Gal tiksliau\?/ })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Bejėgis" }));
+    expect(screen.getByRole("radiogroup", { name: "Bejėgis: stiprumas nuo 1 iki 10" })).toBeInTheDocument();
+    expect(screen.queryByRole("radiogroup", { name: "Išsigandęs: stiprumas nuo 1 iki 10" })).not.toBeInTheDocument();
   });
 
   test("the deeper part opens on an entry and starts with the thought", () => {

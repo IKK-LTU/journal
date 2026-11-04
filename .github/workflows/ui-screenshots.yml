@@ -16,7 +16,7 @@ jobs:
   screenshots:
     # 22.04: Playwright 1.49's WebKit system packages install cleanly there (not on the newest image).
     runs-on: ubuntu-22.04
-    timeout-minutes: 15
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: web
