@@ -54,9 +54,10 @@ export const STEP_COPY: Record<StepId, StepCopy> = {
   after: { title: "Kaip jautiesi dabar?", hint: "Įvertink tuos pačius jausmus dar kartą.", isRequired: false },
 };
 
-/** Steps that only make sense once there is a thought to look at. */
-const REFRAME_STEPS: StepId[] = ["traps", "balanced"];
+/** Steps that only make sense once there is a thought to look at (also the whole "reframe later" page). */
+export const REFRAME_STEPS = ["traps", "balanced"] as const satisfies readonly StepId[];
+export const isReframeStep = (step: StepId): boolean => (REFRAME_STEPS as readonly StepId[]).includes(step);
 
 /** The steps this draft will actually show: no thought → nothing to reframe, so those steps are left out. */
 export const getVisibleSteps = (draft: Pick<EntryDraft, "autoThought">): StepId[] =>
-  draft.autoThought.trim() === "" ? FLOW_STEPS.filter((step) => !REFRAME_STEPS.includes(step)) : [...FLOW_STEPS];
+  draft.autoThought.trim() === "" ? FLOW_STEPS.filter((step) => !isReframeStep(step)) : [...FLOW_STEPS];

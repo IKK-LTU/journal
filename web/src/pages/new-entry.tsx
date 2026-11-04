@@ -11,7 +11,7 @@ import FlowHeader from "@/components/entry-flow/FlowHeader";
 import ReRateStep from "@/components/entry-flow/ReRateStep";
 import StepTitle from "@/components/entry-flow/StepTitle";
 import BalancedThoughtStep from "@/components/entry-flow/BalancedThoughtStep";
-import { getVisibleSteps, STEP_COPY, type StepId } from "@/components/entry-flow/steps";
+import { getVisibleSteps, isReframeStep, STEP_COPY, type StepId } from "@/components/entry-flow/steps";
 import TextArea from "@/components/entry-flow/TextArea";
 import TextStep from "@/components/entry-flow/TextStep";
 import ThoughtReminder from "@/components/entry-flow/ThoughtReminder";
@@ -87,7 +87,9 @@ const NewEntry = () => {
   const step = visibleSteps[stepIndex];
   const copy = STEP_COPY[step];
   const isLastStep = stepIndex === visibleSteps.length - 1;
-  const isReframeStep = step === "traps" || step === "balanced";
+  const isOnReframeStep = isReframeStep(step);
+  // The thought as it was when the user opened the thought step — to detect a rewritten thought.
+  const thoughtWhenOpened = useRef(draft.autoThought);
 
   const goHome = (toast?: string) => {
     const state: HomeRouteState | undefined = toast ? { toast } : undefined;
@@ -119,6 +121,11 @@ const NewEntry = () => {
   const showStep = (index: number) => {
     clearTimeout(autoAdvanceTimer.current);
     setError(null);
+    // Leaving a rewritten thought: traps / balanced thought were about the old one, so they go.
+    if (step === "thought" && draft.autoThought.trim() !== thoughtWhenOpened.current.trim()) {
+      updateDraft({ thinkingTraps: [], balancedThought: "" });
+    }
+    if (visibleSteps[index] === "thought") thoughtWhenOpened.current = draft.autoThought;
     // Entering the re-rate step: start from the step-1 ratings.
     if (visibleSteps[index] === "after") {
       updateDraft({ emotionAfter: syncAfterRatings(draft.emotions, draft.emotionAfter) });
@@ -189,8 +196,8 @@ const NewEntry = () => {
           </Typography>
         )}
 
-        {isReframeStep && <ThoughtReminder thought={draft.autoThought} />}
-        {step !== "emotions" && !isReframeStep && <EmotionReminder emotions={draft.emotions} />}
+        {isOnReframeStep && <ThoughtReminder thought={draft.autoThought} />}
+        {step !== "emotions" && !isOnReframeStep && <EmotionReminder emotions={draft.emotions} />}
         <StepTitle title={copy.title} hint={copy.hint} />
 
         {step === "emotions" && (

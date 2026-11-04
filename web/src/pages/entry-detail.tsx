@@ -1,13 +1,12 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Box, Button, ButtonBase, Dialog, Typography } from "@mui/material";
 import { ChevronRight } from "lucide-react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import BackButton from "@/components/ui/BackButton";
 import PageShell from "@/components/ui/PageShell";
-import Toast from "@/components/ui/Toast";
 import { findTrap } from "@/constants/thinking-traps";
-import { getEntryReframePath, ROUTES, type HomeRouteState, type ToastRouteState } from "@/router/routes";
+import { getEntryReframePath, ROUTES, type HomeRouteState } from "@/router/routes";
 import { checkinsSelectors, removeCheckinItem } from "@/store/features/checkins";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { formatDayHeading, formatTime } from "@/utils/date";
@@ -28,14 +27,6 @@ const EntryDetail = () => {
   const dispatch = useAppDispatch();
   const entry = useAppSelector((state) => checkinsSelectors.selectEntryById(state, id));
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-
-  // Confirmation from the reframe page ("Išsaugota").
-  const location = useLocation();
-  const incomingToast = (location.state as ToastRouteState | null)?.toast ?? null;
-  const [toast, setToast] = useState<string | null>(incomingToast);
-  useEffect(() => {
-    if (incomingToast) navigate(location.pathname, { replace: true, state: null });
-  }, [incomingToast, location.pathname, navigate]);
 
   const goHome = () => navigate(ROUTES.HOME.path);
 
@@ -104,12 +95,19 @@ const EntryDetail = () => {
           </Section>
         )}
 
-        {entry.balancedThought || entry.thinkingTraps.length > 0 ? (
+        {(entry.balancedThought || entry.thinkingTraps.length > 0) && (
           // The one color moment: the user's own, more balanced thought.
           <Box component="section" sx={{ p: 2, borderRadius: "12px", bgcolor: "accentSoft" }}>
-            <Typography component="h2" sx={{ mb: 0.75, fontSize: 13, fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "primary.main" }}>
-              Pažvelk kitaip
-            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.75 }}>
+              <Typography component="h2" sx={{ fontSize: 13, fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "primary.main" }}>
+                Pažvelk kitaip
+              </Typography>
+              {entry.balancedThought && (
+                <Button variant="text" onClick={() => navigate(getEntryReframePath(entry.id))} sx={{ minHeight: 36, px: 1, mr: -1, fontSize: 14, color: "primary.main" }}>
+                  Keisti
+                </Button>
+              )}
+            </Box>
             {entry.thinkingTraps.length > 0 && (
               <Typography sx={{ mb: entry.balancedThought ? 1 : 0, fontSize: 15, color: "text.secondary" }}>
                 Spąstai: {entry.thinkingTraps.map((id) => findTrap(id)?.name ?? id).join(", ")}
@@ -121,22 +119,27 @@ const EntryDetail = () => {
               </Typography>
             )}
           </Box>
-        ) : (
-          entry.autoThought && (
-            // Reframing often only becomes possible later, once the moment has passed.
-            <ButtonBase
-              onClick={() => navigate(getEntryReframePath(entry.id))}
-              sx={{ p: 2, borderRadius: "12px", bgcolor: "background.paper", justifyContent: "space-between", textAlign: "left", fontFamily: "inherit" }}
-            >
-              <Box>
-                <Typography sx={{ fontSize: 17, fontWeight: 600 }}>Pažvelk į šią mintį kitaip</Typography>
-                <Typography sx={{ fontSize: 14, color: "text.secondary" }}>Apie minutę: atpažink spąstus ir užrašyk tikslesnę mintį.</Typography>
-              </Box>
-              <Box sx={{ display: "flex", color: "text.secondary" }}>
-                <ChevronRight size={20} aria-hidden />
-              </Box>
-            </ButtonBase>
-          )
+        )}
+
+        {entry.autoThought && !entry.balancedThought && (
+          // Reframing often only becomes possible later, once the moment has passed.
+          // Also shown after a partial reframe (traps picked, balanced thought skipped) so it can be finished.
+          <ButtonBase
+            onClick={() => navigate(getEntryReframePath(entry.id))}
+            sx={{ p: 2, borderRadius: "12px", bgcolor: "background.paper", justifyContent: "space-between", textAlign: "left", fontFamily: "inherit" }}
+          >
+            <Box>
+              <Typography sx={{ fontSize: 17, fontWeight: 600 }}>
+                {entry.thinkingTraps.length > 0 ? "Užrašyk tikslesnę mintį" : "Pažvelk į šią mintį kitaip"}
+              </Typography>
+              <Typography sx={{ fontSize: 14, color: "text.secondary" }}>
+                {entry.thinkingTraps.length > 0 ? "Kaip į tai pažiūrėtų draugas?" : "Apie minutę: atpažink spąstus ir užrašyk tikslesnę mintį."}
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", color: "text.secondary" }}>
+              <ChevronRight size={20} aria-hidden />
+            </Box>
+          </ButtonBase>
         )}
 
         {entry.emotionAfter.length > 0 && (
@@ -162,8 +165,6 @@ const EntryDetail = () => {
           Ištrinti įrašą
         </Button>
       </Box>
-
-      <Toast message={toast} onClose={() => setToast(null)} />
 
       <Dialog
         open={isConfirmOpen}

@@ -21,6 +21,6 @@ Dev Postgres = `db` service in `.devcontainer/docker-compose.yml`. Never point d
 
 - Package manager for `web/`: **pnpm only**. Run commands from `web/` or with `pnpm --dir web <cmd>`.
 - One PR per phase / feature. CI must be green before merge.
-- API contract lives in `api/openapi.yaml`; FE types are generated from it, never hand-written.
+- From the check-ins API phase on, the API contract lives in `api/openapi.yaml` and FE types are generated from it. Until then `web/src/api/services/types.ts` is hand-written and is the reference for that contract (every `CheckInDto` field must exist in the API).
 - Every DB query that touches user data is scoped by the `user_id` from the session — never from request input.
 - Journal entries are sensitive (mental-health) data: no entry content in logs, ever.
