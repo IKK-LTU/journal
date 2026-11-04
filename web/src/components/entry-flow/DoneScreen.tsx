@@ -23,7 +23,9 @@ type Props = {
 const DoneScreen = ({ title, message, highlight, children }: Props) => {
   // The button that led here is gone; move focus to the title so screen readers announce the result.
   const titleRef = useRef<HTMLHeadingElement>(null);
-  useEffect(() => titleRef.current?.focus(), []);
+  useEffect(() => {
+    titleRef.current?.focus();
+  }, []);
 
   return (
     <Box sx={{ flex: 1, px: 2, pt: 8, pb: 3, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>

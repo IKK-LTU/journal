@@ -20,5 +20,6 @@ if (!window.matchMedia) {
   });
 }
 
-// jsdom doesn't implement scrolling; the flows scroll to the top on each step.
-window.scrollTo = () => {};
+// jsdom doesn't implement scrolling. Newer browsers return a Promise from scrollTo() — mimic that,
+// so an effect that accidentally returns it fails in tests instead of in production.
+window.scrollTo = () => Promise.resolve();
