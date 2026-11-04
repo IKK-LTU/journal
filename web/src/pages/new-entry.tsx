@@ -55,12 +55,12 @@ const NewEntry = () => {
       place: draft.place,
       people: draft.people,
       situation: draft.situation.trim(),
-      // Filled in by the optional deeper part.
-      autoThought: "",
-      reactions: [],
-      behavior: "",
-      thinkingTraps: [],
-      balancedThought: "",
+      // Filled in by the optional deeper part (or carried over from a draft of the older long flow).
+      autoThought: draft.carriedOver?.autoThought.trim() ?? "",
+      reactions: draft.carriedOver?.reactions ?? [],
+      behavior: draft.carriedOver?.behavior.trim() ?? "",
+      thinkingTraps: draft.carriedOver?.thinkingTraps ?? [],
+      balancedThought: draft.carriedOver?.balancedThought.trim() ?? "",
       emotionAfter: [],
     });
     dispatch(action);
@@ -131,7 +131,10 @@ const NewEntry = () => {
 
   return (
     <Box sx={pageSx}>
-      <FlowHeader stepNumber={stepIndex + 1} totalSteps={QUICK_STEPS.length} onBack={() => setStepIndex(stepIndex - 1)} onClose={goHome} />
+      <FlowHeader stepNumber={stepIndex + 1} totalSteps={QUICK_STEPS.length} onBack={() => {
+          setError(null);
+          setStepIndex(stepIndex - 1);
+        }} onClose={goHome} />
 
       <Box component="main" key={step} sx={{ flex: 1, px: 2, pt: 2.5 }}>
         {wasRestored && step === "emotions" && (

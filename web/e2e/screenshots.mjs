@@ -11,7 +11,8 @@ const today = new Date();
 const day = (offset) => {
   const d = new Date(today);
   d.setDate(d.getDate() - offset);
-  return d.toISOString().slice(0, 10); // fine for seed data
+  // Local date (like the app's toLocalDateString) — toISOString() is UTC and would shift late entries a day.
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 };
 const entry = (id, offset, hour, emotion, situation, extra = {}) => ({
   id,

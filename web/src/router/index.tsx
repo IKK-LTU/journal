@@ -8,12 +8,12 @@ import EntryDeeper from "@/pages/entry-deeper";
 import Settings from "@/pages/settings";
 import Insights from "@/pages/insights";
 import Welcome from "@/pages/welcome";
-import { ROUTES } from "./routes";
+import { getEntryDeeperPath, ROUTES } from "./routes";
 
 // The deeper flow used to live at /entry/:id/reframe.
 const RedirectToDeeper = () => {
   const { id = "" } = useParams();
-  return <Navigate to={`/entry/${encodeURIComponent(id)}/deeper`} replace />;
+  return <Navigate to={getEntryDeeperPath(id)} replace />;
 };
 
 const Router = () => {

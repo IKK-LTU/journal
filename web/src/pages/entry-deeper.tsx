@@ -22,6 +22,10 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 const syncAfterRatings = (before: EmotionRating[], after: EmotionRating[]): EmotionRating[] =>
   before.map((emotion) => after.find((item) => item.name === emotion.name) ?? emotion);
 
+const sameItems = (a: string[], b: string[]) => a.length === b.length && a.every((item) => b.includes(item));
+const sameRatings = (a: EmotionRating[], b: EmotionRating[]) =>
+  a.length === b.length && a.every((rating) => b.some((other) => other.name === rating.name && other.intensity === rating.intensity));
+
 const biggestDrop = (before: EmotionRating[], after: EmotionRating[]): string | undefined => {
   const drops = after
     .map((rating) => {
@@ -65,7 +69,9 @@ const EntryDeeper = () => {
   const hasChanges =
     thought.trim() !== entry.autoThought.trim() ||
     balancedThought.trim() !== entry.balancedThought.trim() ||
-    traps.join() !== entry.thinkingTraps.join();
+    !sameItems(traps, entry.thinkingTraps) ||
+    // Ratings only count once the user reached the re-rate step (before that `after` is just the saved value).
+    (step === "after" && !sameRatings(after, entry.emotionAfter));
 
   // Opened from the entry page → just go back to it (no second copy in history).
   // Opened right after saving, or from a link → replace this page with the entry.
@@ -114,7 +120,8 @@ const EntryDeeper = () => {
   const handleSkip = () => {
     if (step === "traps") setTraps([]);
     if (step === "balanced") setBalancedThought("");
-    if (isLastStep) save([]);
+    // Skipping the re-rate keeps what was recorded before (when editing), rather than erasing it.
+    if (isLastStep) save(entry.emotionAfter);
     else goTo(stepIndex + 1);
   };
 
@@ -170,7 +177,8 @@ const EntryDeeper = () => {
             }}
             hasError={error !== null}
             isQuote
-            suggestions={recentThoughts}
+            // This entry's own earlier wording isn't a "recurring" thought.
+            suggestions={recentThoughts.filter((recent) => recent !== entry.autoThought.trim())}
             suggestionsLabel="Ši mintis jau buvo aplankiusi:"
           />
         )}

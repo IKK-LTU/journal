@@ -9,4 +9,17 @@ export type EntryDraft = {
   place: string;
   people: string[];
   situation: string;
+  /**
+   * Text written in the older one-long-flow version (thought, friend's view…) before the user stopped.
+   * Not editable in the quick flow, but saved with the entry so nothing the user wrote is lost.
+   */
+  carriedOver?: CarriedOverText;
+};
+
+export type CarriedOverText = {
+  autoThought: string;
+  thinkingTraps: string[];
+  balancedThought: string;
+  reactions: string[];
+  behavior: string;
 };
