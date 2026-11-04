@@ -10,6 +10,8 @@ const draft = (overrides: Partial<EntryDraft> = {}): EntryDraft => ({
   autoThought: "",
   reactions: [],
   behavior: "",
+  thinkingTraps: [],
+  balancedThought: "",
   emotionAfter: [],
   ...overrides,
 });
@@ -30,8 +32,13 @@ describe("validateStep", () => {
   });
 
   test("optional steps pass when empty", () => {
-    for (const step of ["place", "people", "thought", "reaction", "after"] as const) {
+    for (const step of ["place", "people", "thought", "reaction", "traps", "balanced", "after"] as const) {
       expect(validateStep(step, draft())).toBeNull();
     }
+  });
+
+  test("balanced thought is limited to 1000 characters", () => {
+    expect(validateStep("balanced", draft({ balancedThought: "a".repeat(1001) }))).toBe("Per ilga, iki 1000 simbolių");
+    expect(validateStep("balanced", draft({ balancedThought: "Tyla nereiškia, kad suklydau" }))).toBeNull();
   });
 });

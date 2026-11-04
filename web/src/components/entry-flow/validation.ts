@@ -7,6 +7,10 @@ export const TEXT_MAX_LENGTH = 1000;
 
 const TOO_LONG = `Per ilga, iki ${TEXT_MAX_LENGTH} simbolių`;
 
+/** Shared by the entry flow and the "reframe later" page. */
+export const validateBalancedThought = (text: string): string | null =>
+  text.trim().length > TEXT_MAX_LENGTH ? TOO_LONG : null;
+
 /**
  * Checks only the current step, so "Toliau" can explain exactly what's missing.
  * Returns an error message to show, or null when the step is OK.
@@ -30,9 +34,13 @@ export const validateStep = (step: StepId, draft: EntryDraft): string | null => 
     case "reaction":
       return draft.behavior.trim().length > TEXT_MAX_LENGTH ? TOO_LONG : null;
 
+    case "balanced":
+      return validateBalancedThought(draft.balancedThought);
+
     // One-tap steps can't be invalid.
     case "place":
     case "people":
+    case "traps":
     case "after":
       return null;
   }

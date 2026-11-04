@@ -7,6 +7,7 @@ import {
   difficultVsPleasant,
   filterByPeriod,
   placePatterns,
+  topTraps,
 } from "./insights";
 
 let nextId = 0;
@@ -21,6 +22,8 @@ const entry = (overrides: Partial<CheckInDto>): CheckInDto => ({
   autoThought: "",
   reactions: [],
   behavior: "",
+  thinkingTraps: [],
+  balancedThought: "",
   emotionAfter: [],
   ...overrides,
 });
@@ -117,5 +120,23 @@ describe("dailyAverageIntensity", () => {
       { date: "2026-10-26", average: null },
       { date: "2026-10-27", average: 3 },
     ]);
+  });
+});
+
+describe("topTraps", () => {
+  test("counts traps by name; needs at least 2 entries with traps", () => {
+    const entries = [
+      entry({ thinkingTraps: ["mind-reading", "catastrophizing"] }),
+      entry({ thinkingTraps: ["mind-reading"] }),
+      entry({}),
+    ];
+    expect(topTraps(entries)).toEqual([
+      { name: "Minčių skaitymas", count: 2, percent: 67 },
+      { name: "Katastrofizavimas", count: 1, percent: 33 },
+    ]);
+  });
+
+  test("one entry with traps is not a pattern yet", () => {
+    expect(topTraps([entry({ thinkingTraps: ["labeling"] })])).toEqual([]);
   });
 });

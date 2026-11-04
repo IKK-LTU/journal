@@ -9,9 +9,11 @@ type Props = {
   totalSteps: number;
   onBack: () => void;
   onClose: () => void;
+  /** Screen-reader text for ✕ — say whether work is kept. */
+  closeLabel?: string;
 };
 
-const FlowHeader = ({ stepNumber, totalSteps, onBack, onClose }: Props) => {
+const FlowHeader = ({ stepNumber, totalSteps, onBack, onClose, closeLabel = "Uždaryti, juodraštis išsaugomas" }: Props) => {
   return (
     <Box component="header">
       <Box
@@ -30,7 +32,7 @@ const FlowHeader = ({ stepNumber, totalSteps, onBack, onClose }: Props) => {
         <Box sx={{ visibility: stepNumber > 1 ? "visible" : "hidden", ml: 1 }}>
           <BackButton onClick={onBack} />
         </Box>
-        <IconButton aria-label="Uždaryti, juodraštis išsaugomas" onClick={onClose} sx={{ width: 44, height: 44, color: "text.primary" }}>
+        <IconButton aria-label={closeLabel} onClick={onClose} sx={{ width: 44, height: 44, color: "text.primary" }}>
           <X size={22} strokeWidth={1.8} aria-hidden />
         </IconButton>
       </Box>

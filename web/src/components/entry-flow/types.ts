@@ -12,5 +12,7 @@ export type EntryDraft = {
   autoThought: string;
   reactions: string[];
   behavior: string;
+  thinkingTraps: string[];
+  balancedThought: string;
   emotionAfter: EmotionRating[];
 };
