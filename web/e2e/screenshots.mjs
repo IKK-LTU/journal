@@ -79,6 +79,13 @@ async function newPage({ seed = true, dark = false, extraStorage = {} } = {}) {
   return page;
 }
 
+// WebKit's iPhone emulation doesn't reliably auto-scroll to off-screen elements (real iPhones do),
+// so scroll explicitly before tapping.
+const tap = async (locator) => {
+  await locator.evaluate((element) => element.scrollIntoView({ block: "center" }));
+  await locator.click();
+};
+
 const shot = async (page, name, fullPage = true) => {
   await page.waitForTimeout(700); // let fonts and small animations settle
   await page.screenshot({ path: `${OUT}/${ENGINE}-${name}.png`, fullPage });
@@ -102,58 +109,37 @@ for (const dark of [false, true]) {
   const page = await newPage();
   await page.goto(`${BASE}/new-entry`);
   await shot(page, "10-quick-1-emotions", false);
-  await page.getByRole("button", { name: "Neramus", exact: true }).first().click();
+  await tap(page.getByRole("button", { name: "Neramus", exact: true }).first());
   await shot(page, "11-quick-1-picked", false);
-  await page.getByRole("button", { name: "Toliau" }).click();
+  await tap(page.getByRole("button", { name: "Toliau" }));
   await shot(page, "12-quick-2-context", false);
-  await page.getByRole("button", { name: "Išsaugoti" }).click();
+  await tap(page.getByRole("button", { name: "Išsaugoti" }));
   await shot(page, "13-quick-2-error", false);
   await page.getByRole("textbox", { name: "Kas vyko" }).fill("Vadovas paprašė perdaryti ataskaitą prieš visus.");
-  await page.getByRole("button", { name: "Darbe", exact: true }).click();
-  await page.getByRole("button", { name: "Kolegos", exact: true }).click();
+  await tap(page.getByRole("button", { name: "Darbe", exact: true }));
+  await tap(page.getByRole("button", { name: "Kolegos", exact: true }));
   await shot(page, "14-quick-2-filled");
-  await page.getByRole("button", { name: "Išsaugoti" }).click();
+  await tap(page.getByRole("button", { name: "Išsaugoti" }));
   await page.waitForTimeout(900);
   await shot(page, "15-saved", false);
 
-  await page.getByRole("button", { name: "Pažvelk giliau" }).click();
+  await tap(page.getByRole("button", { name: "Pažvelk giliau" }));
   await shot(page, "20-deeper-1-thought", false);
   await page.getByRole("textbox", { name: "Mintis" }).fill("Aš viską darau ne taip.");
-  await page.getByRole("button", { name: "Toliau" }).click();
+  await tap(page.getByRole("button", { name: "Toliau" }));
   await shot(page, "21-deeper-2-traps");
-  await page.getByRole("button", { name: /Etiketės/ }).click();
-  await page.getByRole("button", { name: /Visada \/ niekada/ }).click();
-  await page.getByRole("button", { name: "Toliau" }).click();
+  await tap(page.getByRole("button", { name: /Etiketės/ }));
+  await tap(page.getByRole("button", { name: /Visada \/ niekada/ }));
+  await tap(page.getByRole("button", { name: "Toliau" }));
   await shot(page, "22-deeper-3-balanced", false);
   await page.getByRole("textbox", { name: "Subalansuota mintis" }).fill("Vieną ataskaitą reikia pataisyti – tai nereiškia, kad viską darau ne taip.");
-  // TEMP diagnostics: why WebKit never sees this button as "stable".
-  const frames = await page.evaluate(
-    () =>
-      new Promise((resolve) => {
-        const button = [...document.querySelectorAll("button")].find((b) => b.textContent?.trim() === "Toliau");
-        const out = [];
-        let n = 0;
-        const tick = () => {
-          const r = button?.getBoundingClientRect();
-          out.push(r ? `${r.x.toFixed(1)},${r.y.toFixed(1)} ${r.width.toFixed(1)}x${r.height.toFixed(1)} scrollY=${window.scrollY.toFixed(1)} vv=${window.visualViewport?.height.toFixed(1)}` : "none");
-          if (++n < 8) requestAnimationFrame(tick);
-          else resolve({ frames: out, active: document.activeElement?.tagName, docH: document.documentElement.scrollHeight, innerH: window.innerHeight });
-        };
-        requestAnimationFrame(tick);
-      }),
-  );
-  console.log(`[diag ${ENGINE}] balanced step:`, JSON.stringify(frames));
-  await page.getByRole("button", { name: "Toliau" }).click({ timeout: 8000 }).catch(async (error) => {
-    console.log(`[diag ${ENGINE}] normal click failed: ${error.message.split("\n")[0]} — retrying after blur`);
-    await page.evaluate(() => document.activeElement instanceof HTMLElement && document.activeElement.blur());
-    await page.getByRole("button", { name: "Toliau" }).click({ timeout: 8000 });
-  });
+  await tap(page.getByRole("button", { name: "Toliau" }));
   await page.getByRole("radio", { name: "3" }).first().check({ force: true });
   await shot(page, "23-deeper-4-after", false);
-  await page.getByRole("button", { name: "Išsaugoti" }).click();
+  await tap(page.getByRole("button", { name: "Išsaugoti" }));
   await page.waitForTimeout(900);
   await shot(page, "24-deeper-done", false);
-  await page.getByRole("button", { name: "Peržiūrėti įrašą" }).click();
+  await tap(page.getByRole("button", { name: "Peržiūrėti įrašą" }));
   await shot(page, "30-entry-detail");
 }
 
@@ -194,9 +180,9 @@ for (const dark of [false, true]) {
   });
   await page.goto(`${BASE}/new-entry`);
   await shot(page, "50-old-data-step1", false);
-  await page.getByRole("button", { name: "Toliau" }).click();
+  await tap(page.getByRole("button", { name: "Toliau" }));
   await shot(page, "51-old-data-step2", false);
-  await page.getByRole("button", { name: "Išsaugoti" }).click();
+  await tap(page.getByRole("button", { name: "Išsaugoti" }));
   await shot(page, "52-old-data-saved", false);
 }
 
