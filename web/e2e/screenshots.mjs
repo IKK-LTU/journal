@@ -106,6 +106,29 @@ for (const dark of [false, true]) {
   await shot(page, "11-quick-1-picked", false);
   await page.getByRole("button", { name: "Toliau" }).click();
   await shot(page, "12-quick-2-context", false);
+  // Diagnostics for layout problems: page wider than the screen, or a button that keeps moving.
+  const layout = await page.evaluate(async () => {
+    const save = [...document.querySelectorAll("button")].find((b) => b.textContent?.trim() === "Išsaugoti");
+    const boxes = [];
+    for (let i = 0; i < 5; i++) {
+      const r = save?.getBoundingClientRect();
+      boxes.push(r ? `${Math.round(r.x)},${Math.round(r.y)},${Math.round(r.width)}x${Math.round(r.height)}` : "none");
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    const wide = [...document.querySelectorAll("body *")]
+      .filter((el) => el.getBoundingClientRect().right > window.innerWidth + 1)
+      .slice(0, 5)
+      .map((el) => `${el.tagName.toLowerCase()}${el.getAttribute("type") ? `[type=${el.getAttribute("type")}]` : ""} right=${Math.round(el.getBoundingClientRect().right)}`);
+    return {
+      viewport: `${window.innerWidth}x${window.innerHeight}`,
+      scrollWidth: document.documentElement.scrollWidth,
+      scrollHeight: document.documentElement.scrollHeight,
+      saveButton: boxes,
+      widerThanScreen: wide,
+    };
+  });
+  console.log("layout step 2:", JSON.stringify(layout));
+  await shot(page, "12b-quick-2-context-full");
   await page.getByRole("button", { name: "Išsaugoti" }).click();
   await shot(page, "13-quick-2-error", false);
   await page.getByRole("textbox", { name: "Kas vyko" }).fill("Vadovas paprašė perdaryti ataskaitą prieš visus.");
