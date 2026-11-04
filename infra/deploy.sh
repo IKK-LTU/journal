@@ -34,8 +34,10 @@ ensure_env() {
 }
 
 # One time only: the old nginx + PHP + MySQL stack (~/api) holds port 80.
-# Back up MySQL first, then STOP (not delete) the containers and disable their auto-restart,
-# otherwise a reboot would start them again. Undo: docker start api-mysql-1 api-php-1 api-nginx-1
+# Its containers can't run `docker exec` (stale after a Docker runtime upgrade), so no mysqldump.
+# Instead: STOP the containers (not delete), then archive MySQL's data folder while MySQL is stopped
+# — a consistent cold backup. Auto-restart is disabled so a reboot doesn't bring them back.
+# Undo: docker start api-mysql-1 api-php-1 api-nginx-1
 retire_old_stack() {
   local marker="$HOME/.old-stack-retired"
   [ -f "$marker" ] && return
@@ -44,27 +46,32 @@ retire_old_stack() {
     return
   fi
 
-  mkdir -p "$HOME/backups"
-  if docker ps --format '{{.Names}}' | grep -q '^api-mysql-1$'; then
-    local dump
-    dump="$HOME/backups/mysql-before-journal-api-$(date +%F).sql"
-    echo "→ backing up old MySQL to $dump"
-    docker exec api-mysql-1 sh -c '
-      if [ -n "$MYSQL_ROOT_PASSWORD" ]; then
-        exec mysqldump --all-databases --single-transaction -uroot -p"$MYSQL_ROOT_PASSWORD"
-      else
-        exec mysqldump --all-databases --single-transaction -uroot
-      fi' > "$dump"
-    chmod 600 "$dump"
-    # Stop here (set -e) rather than retire the old stack without a usable backup.
-    [ -s "$dump" ] || { echo "MySQL backup is empty, not stopping the old stack"; exit 1; }
-  fi
+  local mysql_data
+  mysql_data=$(docker inspect -f '{{range .Mounts}}{{if eq .Destination "/var/lib/mysql"}}{{.Source}}{{end}}{{end}}' api-mysql-1)
+  [ -n "$mysql_data" ] || { echo "Can't find the MySQL data folder, not touching the old stack"; exit 1; }
 
   echo "→ stopping old stack (kept, not deleted)"
   for container in api-nginx-1 api-php-1 api-mysql-1; do
-    docker update --restart=no "$container" >/dev/null 2>&1 || true
-    docker stop "$container" >/dev/null 2>&1 || true
+    docker update --restart=no "$container" >/dev/null
+    docker stop "$container" >/dev/null
   done
+  if [ "$(docker inspect -f '{{.State.Running}}' api-mysql-1)" != "false" ]; then
+    echo "MySQL is still running, not copying its files"; exit 1
+  fi
+
+  mkdir -p "$HOME/backups"
+  local archive
+  archive="$HOME/backups/mysql-data-before-journal-api-$(date +%F).tar.gz"
+  echo "→ archiving MySQL data ($(sudo du -sh "$mysql_data" | cut -f1)) to $archive"
+  sudo tar -czf "$archive" -C "$mysql_data" .
+  sudo chown "$(id -u):$(id -g)" "$archive"
+  chmod 600 "$archive"
+  [ -s "$archive" ] || { echo "Archive is empty"; exit 1; }
+  echo "  archive size: $(du -h "$archive" | cut -f1)"
+
+  # The failed mysqldump attempt left a tiny error file behind.
+  find "$HOME/backups" -maxdepth 1 -name 'mysql-before-journal-api-*.sql' -size -1k -delete
+
   touch "$marker"
 }
 

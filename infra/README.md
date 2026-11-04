@@ -33,7 +33,9 @@ gunzip -c ~/backups/postgres/journal-YYYY-MM-DD.sql.gz \
 ```
 
 ## The old stack (retired on the first deploy)
-nginx + PHP + MySQL from `~/api` were stopped (not deleted) and their auto-restart disabled. MySQL was dumped to `~/backups/mysql-before-journal-api-<date>.sql` first. To bring it back: stop this stack, then `docker start api-mysql-1 api-php-1 api-nginx-1`.
+nginx + PHP + MySQL from `~/api` were stopped (not deleted) and their auto-restart disabled. Their containers couldn't run `docker exec` (stale after a Docker runtime upgrade), so MySQL was backed up cold: its data folder archived to `~/backups/mysql-data-before-journal-api-<date>.tar.gz` while stopped.
+- Bring the old stack back: stop this stack, then `docker start api-mysql-1 api-php-1 api-nginx-1`.
+- Restore the archive elsewhere: extract into an empty folder and mount it as `/var/lib/mysql` of a `mysql:8.0` container.
 
 ## Open follow-ups
 - Off-server backups (S3, EU region) — today's dumps are on the same disk as the database.
