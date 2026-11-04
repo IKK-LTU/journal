@@ -1,0 +1,55 @@
+name: ui-screenshots
+
+# Clicks through the main flows on a phone-sized screen and attaches screenshots to the run,
+# so design changes can be reviewed visually on every PR (Actions → run → Artifacts).
+on:
+  pull_request:
+    paths:
+      - "web/**"
+      - ".github/workflows/ui-screenshots.yml"
+
+concurrency:
+  group: ui-screenshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      # Playwright stays out of the app's dependencies: installed only here, in its own folder.
+      - name: Install Playwright
+        working-directory: web/e2e
+        run: |
+          npm init -y >/dev/null
+          npm install --no-save --no-audit --no-fund playwright@1.49.1
+          npx playwright install --with-deps chromium
+
+      - name: Take screenshots
+        run: |
+          pnpm preview --port 4173 --strictPort &
+          npx --yes wait-on@8.0.1 http://localhost:4173 --timeout 60000
+          cd e2e && BASE_URL=http://localhost:4173 OUT_DIR=../screenshots node screenshots.mjs
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ui-screenshots
+          path: web/screenshots
+          retention-days: 14
