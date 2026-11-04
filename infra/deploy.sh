@@ -51,12 +51,24 @@ retire_old_stack() {
   [ -n "$mysql_data" ] || { echo "Can't find the MySQL data folder, not touching the old stack"; exit 1; }
 
   echo "→ stopping old stack (kept, not deleted)"
+  if ! docker stop api-nginx-1 api-php-1 api-mysql-1 >/dev/null 2>&1; then
+    # Stuck containers ("cannot exec/update a stopped container"): Docker's view is out of sync
+    # with reality. Restarting the Docker service resyncs it; their restart policy is "no",
+    # so they stay stopped. Nothing of ours is running yet at this point.
+    echo "→ old containers are stuck; restarting the Docker service to reset them"
+    sudo systemctl restart docker
+    docker stop api-nginx-1 api-php-1 api-mysql-1 >/dev/null 2>&1 || true
+  fi
   for container in api-nginx-1 api-php-1 api-mysql-1; do
     docker update --restart=no "$container" >/dev/null
-    docker stop "$container" >/dev/null
   done
-  if [ "$(docker inspect -f '{{.State.Running}}' api-mysql-1)" != "false" ]; then
+
+  # Safety checks before touching any files or ports.
+  if [ "$(docker inspect -f '{{.State.Running}}' api-mysql-1)" != "false" ] || pgrep -x mysqld >/dev/null; then
     echo "MySQL is still running, not copying its files"; exit 1
+  fi
+  if sudo ss -tlnH 'sport = :80' | grep -q .; then
+    echo "Port 80 is still in use, not starting the new stack"; exit 1
   fi
 
   mkdir -p "$HOME/backups"
