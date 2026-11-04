@@ -126,7 +126,28 @@ for (const dark of [false, true]) {
   await page.getByRole("button", { name: "Toliau" }).click();
   await shot(page, "22-deeper-3-balanced", false);
   await page.getByRole("textbox", { name: "Subalansuota mintis" }).fill("Vieną ataskaitą reikia pataisyti – tai nereiškia, kad viską darau ne taip.");
-  await page.getByRole("button", { name: "Toliau" }).click();
+  // TEMP diagnostics: why WebKit never sees this button as "stable".
+  const frames = await page.evaluate(
+    () =>
+      new Promise((resolve) => {
+        const button = [...document.querySelectorAll("button")].find((b) => b.textContent?.trim() === "Toliau");
+        const out = [];
+        let n = 0;
+        const tick = () => {
+          const r = button?.getBoundingClientRect();
+          out.push(r ? `${r.x.toFixed(1)},${r.y.toFixed(1)} ${r.width.toFixed(1)}x${r.height.toFixed(1)} scrollY=${window.scrollY.toFixed(1)} vv=${window.visualViewport?.height.toFixed(1)}` : "none");
+          if (++n < 8) requestAnimationFrame(tick);
+          else resolve({ frames: out, active: document.activeElement?.tagName, docH: document.documentElement.scrollHeight, innerH: window.innerHeight });
+        };
+        requestAnimationFrame(tick);
+      }),
+  );
+  console.log(`[diag ${ENGINE}] balanced step:`, JSON.stringify(frames));
+  await page.getByRole("button", { name: "Toliau" }).click({ timeout: 8000 }).catch(async (error) => {
+    console.log(`[diag ${ENGINE}] normal click failed: ${error.message.split("\n")[0]} — retrying after blur`);
+    await page.evaluate(() => document.activeElement instanceof HTMLElement && document.activeElement.blur());
+    await page.getByRole("button", { name: "Toliau" }).click({ timeout: 8000 });
+  });
   await page.getByRole("radio", { name: "3" }).first().check({ force: true });
   await shot(page, "23-deeper-4-after", false);
   await page.getByRole("button", { name: "Išsaugoti" }).click();
