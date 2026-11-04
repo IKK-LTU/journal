@@ -66,4 +66,17 @@ describe("App", () => {
     expect(screen.getByText("1 iš 4")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Turbūt jiems nepatiko")).toBeInTheDocument(); // starts from what's saved
   });
+
+  test("Toliau moves from step 1 to step 2 (regression: white screen in Chrome 155)", () => {
+    render(
+      <MemoryRouter initialEntries={["/new-entry"]}>
+        <App />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Liūdnas" }));
+    fireEvent.click(screen.getByRole("button", { name: "Toliau" }));
+
+    expect(screen.getByRole("heading", { name: "Kas nutiko?" })).toBeInTheDocument();
+    expect(screen.queryByText("Kažkas nepavyko")).not.toBeInTheDocument();
+  });
 });

@@ -59,7 +59,11 @@ const EntryDeeper = () => {
   const [savedDrop, setSavedDrop] = useState<string | null | undefined>(undefined); // undefined = not saved yet
 
   // Each step starts at the top (the traps list is long, "Toliau" sits at its bottom).
-  useEffect(() => window.scrollTo({ top: 0 }), [stepIndex, savedDrop]);
+  // Block body on purpose: newer browsers make scrollTo() return a Promise, and React would
+  // treat a returned value as the cleanup function and crash calling it.
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [stepIndex, savedDrop]);
 
   if (!entry) return <Navigate to={ROUTES.HOME.path} replace />;
 

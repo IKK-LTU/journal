@@ -41,7 +41,11 @@ const NewEntry = () => {
   const [saved, setSaved] = useState<Saved | null>(null);
 
   // Each step (and the saved screen) starts at the top — step 1 is long, "Toliau" sits at its bottom.
-  useEffect(() => window.scrollTo({ top: 0 }), [stepIndex, saved]);
+  // Block body on purpose: newer browsers make scrollTo() return a Promise, and React would
+  // treat a returned value as the cleanup function and crash calling it ("a is not a function").
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [stepIndex, saved]);
 
   const step = QUICK_STEPS[stepIndex];
   const copy = STEP_COPY[step];

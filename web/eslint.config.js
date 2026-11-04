@@ -19,5 +19,16 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // useEffect(() => something()) returns something() — React then calls it as the cleanup.
+      // Newer browsers return Promises from e.g. scrollTo(), which crashed the app with a white screen.
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "CallExpression[callee.name=/^use(Layout)?Effect$/] > ArrowFunctionExpression[expression=true]",
+          message: "Effects must use a block body: useEffect(() => { … }). A returned value is treated as the cleanup function.",
+        },
+      ],
+    },
   },
 ])
