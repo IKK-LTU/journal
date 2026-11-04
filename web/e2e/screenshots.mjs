@@ -49,19 +49,31 @@ const SEED = {
 
 const browser = await chromium.launch();
 
-async function newPage({ seed = true, dark = false } = {}) {
+// Any uncaught error or console.error on any page fails the run — a broken screen must not pass silently.
+const pageErrors = [];
+const watchErrors = (page, label) => {
+  page.on("pageerror", (error) => pageErrors.push(`[${label}] ${error.message}\n${error.stack ?? ""}`));
+  page.on("console", (message) => {
+    if (message.type() === "error") pageErrors.push(`[${label}] console.error: ${message.text()}`);
+  });
+};
+
+async function newPage({ seed = true, dark = false, extraStorage = {} } = {}) {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, locale: "lt-LT" });
   await context.addInitScript(
-    ({ seed, dark, data }) => {
+    ({ seed, dark, data, extraStorage }) => {
       if (window.sessionStorage.getItem("seeded")) return;
       window.sessionStorage.setItem("seeded", "1");
       window.localStorage.clear();
       if (seed) window.localStorage.setItem("checkins", JSON.stringify(data));
       window.localStorage.setItem("mui-mode", dark ? "dark" : "light");
+      for (const [key, value] of Object.entries(extraStorage)) window.localStorage.setItem(key, value);
     },
-    { seed, dark, data: SEED },
+    { seed, dark, data: SEED, extraStorage },
   );
-  return context.newPage();
+  const page = await context.newPage();
+  watchErrors(page, `seed=${seed} dark=${dark}${Object.keys(extraStorage).length ? " +old data" : ""}`);
+  return page;
 }
 
 const shot = async (page, name, fullPage = true) => {
@@ -130,4 +142,44 @@ for (const dark of [false, true]) {
   await shot(page, "40-insights");
 }
 
+// A browser that used older app versions: entries in the very first format and a half-finished
+// draft from the old 9-step form. Step 2 must still work.
+{
+  const OLD_ENTRIES = {
+    checkinsList: [
+      { id: "20251016", date: "2025-10-16", situation: "Darbe", emotion: [{ name: "Nerimas", intensity: 6 }], autoThoughts: "Nepavyks", behavior: "" },
+      { id: "20251016", date: "2025-10-16", situation: "Vėl darbe", emotion: [{ name: "Pyktis", intensity: 8 }] },
+    ],
+  };
+  const OLD_DRAFT = {
+    date: "2026-11-01",
+    emotions: [{ name: "Neramus", intensity: 6 }],
+    place: "Darbe",
+    people: ["Kolegos"],
+    situation: "Susitikimas",
+    autoThought: "Jie mane teisia",
+    reactions: [],
+    behavior: "",
+    thinkingTraps: ["mind-reading"],
+    balancedThought: "",
+    emotionAfter: [],
+  };
+  const page = await newPage({
+    seed: false,
+    extraStorage: { checkins: JSON.stringify(OLD_ENTRIES), "entry-draft": JSON.stringify(OLD_DRAFT) },
+  });
+  await page.goto(`${BASE}/new-entry`);
+  await shot(page, "50-old-data-step1", false);
+  await page.getByRole("button", { name: "Toliau" }).click();
+  await shot(page, "51-old-data-step2", false);
+  await page.getByRole("button", { name: "Išsaugoti" }).click();
+  await shot(page, "52-old-data-saved", false);
+}
+
 await browser.close();
+
+if (pageErrors.length > 0) {
+  console.error(`\n${pageErrors.length} page error(s):\n` + pageErrors.join("\n\n"));
+  process.exit(1);
+}
+console.log("no page errors");
