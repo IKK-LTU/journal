@@ -3,6 +3,7 @@
 import type { CheckInDto, EmotionRating } from "@/api/services/types";
 import { findEmotionCategory } from "@/constants/emotions";
 import { NOBODY } from "@/constants/entry-options";
+import { findTrap } from "@/constants/thinking-traps";
 import { daysBetween, getTodayDateString, parseLocalDate, toLocalDateString } from "./date";
 
 /** Core feelings that are hard to sit with. The other three wheel cores are the pleasant ones. */
@@ -98,6 +99,14 @@ export const describeTopPattern = (entries: CheckInDto[]): string | null => {
   if (!people) return null;
   const who = people.context === NOBODY ? "Kai šalia nieko nėra" : `Kai šalia ${people.context.toLowerCase()}`;
   return `${who}, dažniausiai jauti: ${people.core}`;
+};
+
+/** Thinking traps the user recognised most often (by display name). Needs at least 2 entries with traps. */
+export const topTraps = (entries: CheckInDto[], limit = 3): Share[] => {
+  const withTraps = entries.filter((entry) => entry.thinkingTraps.length > 0);
+  if (withTraps.length < MIN_ENTRIES_FOR_PATTERN) return [];
+  const names = withTraps.flatMap((entry) => entry.thinkingTraps.map((id) => findTrap(id)?.name ?? id));
+  return toShares(countBy(names)).slice(0, limit);
 };
 
 /** How much intensity drops after writing (mean over re-rated entries). null below 2 re-rated entries. */

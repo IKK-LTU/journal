@@ -21,6 +21,7 @@ import {
   peoplePatterns,
   placePatterns,
   topFeelings,
+  topTraps,
 } from "@/utils/insights";
 import { ENTRY_FORMS, pluralizeLt } from "@/utils/plural";
 
@@ -55,6 +56,7 @@ const Insights = () => {
   const balance = difficultVsPleasant(entries);
   const coreShares = coreFeelingShares(entries);
   const feelings = topFeelings(entries);
+  const traps = topTraps(entries);
   const patterns = [...placePatterns(entries), ...peoplePatterns(entries)];
   const drop = averageIntensityDrop(entries);
   const trend = dailyAverageIntensity(entries, period ?? ALL_TIME_TREND_DAYS);
@@ -107,6 +109,15 @@ const Insights = () => {
         {feelings.length > 0 && (
           <Section title="Dažniausiai įvardyti">
             <ShareBars shares={feelings} />
+          </Section>
+        )}
+
+        {traps.length > 0 && (
+          <Section title="Dažniausi spąstai">
+            <ShareBars shares={traps} />
+            <Typography sx={{ mt: 1.5, fontSize: 14, color: "text.secondary" }}>
+              Kai žinai savo dažniausius spąstus, kitą kartą juos pastebėsi greičiau.
+            </Typography>
           </Section>
         )}
 

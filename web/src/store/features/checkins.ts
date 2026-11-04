@@ -37,6 +37,11 @@ export const checkinsListSlice = createSlice({
         };
       },
     },
+    /** Partial update of one entry (e.g. adding a reframe later). id and createdAt can't change. */
+    updateCheckinItem(state, action: PayloadAction<{ id: string; changes: Partial<Omit<CheckInDto, "id" | "createdAt">> }>) {
+      const entry = state.checkinsList.find((item) => item.id === action.payload.id);
+      if (entry) Object.assign(entry, action.payload.changes);
+    },
     removeCheckinItem(state, action: PayloadAction<string>) {
       state.checkinsList = state.checkinsList.filter((item) => item.id !== action.payload);
     },
@@ -46,7 +51,7 @@ export const checkinsListSlice = createSlice({
   },
 });
 
-export const { clearCheckinsList, addCheckinItem, removeCheckinItem } = checkinsListSlice.actions;
+export const { clearCheckinsList, addCheckinItem, updateCheckinItem, removeCheckinItem } = checkinsListSlice.actions;
 
 const selectCheckinsList = (state: RootState) => state.checkins.checkinsList;
 

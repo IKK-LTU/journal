@@ -30,9 +30,13 @@ export const validateStep = (step: StepId, draft: EntryDraft): string | null => 
     case "reaction":
       return draft.behavior.trim().length > TEXT_MAX_LENGTH ? TOO_LONG : null;
 
+    case "balanced":
+      return draft.balancedThought.trim().length > TEXT_MAX_LENGTH ? TOO_LONG : null;
+
     // One-tap steps can't be invalid.
     case "place":
     case "people":
+    case "traps":
     case "after":
       return null;
   }

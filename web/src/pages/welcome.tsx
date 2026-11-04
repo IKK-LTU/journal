@@ -81,7 +81,7 @@ const Welcome = () => {
                   <Chip variant="emotion">Nerimas · 7</Chip>
                   <Chip variant="distortion">Minčių skaitymas</Chip>
                 </EntryChips>
-                <EntryFooter>Žingsnis 4 iš 7 – kokie mąstymo spąstai čia veikia?</EntryFooter>
+                <EntryFooter>Ar atpažįsti spąstus šioje mintyje?</EntryFooter>
               </EntryCard>
 
               <EntryCard>
@@ -263,7 +263,7 @@ const Welcome = () => {
               <div>
                 <ModeLabel>Kai kažkas slegia</ModeLabel>
                 <ModeBody>
-                  Septyni žingsniai su gairėmis – įvardyk situaciją, įvertink emociją, pastebėk iškraipymą, suabejok juo ir pažvelk kitaip. Pabaigoje pamatysi, kaip pasikeitė stiprumas.
+                  Keli trumpi žingsniai su gairėmis – įvardyk jausmą ir situaciją, užrašyk mintį, atpažink spąstus ir pažvelk kitaip. Pabaigoje pamatysi, kaip pasikeitė jausmo stiprumas.
                 </ModeBody>
                 <ModeTime>~5 minutės</ModeTime>
               </div>

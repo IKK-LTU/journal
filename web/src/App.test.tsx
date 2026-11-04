@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
 import App from "./App";
+import { store } from "./store/store";
+import { addCheckinItem, checkinsSelectors } from "./store/features/checkins";
 
 // Smoke tests: the main screens render without crashing (theme, store, router wired up).
 describe("App", () => {
@@ -26,5 +28,33 @@ describe("App", () => {
     expect(screen.getByRole("heading", { name: "Išsigandęs" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Išsigandęs" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Atsipalaidavęs" })).toBeInTheDocument();
+  });
+
+  test("an entry with a thought can be reframed later", () => {
+    store.dispatch(
+      addCheckinItem({
+        date: "2026-11-04",
+        emotion: [{ name: "Neramus", intensity: 7 }],
+        place: "",
+        people: [],
+        situation: "Susitikimas",
+        autoThought: "Turbūt jiems nepatiko",
+        reactions: [],
+        behavior: "",
+        thinkingTraps: [],
+        balancedThought: "",
+        emotionAfter: [],
+      }),
+    );
+    const [saved] = checkinsSelectors.selectCheckinsList(store.getState());
+
+    render(
+      <MemoryRouter initialEntries={[`/entry/${saved.id}/reframe`]}>
+        <App />
+      </MemoryRouter>,
+    );
+    expect(screen.getByRole("heading", { name: "Ar atpažįsti spąstus šioje mintyje?" })).toBeInTheDocument();
+    expect(screen.getByText("„Turbūt jiems nepatiko“")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Minčių skaitymas/ })).toBeInTheDocument();
   });
 });

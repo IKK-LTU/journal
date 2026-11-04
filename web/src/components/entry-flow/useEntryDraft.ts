@@ -15,6 +15,8 @@ const createEmptyDraft = (date: string): EntryDraft => ({
   autoThought: "",
   reactions: [],
   behavior: "",
+  thinkingTraps: [],
+  balancedThought: "",
   emotionAfter: [],
 });
 
@@ -22,7 +24,8 @@ const hasContent = (draft: EntryDraft): boolean =>
   draft.emotions.length > 0 ||
   draft.people.length > 0 ||
   draft.reactions.length > 0 ||
-  [draft.place, draft.situation, draft.autoThought, draft.behavior].some((text) => text.trim() !== "");
+  draft.thinkingTraps.length > 0 ||
+  [draft.place, draft.situation, draft.autoThought, draft.behavior, draft.balancedThought].some((text) => text.trim() !== "");
 
 const asString = (value: unknown): string => (typeof value === "string" ? value : "");
 const asArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : []);
@@ -45,6 +48,8 @@ const toEntryDraft = (value: unknown): EntryDraft | null => {
     autoThought: asString(raw.autoThought),
     reactions: asArray(raw.reactions),
     behavior: asString(raw.behavior),
+    thinkingTraps: asArray(raw.thinkingTraps),
+    balancedThought: asString(raw.balancedThought),
     emotionAfter: asArray(raw.emotionAfter),
   };
 };

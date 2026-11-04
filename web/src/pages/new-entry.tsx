@@ -10,9 +10,12 @@ import FlowFooter from "@/components/entry-flow/FlowFooter";
 import FlowHeader from "@/components/entry-flow/FlowHeader";
 import ReRateStep from "@/components/entry-flow/ReRateStep";
 import StepTitle from "@/components/entry-flow/StepTitle";
-import { FLOW_STEPS, LAST_STEP_INDEX, STEP_COPY, type StepId } from "@/components/entry-flow/steps";
+import BalancedThoughtStep from "@/components/entry-flow/BalancedThoughtStep";
+import { getVisibleSteps, STEP_COPY, type StepId } from "@/components/entry-flow/steps";
 import TextArea from "@/components/entry-flow/TextArea";
 import TextStep from "@/components/entry-flow/TextStep";
+import ThoughtReminder from "@/components/entry-flow/ThoughtReminder";
+import TrapsStep from "@/components/entry-flow/TrapsStep";
 import type { EmotionRating, EntryDraft } from "@/components/entry-flow/types";
 import { useEntryDraft } from "@/components/entry-flow/useEntryDraft";
 import { validateStep } from "@/components/entry-flow/validation";
@@ -32,6 +35,8 @@ const SKIPPED_ANSWER: Partial<Record<StepId, Partial<EntryDraft>>> = {
   people: { people: [] },
   thought: { autoThought: "" },
   reaction: { reactions: [], behavior: "" },
+  traps: { thinkingTraps: [] },
+  balanced: { balancedThought: "" },
   after: { emotionAfter: [] },
 };
 
@@ -77,9 +82,12 @@ const NewEntry = () => {
   // Don't fire a pending auto-advance after leaving the page.
   useEffect(() => () => clearTimeout(autoAdvanceTimer.current), []);
 
-  const step = FLOW_STEPS[stepIndex];
+  // No thought → the reframe steps are left out; the list updates as the user types.
+  const visibleSteps = getVisibleSteps(draft);
+  const step = visibleSteps[stepIndex];
   const copy = STEP_COPY[step];
-  const isLastStep = stepIndex === LAST_STEP_INDEX;
+  const isLastStep = stepIndex === visibleSteps.length - 1;
+  const isReframeStep = step === "traps" || step === "balanced";
 
   const goHome = (toast?: string) => {
     const state: HomeRouteState | undefined = toast ? { toast } : undefined;
@@ -87,6 +95,8 @@ const NewEntry = () => {
   };
 
   const save = (finalDraft: EntryDraft) => {
+    // A reframe without a thought makes no sense (thought cleared after picking traps): drop it.
+    const hasThought = finalDraft.autoThought.trim() !== "";
     dispatch(
       addCheckinItem({
         date: finalDraft.date,
@@ -97,6 +107,8 @@ const NewEntry = () => {
         autoThought: finalDraft.autoThought.trim(),
         reactions: finalDraft.reactions,
         behavior: finalDraft.behavior.trim(),
+        thinkingTraps: hasThought ? finalDraft.thinkingTraps : [],
+        balancedThought: hasThought ? finalDraft.balancedThought.trim() : "",
         emotionAfter: finalDraft.emotionAfter,
       }),
     );
@@ -108,7 +120,7 @@ const NewEntry = () => {
     clearTimeout(autoAdvanceTimer.current);
     setError(null);
     // Entering the re-rate step: start from the step-1 ratings.
-    if (FLOW_STEPS[index] === "after") {
+    if (visibleSteps[index] === "after") {
       updateDraft({ emotionAfter: syncAfterRatings(draft.emotions, draft.emotionAfter) });
     }
     setStepIndex(index);
@@ -159,7 +171,7 @@ const NewEntry = () => {
     <Box sx={{ width: "100%", maxWidth: 600, minHeight: "100dvh", mx: "auto", display: "flex", flexDirection: "column" }}>
       <FlowHeader
         stepNumber={stepIndex + 1}
-        totalSteps={FLOW_STEPS.length}
+        totalSteps={visibleSteps.length}
         onBack={() => showStep(stepIndex - 1)}
         onClose={() => goHome()}
       />
@@ -177,7 +189,8 @@ const NewEntry = () => {
           </Typography>
         )}
 
-        {step !== "emotions" && <EmotionReminder emotions={draft.emotions} />}
+        {isReframeStep && <ThoughtReminder thought={draft.autoThought} />}
+        {step !== "emotions" && !isReframeStep && <EmotionReminder emotions={draft.emotions} />}
         <StepTitle title={copy.title} hint={copy.hint} />
 
         {step === "emotions" && (
@@ -253,6 +266,18 @@ const NewEntry = () => {
               />
             </Box>
           </ChoiceStep>
+        )}
+
+        {step === "traps" && (
+          <TrapsStep selected={draft.thinkingTraps} onChange={(thinkingTraps) => updateDraft({ thinkingTraps })} onError={setError} />
+        )}
+
+        {step === "balanced" && (
+          <BalancedThoughtStep
+            value={draft.balancedThought}
+            onChange={(balancedThought) => updateText({ balancedThought })}
+            hasError={error !== null}
+          />
         )}
 
         {step === "after" && (

@@ -1,8 +1,21 @@
+import type { EntryDraft } from "./types";
+
 /**
  * The entry flow, one small question per screen. Order matters: feelings first
- * (that's what brought the user here), then easy one-tap context, then words.
+ * (that's what brought the user here), then easy one-tap context, then words,
+ * then the CBT part — look at the thought again — and finally how it feels now.
  */
-export const FLOW_STEPS = ["emotions", "place", "people", "situation", "thought", "reaction", "after"] as const;
+export const FLOW_STEPS = [
+  "emotions",
+  "place",
+  "people",
+  "situation",
+  "thought",
+  "reaction",
+  "traps",
+  "balanced",
+  "after",
+] as const;
 
 export type StepId = (typeof FLOW_STEPS)[number];
 
@@ -28,7 +41,22 @@ export const STEP_COPY: Record<StepId, StepCopy> = {
     isRequired: false,
   },
   reaction: { title: "Kaip į tai sureagavai?", hint: "Ką padarei ar norėjai padaryti.", isRequired: false },
+  traps: {
+    title: "Ar atpažįsti spąstus šioje mintyje?",
+    hint: "Tai įprasti proto trumpiniai – juos turi visi. Pasirink, kurie tinka, arba praleisk.",
+    isRequired: false,
+  },
+  balanced: {
+    title: "Kaip į tai pažiūrėtų draugas?",
+    hint: "Ne priverstinis pozityvumas – tiesiog tikslesnė mintis.",
+    isRequired: false,
+  },
   after: { title: "Kaip jautiesi dabar?", hint: "Įvertink tuos pačius jausmus dar kartą.", isRequired: false },
 };
 
-export const LAST_STEP_INDEX = FLOW_STEPS.length - 1;
+/** Steps that only make sense once there is a thought to look at. */
+const REFRAME_STEPS: StepId[] = ["traps", "balanced"];
+
+/** The steps this draft will actually show: no thought → nothing to reframe, so those steps are left out. */
+export const getVisibleSteps = (draft: Pick<EntryDraft, "autoThought">): StepId[] =>
+  draft.autoThought.trim() === "" ? FLOW_STEPS.filter((step) => !REFRAME_STEPS.includes(step)) : [...FLOW_STEPS];

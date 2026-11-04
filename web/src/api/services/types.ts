@@ -22,5 +22,7 @@ export type CheckInDto = {
   autoThought: string;
   reactions: string[];
   behavior: string; // free-text part of the reaction step
+  thinkingTraps: string[]; // ids from constants/thinking-traps.ts
+  balancedThought: string; // the reframe: a more balanced version of autoThought
   emotionAfter: EmotionRating[]; // re-rated at the end; [] when skipped
 };
