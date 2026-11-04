@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Fab, Typography } from "@mui/material";
+import { Fab } from "@mui/material";
 import { Plus } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import DayGroup from "@/components/home/DayGroup";
+import FirstEntryCard from "@/components/home/FirstEntryCard";
 import HomeHeader from "@/components/home/HomeHeader";
 import WeekInsightCard from "@/components/home/WeekInsightCard";
 import WeekStrip from "@/components/home/WeekStrip";
@@ -38,13 +39,7 @@ const Home = () => {
       <WeekInsightCard />
 
       {groups.length === 0 ? (
-        <Typography sx={{ maxWidth: 300, fontSize: 17, color: "text.secondary" }}>
-          Dar nieko neparašei. Kai kas nors užeis, paspausk{" "}
-          <Typography component="span" sx={{ color: "text.primary", fontWeight: 500 }}>
-            +
-          </Typography>{" "}
-          apačioje.
-        </Typography>
+        <FirstEntryCard />
       ) : (
         groups.map((group) => <DayGroup key={group.date} group={group} />)
       )}

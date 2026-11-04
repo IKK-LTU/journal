@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { Box, Typography } from "@mui/material";
 import { keyframes } from "@mui/material/styles";
 
@@ -21,6 +21,10 @@ type Props = {
 
 /** The moment after saving: an animated ✓, a kind sentence, then what to do next. */
 const DoneScreen = ({ title, message, highlight, children }: Props) => {
+  // The button that led here is gone; move focus to the title so screen readers announce the result.
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => titleRef.current?.focus(), []);
+
   return (
     <Box sx={{ flex: 1, px: 2, pt: 8, pb: 3, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
       <Box
@@ -43,7 +47,7 @@ const DoneScreen = ({ title, message, highlight, children }: Props) => {
         </svg>
       </Box>
 
-      <Typography variant="display" sx={{ mt: 3, fontSize: 32 }}>
+      <Typography ref={titleRef} tabIndex={-1} variant="display" sx={{ mt: 3, fontSize: 32, outline: "none" }}>
         {title}
       </Typography>
       <Typography sx={{ mt: 1, maxWidth: 340, fontSize: 17, color: "text.secondary" }}>{message}</Typography>

@@ -114,6 +114,7 @@ const NewEntry = () => {
               <Button variant="text" fullWidth onClick={goHome} sx={{ mt: 1, color: "text.secondary" }}>
                 Gal vėliau
               </Button>
+              <Typography sx={{ mt: 0.5, fontSize: 14, color: "text.secondary" }}>Galėsi grįžti iš įrašo bet kada.</Typography>
             </>
           ) : (
             <Button variant="contained" fullWidth onClick={goHome}>

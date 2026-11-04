@@ -29,7 +29,6 @@ const ContextStep = ({ draft, placeUsage, peopleUsage, onChange, hasError }: Pro
           onChange={(situation) => onChange({ situation })}
           hasError={hasError}
           rows={4}
-          autoFocus
           isOnCard
         />
       </QuestionCard>

@@ -4,15 +4,14 @@ import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom"
 
 import type { EmotionRating } from "@/api/services/types";
 import BalancedThoughtStep from "@/components/entry-flow/BalancedThoughtStep";
+import ContextCard from "@/components/entry-flow/ContextCard";
 import DoneScreen from "@/components/entry-flow/DoneScreen";
-import EmotionReminder from "@/components/entry-flow/EmotionReminder";
 import FlowFooter from "@/components/entry-flow/FlowFooter";
 import FlowHeader from "@/components/entry-flow/FlowHeader";
 import ReRateStep from "@/components/entry-flow/ReRateStep";
 import StepHeader from "@/components/entry-flow/StepHeader";
 import { DEEPER_STEPS, STEP_COPY } from "@/components/entry-flow/steps";
 import TextStep from "@/components/entry-flow/TextStep";
-import ThoughtReminder from "@/components/entry-flow/ThoughtReminder";
 import TrapsStep from "@/components/entry-flow/TrapsStep";
 import { validateBalancedThought, validateThought } from "@/components/entry-flow/validation";
 import { getEntryPath, ROUTES, type DeeperRouteState } from "@/router/routes";
@@ -152,12 +151,10 @@ const EntryDeeper = () => {
       />
 
       <Box component="main" key={step} sx={{ flex: 1, px: 2, pt: 2.5 }}>
-        {step === "thought" || step === "after" ? (
-          <EmotionReminder emotions={entry.emotion} />
-        ) : (
-          <ThoughtReminder thought={thought} />
-        )}
         <StepHeader icon={copy.icon} stepNumber={stepIndex + 1} totalSteps={DEEPER_STEPS.length} title={copy.title} hint={copy.hint} />
+        {/* What this question is about: the moment (often days later), or the thought being examined. */}
+        {step === "thought" && <ContextCard label="Kas vyko" text={entry.situation} />}
+        {(step === "traps" || step === "balanced") && <ContextCard label="Tavo mintis" text={thought} isQuote />}
 
         {step === "thought" && (
           <TextStep

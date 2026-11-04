@@ -13,7 +13,8 @@ describe("App", () => {
         <App />
       </MemoryRouter>,
     );
-    expect(screen.getByText(/Dar nieko neparašei/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Pradėk nuo vieno jausmo" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Užrašyti pirmą įrašą" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Naujas įrašas" })).toBeInTheDocument();
   });
 
