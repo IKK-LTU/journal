@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import { Lightbulb } from "lucide-react";
 
 import TextArea from "./TextArea";
 
@@ -18,13 +19,18 @@ type Props = {
 const BalancedThoughtStep = ({ value, onChange, hasError }: Props) => {
   return (
     <>
-      <Typography sx={{ mb: 0.5, fontSize: 14, color: "text.secondary" }}>Gali padėti:</Typography>
-      <Box component="ul" sx={{ mb: 2, display: "flex", flexDirection: "column", gap: 0.5 }}>
-        {HELPER_QUESTIONS.map((question) => (
-          <Typography component="li" key={question} sx={{ fontSize: 16, color: "text.primary" }}>
-            {question}
-          </Typography>
-        ))}
+      <Box sx={{ mb: 2, px: 2, py: 1.5, borderRadius: "12px", bgcolor: "background.paper" }}>
+        <Typography sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 0.75, fontSize: 13, fontWeight: 600, color: "primary.main" }}>
+          <Lightbulb size={16} strokeWidth={2} aria-hidden />
+          Gali padėti
+        </Typography>
+        <Box component="ul" sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+          {HELPER_QUESTIONS.map((question) => (
+            <Typography component="li" key={question} sx={{ fontSize: 15, color: "text.secondary" }}>
+              {question}
+            </Typography>
+          ))}
+        </Box>
       </Box>
 
       <TextArea
@@ -34,7 +40,6 @@ const BalancedThoughtStep = ({ value, onChange, hasError }: Props) => {
         onChange={onChange}
         hasError={hasError}
         rows={6}
-        autoFocus
         isQuote
       />
     </>

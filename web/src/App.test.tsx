@@ -13,7 +13,8 @@ describe("App", () => {
         <App />
       </MemoryRouter>,
     );
-    expect(screen.getByText(/Dar nieko neparašei/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Pradėk nuo vieno jausmo" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Užrašyti pirmą įrašą" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Naujas įrašas" })).toBeInTheDocument();
   });
 
@@ -24,13 +25,14 @@ describe("App", () => {
       </MemoryRouter>,
     );
     expect(screen.getByRole("heading", { name: "Ką dabar jauti?" })).toBeInTheDocument();
+    expect(screen.getByText("1 iš 2")).toBeInTheDocument();
     // All groups are visible at once: a subtitle per core feeling, and the core word as an option.
     expect(screen.getByRole("heading", { name: "Išsigandęs" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Išsigandęs" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Atsipalaidavęs" })).toBeInTheDocument();
   });
 
-  test("an entry with a thought can be reframed later", () => {
+  test("the deeper part opens on an entry and starts with the thought", () => {
     store.dispatch(
       addCheckinItem({
         date: "2026-11-04",
@@ -49,12 +51,12 @@ describe("App", () => {
     const [saved] = checkinsSelectors.selectCheckinsList(store.getState());
 
     render(
-      <MemoryRouter initialEntries={[`/entry/${saved.id}/reframe`]}>
+      <MemoryRouter initialEntries={[`/entry/${saved.id}/deeper`]}>
         <App />
       </MemoryRouter>,
     );
-    expect(screen.getByRole("heading", { name: "Ar atpažįsti spąstus šioje mintyje?" })).toBeInTheDocument();
-    expect(screen.getByText("„Turbūt jiems nepatiko“")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Minčių skaitymas/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Kokia mintis tada šovė į galvą?" })).toBeInTheDocument();
+    expect(screen.getByText("1 iš 4")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Turbūt jiems nepatiko")).toBeInTheDocument(); // starts from what's saved
   });
 });

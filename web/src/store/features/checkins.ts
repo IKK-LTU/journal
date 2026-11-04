@@ -97,7 +97,6 @@ const selectEmotionUsage = createSelector([selectCheckinsList], (list) =>
 );
 const selectPlaceUsage = createSelector([selectCheckinsList], (list) => countAnswers(list, (entry) => [entry.place]));
 const selectPeopleUsage = createSelector([selectCheckinsList], (list) => countAnswers(list, (entry) => entry.people));
-const selectReactionUsage = createSelector([selectCheckinsList], (list) => countAnswers(list, (entry) => entry.reactions));
 
 /** The user's last few distinct thoughts — often the same thought comes back, one tap to reuse it. */
 const selectRecentThoughts = createSelector([selectCheckinsList], (list): string[] => {
@@ -113,7 +112,6 @@ export const checkinsSelectors = {
   selectEmotionUsage,
   selectPlaceUsage,
   selectPeopleUsage,
-  selectReactionUsage,
   selectRecentThoughts,
   selectEntryById: (state: RootState, id: string) => state.checkins.checkinsList.find((item) => item.id === id),
 };

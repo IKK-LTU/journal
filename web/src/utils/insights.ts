@@ -18,6 +18,12 @@ export type Pattern = { context: string; core: string; count: number };
 
 const coreOf = (emotionName: string): string => findEmotionCategory(emotionName)?.name ?? OTHER_CORE;
 
+/** Fear, sadness, anger family. Custom emotions count as difficult — when unsure, offer the deeper part. */
+export const isDifficultEmotion = (emotionName: string): boolean => {
+  const core = coreOf(emotionName);
+  return core === OTHER_CORE || DIFFICULT_CORES.includes(core);
+};
+
 const strongestEmotion = (emotions: EmotionRating[]): EmotionRating | undefined =>
   emotions.reduce<EmotionRating | undefined>((strongest, emotion) => (!strongest || emotion.intensity > strongest.intensity ? emotion : strongest), undefined);
 

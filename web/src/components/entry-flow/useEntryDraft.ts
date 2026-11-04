@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { getTodayDateString } from "@/utils/date";
-import type { EntryDraft } from "./types";
+import type { CarriedOverText, EntryDraft } from "./types";
 
 const DRAFT_STORAGE_KEY = "entry-draft";
 const SAVE_DELAY_MS = 500;
@@ -12,27 +12,37 @@ const createEmptyDraft = (date: string): EntryDraft => ({
   place: "",
   people: [],
   situation: "",
-  autoThought: "",
-  reactions: [],
-  behavior: "",
-  thinkingTraps: [],
-  balancedThought: "",
-  emotionAfter: [],
 });
 
 const hasContent = (draft: EntryDraft): boolean =>
   draft.emotions.length > 0 ||
   draft.people.length > 0 ||
-  draft.reactions.length > 0 ||
-  draft.thinkingTraps.length > 0 ||
-  [draft.place, draft.situation, draft.autoThought, draft.behavior, draft.balancedThought].some((text) => text.trim() !== "");
+  draft.place.trim() !== "" ||
+  draft.situation.trim() !== "" ||
+  draft.carriedOver !== undefined;
+
+/** Fields from the older long flow; undefined when the stored draft had none of them. */
+const toCarriedOver = (raw: Record<string, unknown>): CarriedOverText | undefined => {
+  const carried: CarriedOverText = {
+    autoThought: asString(raw.autoThought),
+    thinkingTraps: asArray(raw.thinkingTraps),
+    balancedThought: asString(raw.balancedThought),
+    reactions: asArray(raw.reactions),
+    behavior: asString(raw.behavior),
+  };
+  const hasAny =
+    [carried.autoThought, carried.balancedThought, carried.behavior].some((text) => text.trim() !== "") ||
+    carried.thinkingTraps.length > 0 ||
+    carried.reactions.length > 0;
+  return hasAny ? carried : (raw.carriedOver as CarriedOverText | undefined);
+};
 
 const asString = (value: unknown): string => (typeof value === "string" ? value : "");
 const asArray = <T,>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : []);
 
 /**
- * Turns whatever is in storage into a valid draft. Fields added later (place, people, …)
- * get empty defaults, so a draft from an older app version keeps the text the user already wrote.
+ * Turns whatever is in storage into a valid draft. Missing fields get empty defaults and fields
+ * from older flow versions are ignored, so a draft from an older app version keeps what fits.
  */
 const toEntryDraft = (value: unknown): EntryDraft | null => {
   if (typeof value !== "object" || value === null) return null;
@@ -45,17 +55,12 @@ const toEntryDraft = (value: unknown): EntryDraft | null => {
     place: asString(raw.place),
     people: asArray(raw.people),
     situation: asString(raw.situation),
-    autoThought: asString(raw.autoThought),
-    reactions: asArray(raw.reactions),
-    behavior: asString(raw.behavior),
-    thinkingTraps: asArray(raw.thinkingTraps),
-    balancedThought: asString(raw.balancedThought),
-    emotionAfter: asArray(raw.emotionAfter),
+    carriedOver: toCarriedOver(raw),
   };
 };
 
 // localStorage can throw (private mode, blocked storage). A lost draft is acceptable; a crash isn't.
-const loadDraft = (): EntryDraft | null => {
+export const loadDraft = (): EntryDraft | null => {
   try {
     const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
     const draft = toEntryDraft(raw ? JSON.parse(raw) : null);
@@ -93,10 +98,14 @@ export const useEntryDraft = (requestedDate?: string) => {
     return requestedDate ? { ...base, date: requestedDate } : base;
   });
   const [wasRestored, setWasRestored] = useState(savedDraft !== null);
+  // Set once the entry is saved: a write still waiting in the debounce must not bring the draft back.
+  const isDiscarded = useRef(false);
 
   // Debounced: write at most every 500ms while typing.
   useEffect(() => {
-    const timer = setTimeout(() => storeDraft(draft), SAVE_DELAY_MS);
+    const timer = setTimeout(() => {
+      if (!isDiscarded.current) storeDraft(draft);
+    }, SAVE_DELAY_MS);
     return () => clearTimeout(timer);
   }, [draft]);
 
@@ -108,5 +117,10 @@ export const useEntryDraft = (requestedDate?: string) => {
     setWasRestored(false);
   };
 
-  return { draft, updateDraft, wasRestored, resetDraft, discardSavedDraft: removeDraft };
+  const discardSavedDraft = () => {
+    isDiscarded.current = true;
+    removeDraft();
+  };
+
+  return { draft, updateDraft, wasRestored, resetDraft, discardSavedDraft };
 };

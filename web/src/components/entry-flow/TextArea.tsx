@@ -16,10 +16,12 @@ type Props = {
   autoFocus?: boolean;
   /** Serif italic, for writing down a thought like a quote. */
   isQuote?: boolean;
+  /** Inside a card the field takes the page color, so it still stands out from the card. */
+  isOnCard?: boolean;
 };
 
 /** Big, calm writing area on a soft card — no border, red inset ring only on error. */
-const TextArea = ({ label, value, onChange, placeholder, hasError = false, rows = 6, autoFocus = false, isQuote = false }: Props) => {
+const TextArea = ({ label, value, onChange, placeholder, hasError = false, rows = 6, autoFocus = false, isQuote = false, isOnCard = false }: Props) => {
   return (
     <Box
       component="textarea"
@@ -39,7 +41,7 @@ const TextArea = ({ label, value, onChange, placeholder, hasError = false, rows 
         border: "none",
         borderRadius: "12px",
         resize: "none",
-        bgcolor: "background.paper",
+        bgcolor: isOnCard ? "background.default" : "background.paper",
         color: "text.primary",
         font: "inherit",
         fontSize: isQuote ? 21 : 19,
