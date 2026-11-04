@@ -50,7 +50,13 @@ const SEED = {
 // ENGINE=webkit runs the same flows as Safari on an iPhone.
 const ENGINE = process.env.ENGINE ?? "chromium";
 const browser = ENGINE === "webkit" ? await webkit.launch() : await chromium.launch();
-const deviceOptions = ENGINE === "webkit" ? devices["iPhone 13"] : { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 };
+// WebKit: iPhone 13 (user agent, touch, pixel density) but with the full 844px screen height —
+// headless WebKit's mobile emulation can't scroll the page, and the point of this run is to catch
+// WebKit-only JavaScript errors, not to test scrolling.
+const deviceOptions =
+  ENGINE === "webkit"
+    ? { ...devices["iPhone 13"], viewport: { width: 390, height: 844 } }
+    : { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 };
 
 // Any uncaught error or console.error on any page fails the run — a broken screen must not pass silently.
 const pageErrors = [];
