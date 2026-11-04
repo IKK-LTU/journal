@@ -14,7 +14,8 @@ concurrency:
 
 jobs:
   screenshots:
-    runs-on: ubuntu-latest
+    # 22.04: Playwright 1.49's WebKit system packages install cleanly there (not on the newest image).
+    runs-on: ubuntu-22.04
     timeout-minutes: 15
     defaults:
       run:
