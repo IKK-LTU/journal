@@ -38,7 +38,7 @@ const EmotionStep = ({ emotions, emotionUsage, onChange, onError }: Props) => {
   const recentEmotions = Object.keys(emotionUsage)
     .sort((a, b) => emotionUsage[b] - emotionUsage[a])
     .filter((name) => !isPicked(name))
-    .slice(0, 4);
+    .slice(0, 3); // one line on a phone
 
   const pickedCores = EMOTION_CATEGORIES.filter((category) => emotions.some((emotion) => coreOf(emotion.name) === category.name)).map(
     (category) => category.name,
