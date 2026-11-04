@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button } from "@mui/material";
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 
@@ -53,6 +53,9 @@ const EntryDeeper = () => {
   const [reframedThought, setReframedThought] = useState(entry?.autoThought ?? "");
   const [error, setError] = useState<string | null>(null);
   const [savedDrop, setSavedDrop] = useState<string | null | undefined>(undefined); // undefined = not saved yet
+
+  // Each step starts at the top (the traps list is long, "Toliau" sits at its bottom).
+  useEffect(() => window.scrollTo({ top: 0 }), [stepIndex, savedDrop]);
 
   if (!entry) return <Navigate to={ROUTES.HOME.path} replace />;
 

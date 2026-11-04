@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, ButtonBase, Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -39,6 +39,9 @@ const NewEntry = () => {
   const [stepIndex, setStepIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState<Saved | null>(null);
+
+  // Each step (and the saved screen) starts at the top — step 1 is long, "Toliau" sits at its bottom.
+  useEffect(() => window.scrollTo({ top: 0 }), [stepIndex, saved]);
 
   const step = QUICK_STEPS[stepIndex];
   const copy = STEP_COPY[step];

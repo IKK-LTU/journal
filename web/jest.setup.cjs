@@ -19,3 +19,6 @@ if (!window.matchMedia) {
     dispatchEvent: () => false,
   });
 }
+
+// jsdom doesn't implement scrolling; the flows scroll to the top on each step.
+window.scrollTo = () => {};
