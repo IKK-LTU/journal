@@ -2,6 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { HeartHandshake, MessageCircle, Sun } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import IconBadge from "@/components/ui/IconBadge";
 import { ROUTES } from "@/router/routes";
 
 const HOW_IT_WORKS = [
@@ -24,14 +25,9 @@ const FirstEntryCard = () => {
       </Typography>
 
       <Box component="ol" sx={{ mt: 2.5, mb: 3, display: "flex", flexDirection: "column", gap: 1.5 }}>
-        {HOW_IT_WORKS.map(({ icon: Icon, text }) => (
+        {HOW_IT_WORKS.map(({ icon, text }) => (
           <Box component="li" key={text} sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-            <Box
-              aria-hidden
-              sx={{ flex: "none", width: 36, height: 36, borderRadius: "50%", bgcolor: "accentSoft", color: "primary.main", display: "flex", alignItems: "center", justifyContent: "center" }}
-            >
-              <Icon size={18} strokeWidth={1.8} />
-            </Box>
+            <IconBadge icon={icon} size={36} />
             <Typography sx={{ fontSize: 16 }}>{text}</Typography>
           </Box>
         ))}

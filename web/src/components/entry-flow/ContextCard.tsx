@@ -1,4 +1,6 @@
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
+
+import SurfaceCard from "@/components/ui/SurfaceCard";
 
 import { SERIF_FONT } from "../../../theme";
 
@@ -14,7 +16,7 @@ const ContextCard = ({ label, text, isQuote = false }: Props) => {
   if (!text.trim()) return null;
 
   return (
-    <Box sx={{ mb: 2, px: 2, py: 1.5, borderRadius: "12px", bgcolor: "accentSoft" }}>
+    <SurfaceCard tone="soft" sx={{ mb: 2, py: 1.5 }}>
       <Typography sx={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "primary.main" }}>
         {label}
       </Typography>
@@ -32,7 +34,7 @@ const ContextCard = ({ label, text, isQuote = false }: Props) => {
       >
         {isQuote ? `„${text.trim()}“` : text.trim()}
       </Typography>
-    </Box>
+    </SurfaceCard>
   );
 };
 

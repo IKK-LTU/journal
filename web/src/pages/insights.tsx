@@ -8,6 +8,7 @@ import PeriodToggle, { type Period } from "@/components/insights/PeriodToggle";
 import ShareBars from "@/components/insights/ShareBars";
 import TrendLine from "@/components/insights/TrendLine";
 import BackButton from "@/components/ui/BackButton";
+import SurfaceCard from "@/components/ui/SurfaceCard";
 import PageShell from "@/components/ui/PageShell";
 import { ROUTES } from "@/router/routes";
 import { checkinsSelectors } from "@/store/features/checkins";
@@ -39,12 +40,12 @@ const describeDrop = (average: number): string => {
 const ALL_TIME_TREND_DAYS = 30;
 
 const Section = ({ title, children }: { title: string; children: ReactNode }) => (
-  <Box component="section" sx={{ p: 2, borderRadius: "12px", bgcolor: "background.paper" }}>
+  <SurfaceCard component="section" ariaLabel={title}>
     <Typography component="h2" sx={{ mb: 1.75, fontSize: 17, fontWeight: 600 }}>
       {title}
     </Typography>
     {children}
-  </Box>
+  </SurfaceCard>
 );
 
 const Insights = () => {

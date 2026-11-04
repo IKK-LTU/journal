@@ -1,6 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { CheckInDto } from "@/api/services/types";
+import { newestFirstBy } from "@/utils/sort";
 
 export type NewCheckIn = Omit<CheckInDto, "id" | "createdAt">;
 
@@ -60,9 +61,9 @@ const selectCheckinsList = (state: RootState) => state.checkins.checkinsList;
 
 /** Newest day first; inside a day, newest entry first. */
 const selectEntriesGroupedByDay = createSelector([selectCheckinsList], (list): DayGroup[] => {
-  const sorted = [...list].sort((a, b) =>
-    a.date === b.date ? b.createdAt.localeCompare(a.createdAt) : b.date.localeCompare(a.date),
-  );
+  const byDay = newestFirstBy((entry: CheckInDto) => entry.date);
+  const byTime = newestFirstBy((entry: CheckInDto) => entry.createdAt);
+  const sorted = [...list].sort((one, other) => byDay(one, other) || byTime(one, other));
 
   const groups: DayGroup[] = [];
   for (const entry of sorted) {
@@ -100,7 +101,7 @@ const selectPeopleUsage = createSelector([selectCheckinsList], (list) => countAn
 
 /** The user's last few distinct thoughts — often the same thought comes back, one tap to reuse it. */
 const selectRecentThoughts = createSelector([selectCheckinsList], (list): string[] => {
-  const newestFirst = [...list].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const newestFirst = [...list].sort(newestFirstBy((entry) => entry.createdAt));
   const thoughts = newestFirst.map((entry) => entry.autoThought.trim()).filter((thought) => thought !== "");
   return [...new Set(thoughts)].slice(0, 4);
 });

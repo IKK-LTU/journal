@@ -8,6 +8,7 @@ import EmotionStep from "@/components/entry-flow/EmotionStep";
 import FlowFooter from "@/components/entry-flow/FlowFooter";
 import FlowHeader from "@/components/entry-flow/FlowHeader";
 import StepHeader from "@/components/entry-flow/StepHeader";
+import FlowPage from "@/components/ui/FlowPage";
 import { QUICK_STEPS, STEP_COPY } from "@/components/entry-flow/steps";
 import type { EntryDraft } from "@/components/entry-flow/types";
 import { useEntryDraft } from "@/components/entry-flow/useEntryDraft";
@@ -94,8 +95,6 @@ const NewEntry = () => {
     updateDraft(changes);
   };
 
-  const pageSx = { width: "100%", maxWidth: 600, minHeight: "100dvh", mx: "auto", display: "flex", flexDirection: "column" } as const;
-
   if (saved) {
     const message = saved.isDifficult
       ? "Gerai, kad tai užrašei – jau vien tai padeda."
@@ -105,7 +104,7 @@ const NewEntry = () => {
     const streakLine = saved.streak > 1 ? `${saved.streak} ${pluralizeLt(saved.streak, DAY_FORMS)} iš eilės` : undefined;
 
     return (
-      <Box sx={pageSx}>
+      <FlowPage>
         <DoneScreen title="Išsaugota" message={message} highlight={streakLine}>
           {saved.isDifficult ? (
             <>
@@ -129,12 +128,12 @@ const NewEntry = () => {
             </Button>
           )}
         </DoneScreen>
-      </Box>
+      </FlowPage>
     );
   }
 
   return (
-    <Box sx={pageSx}>
+    <FlowPage>
       <FlowHeader stepNumber={stepIndex + 1} totalSteps={QUICK_STEPS.length} onBack={() => {
           setError(null);
           setStepIndex(stepIndex - 1);
@@ -164,7 +163,7 @@ const NewEntry = () => {
       </Box>
 
       <FlowFooter error={error} primaryLabel={isLastStep ? "Išsaugoti" : "Toliau"} onPrimary={handleNext} />
-    </Box>
+    </FlowPage>
   );
 };
 

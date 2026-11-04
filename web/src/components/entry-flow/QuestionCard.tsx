@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { Box, Typography } from "@mui/material";
 
+import SurfaceCard from "@/components/ui/SurfaceCard";
+
 type Props = {
   label: string;
   isOptional?: boolean;
@@ -10,7 +12,7 @@ type Props = {
 /** One question on its own soft card, so a screen with several questions has clear structure. */
 const QuestionCard = ({ label, isOptional = false, children }: Props) => {
   return (
-    <Box component="section" aria-label={label} sx={{ mb: 1.5, p: 2, borderRadius: "12px", bgcolor: "background.paper" }}>
+    <SurfaceCard component="section" ariaLabel={label} sx={{ mb: 1.5 }}>
       <Typography component="h2" sx={{ mb: 0.5, fontSize: 16, fontWeight: 600 }}>
         {label}
         {isOptional && (
@@ -20,7 +22,7 @@ const QuestionCard = ({ label, isOptional = false, children }: Props) => {
         )}
       </Typography>
       {children}
-    </Box>
+    </SurfaceCard>
   );
 };
 

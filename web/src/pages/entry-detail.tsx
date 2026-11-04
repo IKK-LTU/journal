@@ -1,196 +1,82 @@
-import { useState, type ReactNode } from "react";
-import { Box, Button, ButtonBase, Dialog, Typography } from "@mui/material";
-import { ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { Box, Button, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 
+import AfterRatingsSection from "@/components/entry/AfterRatingsSection";
+import DeleteEntryDialog from "@/components/entry/DeleteEntryDialog";
+import EntryStoryCard from "@/components/entry/EntryStoryCard";
+import GoDeeperCard from "@/components/entry/GoDeeperCard";
+import QuoteSection from "@/components/entry/QuoteSection";
+import ReactionSection from "@/components/entry/ReactionSection";
+import ReframeSection from "@/components/entry/ReframeSection";
 import BackButton from "@/components/ui/BackButton";
 import PageShell from "@/components/ui/PageShell";
-import { findTrap } from "@/constants/thinking-traps";
 import { getEntryDeeperPath, ROUTES, type DeeperRouteState, type HomeRouteState } from "@/router/routes";
-import { isDifficultEmotion } from "@/utils/insights";
 import { checkinsSelectors, removeCheckinItem } from "@/store/features/checkins";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { formatDayHeading, formatTime } from "@/utils/date";
-import { SERIF_FONT } from "../../theme";
+import { canGoDeeper, describeEntryContext } from "@/utils/entry";
 
-const Section = ({ label, children }: { label: string; children: ReactNode }) => (
-  <Box component="section" sx={{ p: 2, borderRadius: "12px", bgcolor: "background.paper" }}>
-    <Typography component="h2" sx={{ mb: 0.75, fontSize: 13, fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "text.secondary" }}>
-      {label}
-    </Typography>
-    {children}
-  </Box>
-);
-
-const EntryDetail = () => {
+/** One entry, read in the order it was written: feelings & what happened → thought → reframe → after. */
+const EntryDetailPage = () => {
   const { id = "" } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const entry = useAppSelector((state) => checkinsSelectors.selectEntryById(state, id));
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const goHome = () => navigate(ROUTES.HOME.path);
 
+  if (!entry) return <EntryNotFound onGoHome={goHome} />;
+
+  const openDeeper = () => {
+    const state: DeeperRouteState = { fromEntry: true };
+    navigate(getEntryDeeperPath(entry.id), { state });
+  };
+
   const deleteEntry = () => {
-    dispatch(removeCheckinItem(id));
+    dispatch(removeCheckinItem(entry.id));
     const state: HomeRouteState = { toast: "Įrašas ištrintas" };
     navigate(ROUTES.HOME.path, { state, replace: true });
   };
-
-  if (!entry) {
-    return (
-      <PageShell>
-        <BackButton onClick={goHome} />
-        <Typography variant="display" sx={{ mt: 3, fontSize: 30 }}>
-          Įrašas nerastas
-        </Typography>
-        <Typography sx={{ mt: 1, color: "text.secondary" }}>Galbūt jis buvo ištrintas.</Typography>
-        <Button variant="contained" onClick={goHome} sx={{ mt: 4, alignSelf: "flex-start" }}>
-          Į pradžią
-        </Button>
-      </PageShell>
-    );
-  }
-
-  const time = formatTime(entry.createdAt);
-  const deeperState: DeeperRouteState = { fromEntry: true };
-  const openDeeper = () => navigate(getEntryDeeperPath(entry.id), { state: deeperState });
-  // Offer the deeper part for hard moments, or to finish a thought that has no friend's view yet.
-  const canGoDeeper = !entry.balancedThought && (entry.autoThought !== "" || entry.emotion.some((emotion) => isDifficultEmotion(emotion.name)));
 
   return (
     <PageShell>
       <BackButton onClick={goHome} />
 
       <Box component="article" sx={{ mt: 1.5, display: "flex", flexDirection: "column", gap: 1 }}>
-        <Typography sx={{ mb: 0.5, fontSize: 15, color: "text.secondary" }}>
-          {[formatDayHeading(entry.date) + (time ? `, ${time}` : ""), entry.place, entry.people.length > 0 && `Šalia: ${entry.people.join(", ")}`]
-            .filter(Boolean)
-            .join(" · ")}
-        </Typography>
+        <Typography sx={{ mb: 0.5, fontSize: 15, color: "text.secondary" }}>{describeEntryContext(entry)}</Typography>
+        <EntryStoryCard entry={entry} />
+        {entry.autoThought && <QuoteSection label="Mintis" quote={entry.autoThought} />}
+        <ReactionSection entry={entry} />
+        <ReframeSection entry={entry} onEdit={openDeeper} />
+        {canGoDeeper(entry) && <GoDeeperCard hasThought={entry.autoThought !== ""} onOpen={openDeeper} />}
+        <AfterRatingsSection entry={entry} />
 
-        <Box sx={{ p: 2, borderRadius: "12px", bgcolor: "background.paper", display: "flex", flexDirection: "column", gap: 2 }}>
-          <Typography component="h1" sx={{ display: "flex", flexWrap: "wrap", columnGap: 2, fontSize: 20 }}>
-            {entry.emotion.map((emotion) => (
-              <span key={emotion.name}>
-                <Box component="span" sx={{ fontWeight: 500 }}>
-                  {emotion.name}
-                </Box>{" "}
-                <Box component="span" sx={{ color: "text.secondary" }}>
-                  {emotion.intensity}
-                </Box>
-              </span>
-            ))}
-          </Typography>
-          <Typography sx={{ fontFamily: SERIF_FONT, fontSize: 23, lineHeight: 1.45, whiteSpace: "pre-wrap" }}>{entry.situation}</Typography>
-        </Box>
-
-        {entry.autoThought && (
-          <Section label="Mintis">
-            <Typography sx={{ fontFamily: SERIF_FONT, fontStyle: "italic", fontSize: 21, lineHeight: 1.45, whiteSpace: "pre-wrap" }}>
-              „{entry.autoThought}“
-            </Typography>
-          </Section>
-        )}
-
-        {(entry.reactions.length > 0 || entry.behavior) && (
-          <Section label="Kaip sureagavai">
-            {entry.reactions.length > 0 && <Typography sx={{ fontSize: 18, fontWeight: 500 }}>{entry.reactions.join(", ")}</Typography>}
-            {entry.behavior && <Typography sx={{ mt: entry.reactions.length > 0 ? 0.75 : 0, fontSize: 18, whiteSpace: "pre-wrap" }}>{entry.behavior}</Typography>}
-          </Section>
-        )}
-
-        {(entry.balancedThought || entry.thinkingTraps.length > 0) && (
-          // The one color moment: the user's own, more balanced thought.
-          <Box component="section" sx={{ p: 2, borderRadius: "12px", bgcolor: "accentSoft" }}>
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.75 }}>
-              <Typography component="h2" sx={{ fontSize: 13, fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "primary.main" }}>
-                Pažvelk kitaip
-              </Typography>
-              {entry.balancedThought && (
-                <Button variant="text" onClick={() => openDeeper()} sx={{ minHeight: 36, px: 1, mr: -1, fontSize: 14, color: "primary.main" }}>
-                  Keisti
-                </Button>
-              )}
-            </Box>
-            {entry.thinkingTraps.length > 0 && (
-              <Typography sx={{ mb: entry.balancedThought ? 1 : 0, fontSize: 15, color: "text.secondary" }}>
-                Spąstai: {entry.thinkingTraps.map((id) => findTrap(id)?.name ?? id).join(", ")}
-              </Typography>
-            )}
-            {entry.balancedThought && (
-              <Typography sx={{ fontFamily: SERIF_FONT, fontStyle: "italic", fontSize: 21, lineHeight: 1.45, whiteSpace: "pre-wrap" }}>
-                „{entry.balancedThought}“
-              </Typography>
-            )}
-          </Box>
-        )}
-
-        {canGoDeeper && (
-          // The deeper part is optional and often only possible later, once the moment has passed.
-          <ButtonBase
-            onClick={() => openDeeper()}
-            sx={{ p: 2, borderRadius: "12px", bgcolor: "background.paper", justifyContent: "space-between", textAlign: "left", fontFamily: "inherit" }}
-          >
-            <Box>
-              <Typography sx={{ fontSize: 17, fontWeight: 600 }}>{entry.autoThought ? "Užbaik: pažvelk kitaip" : "Pažvelk giliau"}</Typography>
-              <Typography sx={{ fontSize: 14, color: "text.secondary" }}>
-                {entry.autoThought
-                  ? "Kaip į šią mintį pažiūrėtų draugas?"
-                  : "~2 min. Užrašyk mintį, atpažink spąstus ir pažiūrėk į ją draugo akimis."}
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", color: "text.secondary" }}>
-              <ChevronRight size={20} aria-hidden />
-            </Box>
-          </ButtonBase>
-        )}
-
-        {entry.emotionAfter.length > 0 && (
-          <Section label="Po įrašo">
-            {entry.emotionAfter.map((after) => {
-              const before = entry.emotion.find((emotion) => emotion.name === after.name)?.intensity;
-              const dropped = before !== undefined && after.intensity < before;
-              return (
-                <Typography key={after.name} sx={{ fontSize: 18 }}>
-                  <Box component="span" sx={{ fontWeight: 500 }}>
-                    {after.name}
-                  </Box>{" "}
-                  <Box component="span" sx={{ color: dropped ? "primary.main" : "text.secondary", fontWeight: dropped ? 600 : 400 }}>
-                    {before !== undefined ? `${before} → ${after.intensity}` : after.intensity}
-                  </Box>
-                </Typography>
-              );
-            })}
-          </Section>
-        )}
-
-        <Button variant="text" onClick={() => setIsConfirmOpen(true)} sx={{ mt: 1.5, alignSelf: "flex-start", px: 0, minHeight: 44, color: "text.secondary", fontSize: 15 }}>
+        <Button
+          variant="text"
+          onClick={() => setIsDeleteDialogOpen(true)}
+          sx={{ mt: 1.5, alignSelf: "flex-start", px: 0, minHeight: 44, color: "text.secondary", fontSize: 15 }}
+        >
           Ištrinti įrašą
         </Button>
       </Box>
 
-      <Dialog
-        open={isConfirmOpen}
-        onClose={() => setIsConfirmOpen(false)}
-        aria-labelledby="delete-title"
-        fullWidth
-        slotProps={{ paper: { sx: { m: 2, p: 3, borderRadius: "16px", bgcolor: "background.default" } } }}
-      >
-        <Typography id="delete-title" variant="display" component="h2" sx={{ fontSize: 26, mb: 3.5 }}>
-          Ištrinti šį įrašą visam laikui?
-        </Typography>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Button variant="text" onClick={() => setIsConfirmOpen(false)} sx={{ color: "text.secondary", px: 1, ml: -1 }}>
-            Atšaukti
-          </Button>
-          <Button variant="contained" color="error" onClick={deleteEntry}>
-            Ištrinti
-          </Button>
-        </Box>
-      </Dialog>
+      <DeleteEntryDialog isOpen={isDeleteDialogOpen} onCancel={() => setIsDeleteDialogOpen(false)} onConfirm={deleteEntry} />
     </PageShell>
   );
 };
 
-export default EntryDetail;
+const EntryNotFound = ({ onGoHome }: { onGoHome: () => void }) => (
+  <PageShell>
+    <BackButton onClick={onGoHome} />
+    <Typography variant="display" sx={{ mt: 3, fontSize: 30 }}>
+      Įrašas nerastas
+    </Typography>
+    <Typography sx={{ mt: 1, color: "text.secondary" }}>Galbūt jis buvo ištrintas.</Typography>
+    <Button variant="contained" onClick={onGoHome} sx={{ mt: 4, alignSelf: "flex-start" }}>
+      Į pradžią
+    </Button>
+  </PageShell>
+);
+
+export default EntryDetailPage;
