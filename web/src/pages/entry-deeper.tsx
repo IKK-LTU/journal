@@ -25,7 +25,8 @@ const EntryDeeperPage = () => {
   const entry = useAppSelector((state) => checkinsSelectors.selectEntryById(state, id));
 
   if (!entry) return <Navigate to={ROUTES.HOME.path} replace />;
-  return <DeeperFlow entry={entry} />;
+  // key: a new entry gets a fresh flow, otherwise the previous entry's answers stay in state.
+  return <DeeperFlow key={entry.id} entry={entry} />;
 };
 
 /**
